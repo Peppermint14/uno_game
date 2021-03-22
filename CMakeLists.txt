@@ -15,9 +15,16 @@ endif()
 
 include(FetchContent)
 
-add_executable(ck
-	src/main.cpp
-)
+if (MSVC)
+	add_executable(ck
+		WIN32
+		src/main.cpp
+	)
+else()
+	add_executable(ck
+		src/main.cpp
+	)
+endif()
 
 # ------------------ wxWidgets ------------------
 set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
@@ -35,9 +42,8 @@ FetchContent_Declare(
 FetchContent_GetProperties(wxWidgets)
 FetchContent_MakeAvailable(wxWidgets)
 
-target_link_libraries(ck
-	wxbase
-	wxcore
+target_link_libraries(ck	
 	wxnet
-	wxWebRequest
+	wxcore
+	wxbase	
 )
