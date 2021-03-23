@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.5)
+cmake_minimum_required(VERSION 3.16.3)
 
 project(Cerealkillers)
 
@@ -16,13 +16,20 @@ endif()
 include(FetchContent)
 
 if (MSVC)
-	add_executable(ck
+	add_executable(ck_client
 		WIN32
-		src/main.cpp
+		src/client/main.cpp
+	)
+	add_executable(ck_server
+		WIN32
+		src/server/main.cpp
 	)
 else()
-	add_executable(ck
-		src/main.cpp
+	add_executable(ck_client
+		src/client/main.cpp
+	)
+	add_executable(ck_server
+		src/server/main.cpp
 	)
 endif()
 
@@ -42,8 +49,50 @@ FetchContent_Declare(
 FetchContent_GetProperties(wxWidgets)
 FetchContent_MakeAvailable(wxWidgets)
 
-target_link_libraries(ck	
-	wxnet
-	wxcore
-	wxbase	
+# ------------------ JSON ------------------
+message(STATUS "Fetching json ...")
+FetchContent_Declare(json
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
+  GIT_TAG v3.9.1
+  GIT_SHALLOW TRUE
+  )
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+# ------------------ SOCKCPP ------------------
+set(SOCKPP_BUILD_SHARED OFF CACHE BOOL "Whether to build the shared library")
+set(SOCKPP_BUILD_STATIC ON CACHE BOOL "Whether to build the static library")
+message(STATUS "Fetching sockpp ...")
+FetchContent_Declare(
+	sockpp 
+	GIT_REPOSITORY https://github.com/fpagliughi/sockpp.git
+	GIT_TAG        v0.7
+	GIT_SHALLOW 	TRUE
 )
+
+FetchContent_GetProperties(sockpp)
+FetchContent_MakeAvailable(sockpp)
+
+if (MSVC)
+	target_link_libraries(ck_client	
+		wxnet
+		wxcore
+		wxbase	
+		nlohmann_json::nlohmann_json
+		sockpp-static
+		wsock32
+		ws2_32
+	) 
+else()
+	target_link_libraries(ck_server	
+		wxnet
+		wxcore
+		wxbase	
+		nlohmann_json::nlohmann_json
+		sockpp-static
+	)
+endif()
