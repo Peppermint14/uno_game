@@ -87,7 +87,23 @@ if (MSVC)
 		wsock32
 		ws2_32
 	) 
+	target_link_libraries(ck_server	
+		wxnet
+		wxcore
+		wxbase	
+		nlohmann_json::nlohmann_json
+		sockpp-static
+		wsock32
+		ws2_32
+	)
 else()
+	target_link_libraries(ck_client	
+		wxnet
+		wxcore
+		wxbase	
+		nlohmann_json::nlohmann_json
+		sockpp-static
+	) 
 	target_link_libraries(ck_server	
 		wxnet
 		wxcore
