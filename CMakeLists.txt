@@ -19,17 +19,21 @@ if (MSVC)
 	add_executable(ck_client
 		WIN32
 		src/client/main.cpp
+		src/common/network.cpp
 	)
 	add_executable(ck_server
 		WIN32
 		src/server/main.cpp
+		src/common/network.cpp
 	)
 else()
 	add_executable(ck_client
 		src/client/main.cpp
+		src/common/network.cpp
 	)
 	add_executable(ck_server
 		src/server/main.cpp
+		src/common/network.cpp
 	)
 endif()
 
@@ -77,6 +81,17 @@ FetchContent_Declare(
 FetchContent_GetProperties(sockpp)
 FetchContent_MakeAvailable(sockpp)
 
+# ------------------ SPDLOG ------------------
+message(STATUS "Fetching SPDLOG...")
+FetchContent_Declare(
+	spdlog
+	GIT_REPOSITORY https://github.com/gabime/spdlog.git
+	GIT_TAG        v1.8.2
+	GIT_SHALLOW TRUE
+)
+FetchContent_GetProperties(spdlog)
+FetchContent_MakeAvailable(spdlog)
+
 if (MSVC)
 	target_link_libraries(ck_client	
 		wxnet
@@ -84,6 +99,7 @@ if (MSVC)
 		wxbase	
 		nlohmann_json::nlohmann_json
 		sockpp-static
+		spdlog::spdlog
 		wsock32
 		ws2_32
 	) 
@@ -93,6 +109,7 @@ if (MSVC)
 		wxbase	
 		nlohmann_json::nlohmann_json
 		sockpp-static
+		spdlog::spdlog
 		wsock32
 		ws2_32
 	)
@@ -103,6 +120,7 @@ else()
 		wxbase	
 		nlohmann_json::nlohmann_json
 		sockpp-static
+		spdlog::spdlog
 	) 
 	target_link_libraries(ck_server	
 		wxnet
@@ -110,5 +128,6 @@ else()
 		wxbase	
 		nlohmann_json::nlohmann_json
 		sockpp-static
+		spdlog::spdlog
 	)
 endif()
