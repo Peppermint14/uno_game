@@ -4,7 +4,6 @@
 #include <future>
 #include <memory>
 #include <queue>
-#include <chrono>
 #include <type_traits>
 #include <vector>
 #include <optional>
@@ -12,9 +11,17 @@
 #include <exception>
 #include <functional>
 #include <algorithm>
+#include <stack>
+#include <random>
+#include <list>
+#include <chrono>
+#include <atomic>
 
 #include <nlohmann/json.hpp>
-#include <spdlog/spdlog.h>
+
+#include "logger.hpp"
+
+using namespace std::literals::chrono_literals;
 
 //reimplementation of max because some macro is shadowing the std function
 template<class T> 
@@ -30,19 +37,17 @@ enum class Player : uint32_t {
     PLAYER_4        =   4       
 };
 
-enum class Cards : uint32_t {
-
-};
-
-enum class Color : uint32_t {
-    GREEN   =   0,
-    RED     =   1,
-    YELLOW  =   2,
-    BLUE    =   3
-};
-
 enum class State {
-    FAILED, SUCCESS, ERROR
+    FAILED      =   0, 
+    SUCCESS     =   1,  
+    ERROR_       =   2 //some flag shadows ERROR
+};
+
+class ckException : public std::exception {
+    const std::string msg;
+public:
+    ckException(const std::string& _msg) noexcept : msg(_msg) {}
+    [[nodiscard]] const char* what() const noexcept override { return msg.data(); }
 };
 
 #endif /* COMMON_HPP */

@@ -20,22 +20,26 @@ include(FetchContent)
 set(CLIENT_FILES
 	"src/client/main.cpp"
 	"src/client/tcp_client.cpp"
-	"src/common/network.cpp"
 )
 
 set(SERVER_FILES
 	"src/server/main.cpp"
-	"src/server/tcp_server.cpp"
+	"src/server/tcp_server.cpp"	
+)
+
+set(COMMON_FILES
 	"src/common/network.cpp"
+	"src/common/cards.cpp"
+	"src/common/logger.cpp"
 )
 # ------------------------------------------------------------
 
 if (MSVC)
-	add_executable(ck_client WIN32 "${CLIENT_FILES}")
-	add_executable(ck_server "${SERVER_FILES}")
+	add_executable(ck_client WIN32 "${CLIENT_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 else()
-	add_executable(ck_client "${CLIENT_FILES}")
-	add_executable(ck_server "${SERVER_FILES}")
+	add_executable(ck_client "${CLIENT_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 endif()
 
 # ------------------ wxWidgets ------------------
@@ -47,8 +51,8 @@ message(STATUS "Fetching wxWidgets ...")
 FetchContent_Declare(
 	wxWidgets 
 	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
-	GIT_TAG        	v3.1.4
-	GIT_SHALLOW 	TRUE
+	GIT_TAG			v3.1.4
+	GIT_SHALLOW		TRUE
 )
 
 FetchContent_GetProperties(wxWidgets)
@@ -57,8 +61,8 @@ FetchContent_MakeAvailable(wxWidgets)
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
 FetchContent_Declare(json
-	GIT_REPOSITORY 	https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
-	GIT_TAG 			v3.9.1
+	GIT_REPOSITORY	https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
+	GIT_TAG			v3.9.1
 	GIT_SHALLOW		TRUE
 )
 
@@ -74,8 +78,8 @@ set(SOCKPP_BUILD_STATIC ON CACHE BOOL "Whether to build the static library")
 message(STATUS "Fetching sockpp ...")
 FetchContent_Declare(
 	sockpp 
-	GIT_REPOSITORY 	https://github.com/fpagliughi/sockpp.git
-	GIT_TAG        	v0.7
+	GIT_REPOSITORY	https://github.com/fpagliughi/sockpp.git
+	GIT_TAG			v0.7
 	GIT_SHALLOW		TRUE
 )
 
@@ -86,9 +90,9 @@ FetchContent_MakeAvailable(sockpp)
 message(STATUS "Fetching SPDLOG...")
 FetchContent_Declare(
 	spdlog
-	GIT_REPOSITORY 	https://github.com/gabime/spdlog.git
-	GIT_TAG        	v1.8.2
-	GIT_SHALLOW 	TRUE
+	GIT_REPOSITORY	https://github.com/gabime/spdlog.git
+	GIT_TAG			v1.8.2
+	GIT_SHALLOW		TRUE
 )
 FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
