@@ -9,32 +9,33 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /DNDEBUG")
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -ggdb" )
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native -DNDEBUG -flto")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG" )
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -march=native -DNDEBUG -flto -fomit-frame-pointer")
+	set(CMAKE_CXX_FLAGS_TURBOSPEED "-Ofast -funroll-loops -s -DNDEBUG -flto -fomit-frame-pointer -march=native")
 endif()
 
 include(FetchContent)
 
+# ------------------ ADD SOURCE FILES HERE ------------------
+set(CLIENT_FILES
+	"src/client/main.cpp"
+	"src/client/tcp_client.cpp"
+	"src/common/network.cpp"
+)
+
+set(SERVER_FILES
+	"src/server/main.cpp"
+	"src/server/tcp_server.cpp"
+	"src/common/network.cpp"
+)
+# ------------------------------------------------------------
+
 if (MSVC)
-	add_executable(ck_client
-		WIN32
-		src/client/main.cpp
-		src/common/network.cpp
-	)
-	add_executable(ck_server
-		WIN32
-		src/server/main.cpp
-		src/common/network.cpp
-	)
+	add_executable(ck_client WIN32 "${CLIENT_FILES}")
+	add_executable(ck_server "${SERVER_FILES}")
 else()
-	add_executable(ck_client
-		src/client/main.cpp
-		src/common/network.cpp
-	)
-	add_executable(ck_server
-		src/server/main.cpp
-		src/common/network.cpp
-	)
+	add_executable(ck_client "${CLIENT_FILES}")
+	add_executable(ck_server "${SERVER_FILES}")
 endif()
 
 # ------------------ wxWidgets ------------------
@@ -45,8 +46,8 @@ set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
 message(STATUS "Fetching wxWidgets ...")
 FetchContent_Declare(
 	wxWidgets 
-	GIT_REPOSITORY https://github.com/wxWidgets/wxWidgets.git
-	GIT_TAG        v3.1.4
+	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
+	GIT_TAG        	v3.1.4
 	GIT_SHALLOW 	TRUE
 )
 
@@ -56,10 +57,10 @@ FetchContent_MakeAvailable(wxWidgets)
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
 FetchContent_Declare(json
-  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
-  GIT_TAG v3.9.1
-  GIT_SHALLOW TRUE
-  )
+	GIT_REPOSITORY 	https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent.git
+	GIT_TAG 			v3.9.1
+	GIT_SHALLOW		TRUE
+)
 
 FetchContent_GetProperties(json)
 if(NOT json_POPULATED)
@@ -73,9 +74,9 @@ set(SOCKPP_BUILD_STATIC ON CACHE BOOL "Whether to build the static library")
 message(STATUS "Fetching sockpp ...")
 FetchContent_Declare(
 	sockpp 
-	GIT_REPOSITORY https://github.com/fpagliughi/sockpp.git
-	GIT_TAG        v0.7
-	GIT_SHALLOW 	TRUE
+	GIT_REPOSITORY 	https://github.com/fpagliughi/sockpp.git
+	GIT_TAG        	v0.7
+	GIT_SHALLOW		TRUE
 )
 
 FetchContent_GetProperties(sockpp)
@@ -85,49 +86,38 @@ FetchContent_MakeAvailable(sockpp)
 message(STATUS "Fetching SPDLOG...")
 FetchContent_Declare(
 	spdlog
-	GIT_REPOSITORY https://github.com/gabime/spdlog.git
-	GIT_TAG        v1.8.2
-	GIT_SHALLOW TRUE
+	GIT_REPOSITORY 	https://github.com/gabime/spdlog.git
+	GIT_TAG        	v1.8.2
+	GIT_SHALLOW 	TRUE
 )
 FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
+# ------------------ ADD LIBRARIES HERE -----------------------
+set(CLIENT_LIBS
+	"wxnet"
+	"wxcore"
+	"wxbase"
+	"nlohmann_json::nlohmann_json"
+	"sockpp-static"
+	"spdlog::spdlog"
+)
+
+set(SERVER_LIBS
+	"nlohmann_json::nlohmann_json"
+	"sockpp-static"
+	"spdlog::spdlog"
+)
+# ------------------------------------------------------------
+
 if (MSVC)
-	target_link_libraries(ck_client	
-		wxnet
-		wxcore
-		wxbase	
-		nlohmann_json::nlohmann_json
-		sockpp-static
-		spdlog::spdlog
-		wsock32
-		ws2_32
-	) 
-	target_link_libraries(ck_server	
-		wxnet
-		wxcore
-		wxbase	
-		nlohmann_json::nlohmann_json
-		sockpp-static
-		spdlog::spdlog
-		wsock32
-		ws2_32
-	)
+	target_link_libraries(ck_client "${CLIENT_LIBS}" wsock32 ws2_32) 
+	target_link_libraries(ck_server "${SERVER_LIBS}" wsock32 ws2_32)
 else()
-	target_link_libraries(ck_client	
-		wxnet
-		wxcore
-		wxbase	
-		nlohmann_json::nlohmann_json
-		sockpp-static
-		spdlog::spdlog
-	) 
-	target_link_libraries(ck_server	
-		wxnet
-		wxcore
-		wxbase	
-		nlohmann_json::nlohmann_json
-		sockpp-static
-		spdlog::spdlog
-	)
+	target_link_libraries(ck_client "${CLIENT_LIBS}") 
+	target_link_libraries(ck_server "${SERVER_LIBS}")
 endif()
+
+#if(CK_BUILD_TESTS)
+
+#endif()
