@@ -4,6 +4,10 @@
 #include <spdlog/async.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
+void Logger::init() noexcept {
+    spdlog::init_thread_pool(10240, 2);
+}
+
 std::shared_ptr<spdlog::logger> Logger::create(const std::string& _name) noexcept{
     static auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     auto logger = std::make_shared<spdlog::async_logger>(_name, stdout_sink, spdlog::thread_pool(), spdlog::async_overflow_policy::block);

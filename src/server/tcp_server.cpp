@@ -22,6 +22,7 @@ void net::TCP_Server::terminate() noexcept {
 
 void net::TCP_Server::barrier() noexcept {
     auto logger = Logger::get("server_main");
+    logger->info("Waiting for shutdown...");
     while(!instance->shutdown)
         std::this_thread::sleep_for(1s);
     logger->info("Waiting for threads to shut down...");

@@ -51,10 +51,10 @@ namespace net {
 
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
-            static_assert(std::is_function(_callback));
             if(instance->isInit) throw new ckException("TCP_Server already initialised");
             instance->isInit = true;
             auto logger = Logger::create("server_main");
+            logger->info("Welcome. Initializing server...");
             instance->listener = std::async(std::launch::async, [port = _port, callback = _callback] {
                 auto logger = Logger::create("server_listener");
                 sockpp::tcp_acceptor acc(port);
@@ -62,6 +62,8 @@ namespace net {
                     logger->error("Error opening acceptor: {}", acc.last_error_str());
                     throw new ckException(acc.last_error_str());
                 }
+
+                logger->info("Socket open and listening on port {}", port);
 
                 while (!instance->shutdown) {
                     sockpp::tcp_socket sock = acc.accept();
@@ -108,7 +110,7 @@ namespace net {
                                         if (!msg.empty()) {
                                             std::string msg_st(msg.begin(), msg.end());
                                             logger->debug("[Server] Received: {}", msg_st);
-                                            callback(id, msg_st);
+                                            callback(static_cast<Player>(id+1), msg_st);
                                         }
                                     }
                                     //max 60 fps
