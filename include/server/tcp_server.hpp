@@ -39,7 +39,7 @@ namespace net {
         template <class T>
         [[nodiscard]] static size_t getIdForPlayer(T _player) noexcept{
             constexpr size_t id = static_cast<size_t>(_player);
-            return idsForPlayer[id];
+            return instance->idsForPlayer[id];
         }
 
         [[nodiscard]] static Player getPlayerForId(size_t _id) noexcept{
@@ -52,15 +52,15 @@ namespace net {
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
             static_assert(std::is_function(_callback));
-            if(instance->isInit) throw new detail::TCPException("TCP_Server already initialised");
+            if(instance->isInit) throw new ckException("TCP_Server already initialised");
             instance->isInit = true;
-            instance->logger = Logger::create("server_main");
+            auto logger = Logger::create("server_main");
             instance->listener = std::async(std::launch::async, [port = _port, callback = _callback] {
                 auto logger = Logger::create("server_listener");
                 sockpp::tcp_acceptor acc(port);
                 if (!acc) {
                     logger->error("Error opening acceptor: {}", acc.last_error_str());
-                    throw new detail::TCPException(acc.last_error_str());
+                    throw new ckException(acc.last_error_str());
                 }
 
                 while (!instance->shutdown) {
