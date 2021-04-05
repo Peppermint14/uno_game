@@ -4,10 +4,11 @@
 net::TCP_Server* net::TCP_Server::instance = new net::TCP_Server();
 
 net::TCP_Server::TCP_Server() noexcept {
-    idsForPlayer.resize(4);
-    callbacks.resize(4);
+    connections.resize(4);
+    sendQueue.resize(4);
+    m_sendQueue.resize(4);
     for(size_t i = 0; i < 4; ++i)
-        callbacks[i] = 0;
+        m_sendQueue[i] = std::make_unique<std::mutex>();
 }
 
 net::TCP_Server::~TCP_Server() noexcept{
@@ -36,21 +37,15 @@ void net::TCP_Server::barrier() noexcept {
     logger->info("Goodbye!");
 }
 
-void net::TCP_Server::recieve(Player _player, std::function<void(const std::string&)> _func){
-    const size_t id = static_cast<size_t>(_player);
-    std::lock_guard<std::mutex> lock(instance->m_callbacks[id]);
-    instance->callbacks[id] = _func;
-}
-
 void net::TCP_Server::broadcast(const std::string& _msg){
     for(size_t i = 1; i < 5; ++i)
         sendToPlayer(static_cast<Player>(i), _msg);
 }
 
 void net::TCP_Server::sendToPlayer(Player _player, const std::string _msg){ 
-    const size_t id = static_cast<size_t>(_player);
+    const size_t id = static_cast<size_t>(_player) - 1;
     if(!instance->connections[id].has_value())
         throw new ckException(_msg);
-    std::lock_guard<std::mutex> lock(instance->m_sendQueue[id]);
+    std::lock_guard<std::mutex> lock(*instance->m_sendQueue[id]);
     instance->sendQueue[id].push(_msg);
 }
