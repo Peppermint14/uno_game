@@ -13,3 +13,13 @@ void net::TCP_Client::terminate() noexcept {
     log->info("[Client] Shutdown recieved.");
     instance->shutdown = true;
 }
+
+void net::TCP_Client::barrier() noexcept {
+    auto logger = Logger::get("client_main");
+    logger->info("Waiting for shutdown...");
+    while(!instance->shutdown)
+        std::this_thread::sleep_for(1s);
+    logger->info("Waiting for threads to shut down...");
+
+    logger->info("Goodbye!");
+}

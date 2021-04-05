@@ -5,6 +5,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 void Logger::init() noexcept {
+    spdlog::set_level(spdlog::level::trace);
     spdlog::init_thread_pool(10240, 2);
 }
 

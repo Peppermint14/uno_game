@@ -124,6 +124,11 @@ else()
 	target_link_libraries(ck_server "${SERVER_LIBS}")
 endif()
 
+# ------------------ TESTS ------------------
+
 #if(CK_BUILD_TESTS)
+
+	add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
+	target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
 
 #endif()
