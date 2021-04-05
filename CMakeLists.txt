@@ -22,15 +22,20 @@ include(FetchContent)
 set(CLIENT_FILES
 	"src/client/main.cpp"
 	"src/client/tcp_client.cpp"
+	"src/client/player.cpp"
+	"src/client/player_state.cpp"
+	"src/client/player_controller.cpp"
 )
 
 set(SERVER_FILES
 	"src/server/main.cpp"
 	"src/server/tcp_server.cpp"	
+	"src/server/game_controller.cpp"
+	"src/server/game_state.cpp"
 )
 
 set(COMMON_FILES
-	"src/common/network.cpp"
+	"src/common/utils.cpp"
 	"src/common/cards.cpp"
 	"src/common/logger.cpp"
 )

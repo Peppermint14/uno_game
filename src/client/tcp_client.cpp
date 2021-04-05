@@ -14,11 +14,13 @@ void net::TCP_Client::terminate() noexcept {
     instance->shutdown = true;
 }
 
+//use for debug and test purpose only
 void net::TCP_Client::barrier() noexcept {
     auto logger = Logger::get("client_main");
     logger->info("Waiting for shutdown...");
-    while(!instance->shutdown)
-        std::this_thread::sleep_for(1s);
+    char i;
+    std::cin >> i;
+    terminate();
     logger->info("Waiting for threads to shut down...");
 
     logger->info("Goodbye!");

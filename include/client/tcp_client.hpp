@@ -15,6 +15,7 @@ namespace net {
         std::mutex mutex;
         std::future<void> connection;
         std::atomic<bool> shutdown = false;
+        bool isInit = false;
 
         static TCP_Client* instance;
 
@@ -28,6 +29,8 @@ namespace net {
 
         template<class T, class Func>
         static void connect(const std::string& _adress, T _port, Func _callback){
+            if(instance->isInit) throw new ckException("TCP_Server already initialised");
+            instance->isInit = true;
             auto logger = Logger::create("client_main");
 
             struct co{

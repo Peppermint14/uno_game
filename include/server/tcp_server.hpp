@@ -2,6 +2,7 @@
 #define TCP_SERVER_HPP
 
 #include "../common/common.hpp"
+#include "../common/utils.hpp"
 
 #include <sockpp/tcp_socket.h>
 #include <sockpp/tcp_acceptor.h>
@@ -10,29 +11,24 @@ namespace net {
 
     class TCP_Server {
 
-        struct Connection {
-            std::future<void> future;
-            Player player;
-        };
-
         bool isInit = false;
 
         std::future<void> listener;
         std::vector<std::optional<std::future<void>>> connections;
-        std::atomic<bool> shutdown =  false;
+        std::vector<util::atomwrapper<bool>> shutdown;
+        std::atomic<bool> server_shutdown = false;
 
         static TCP_Server* instance;
         TCP_Server() noexcept;
         ~TCP_Server() noexcept;
         TCP_Server(const TCP_Server&) noexcept = delete;
 
-        std::vector<std::unique_ptr<std::mutex>> m_sendQueue;
-        std::vector<std::queue<std::string>> sendQueue;
+        std::vector<std::unique_ptr<util::BlockQueue<std::string>>> sendQueue;
         
     public:
-     
         static void terminate() noexcept;
         static void barrier() noexcept;
+        static void disconect(Player) noexcept;
         static void broadcast(const std::string& /*_msg*/);
         static void sendToPlayer(Player /*_player*/, const std::string /*_msg*/);
 
@@ -53,7 +49,7 @@ namespace net {
 
                 logger->info("Socket open and listening on port {}", port);
 
-                while (!instance->shutdown) {
+                while (!instance->server_shutdown) {
                     sockpp::tcp_socket sock = acc.accept();
                     sock.read_timeout(0.25s);
                     sock.write_timeout(0.25s);
@@ -75,21 +71,20 @@ namespace net {
                                 std::stringstream ss;
                                 ss << "server_player_" << id+1;
                                 auto logger = Logger::create(ss.str());
-                                while (!instance->shutdown) {
+                                while (!instance->shutdown[id]._a) {
                                     auto now = clock::now();
 
                                     //send
                                     {
-                                        std::queue<std::string>& q = instance->sendQueue[id];
-                                        std::lock_guard<std::mutex> lock(*instance->m_sendQueue[id]);
-                                        while (!q.empty()) {
-                                            std::string msg_ = q.front();
+                                        auto& q = instance->sendQueue[id];
+                                        while (!q->empty()) {
+                                            std::string msg_ = q->front();
                                             msg_.push_back(static_cast<char>(3));
                                             if(sock.write(msg_) == 1)
                                                 logger->error("Send failed: {}", msg_);
                                             else{
                                                 logger->debug("Sent: {}", msg_);
-                                                q.pop();
+                                                q->pop();
                                             }                                     
                                         }
                                     }
@@ -128,6 +123,7 @@ namespace net {
                                 }
 
                                 sock.shutdown();
+                                instance->connections[id].reset();
                             })};
                             
                             nlohmann::json msg;
