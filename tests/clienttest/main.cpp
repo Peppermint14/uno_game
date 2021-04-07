@@ -5,7 +5,6 @@
 int main() {
 
     Logger::init();
-    
 
     try {
         net::TCP_Client::connect("46.14.54.6", 8080, [](const std::string& _msg){
