@@ -22,7 +22,6 @@ include(FetchContent)
 set(CLIENT_FILES
 	"src/client/main.cpp"
 	"src/client/tcp_client.cpp"
-	"src/client/player.cpp"
 	"src/client/player_state.cpp"
 	"src/client/player_controller.cpp"
 )
@@ -38,15 +37,16 @@ set(COMMON_FILES
 	"src/common/utils.cpp"
 	"src/common/cards.cpp"
 	"src/common/logger.cpp"
+	"src/common/player.cpp"
 )
 # ------------------------------------------------------------
 
 if (MSVC)
 	add_executable(ck_client WIN32 "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}" "src/client/player.cpp")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 else()
 	add_executable(ck_client "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}" "src/client/player.cpp")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 endif()
 
 # ------------------ wxWidgets ------------------

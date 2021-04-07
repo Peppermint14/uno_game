@@ -4,7 +4,6 @@
 #include "../common/common.hpp"
 #include "../common/utils.hpp"
 
-
 #include <sockpp/tcp_socket.h>
 #include <sockpp/tcp_acceptor.h>
 
