@@ -3,7 +3,7 @@
 
 #include "../common/common.hpp" //for player_id
 #include "../common/cards.hpp"
-#include "../client/player.hpp"
+#include "../common/player.hpp"
 
 class game_state
 {
