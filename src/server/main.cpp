@@ -7,7 +7,7 @@ int main() {
     Logger::init();
 
     try{ 
-    net::TCP_Server::init(8080, [](Player _player, const std::string& _msg){
+    net::TCP_Server::init(8080, [](Player_id _player, const std::string& _msg){
         //auto logger = Logger::get("server_main");
         //logger->info("[callback][{}] {}", static_cast<size_t>(_player), _msg);
         net::TCP_Server::sendToPlayer(_player, _msg);

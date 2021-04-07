@@ -16,7 +16,7 @@ net::TCP_Server::~TCP_Server() noexcept{
         shutdown[i]._a = true; 
 }
 
-void net::TCP_Server::disconect(Player _player) noexcept {
+void net::TCP_Server::disconect(Player_id _player) noexcept {
     const size_t id = static_cast<size_t>(_player) - 1;
     instance->shutdown[id]._a = true;
 }
@@ -50,10 +50,10 @@ void net::TCP_Server::barrier() noexcept {
 
 void net::TCP_Server::broadcast(const std::string& _msg){
     for(size_t i = 1; i < 5; ++i)
-        sendToPlayer(static_cast<Player>(i), _msg);
+        sendToPlayer(static_cast<Player_id>(i), _msg);
 }
 
-void net::TCP_Server::sendToPlayer(Player _player, const std::string _msg){ 
+void net::TCP_Server::sendToPlayer(Player_id _player, const std::string _msg){ 
     const size_t id = static_cast<size_t>(_player) - 1;
     if(!instance->connections[id].has_value())
         throw new ckException(_msg);
