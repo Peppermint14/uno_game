@@ -43,10 +43,10 @@ set(COMMON_FILES
 
 if (MSVC)
 	add_executable(ck_client WIN32 "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}" "src/client/player.cpp")
 else()
 	add_executable(ck_client "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}" "src/client/player.cpp")
 endif()
 
 # ------------------ wxWidgets ------------------
