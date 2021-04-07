@@ -1,0 +1,59 @@
+
+++++++++++ REQUESTS ++++++++++
+
+play request
+{
+    "type": "play_request", 
+    "unique_player_id": #, 
+    "card": card_type
+    "color": "color"
+}
+
+draw request
+{
+    "type": "draw_request", 
+    "unique_player_id": #, 
+}
+
+exit request
+{
+    "type": "exit_request", 
+    "unique_player_id": #, 
+}
+
+++++++++++ RESPONDS ++++++++++
+
+send a card 
+{
+    "type": "send_card", 
+    "card": [
+        "id",
+        "id",
+        ...
+        ]
+}
+
+update player state (shared information) (broadcast)
+{
+    "type": game_update, 
+    "players": [
+        [
+            "number_of_cards": #,
+            ...
+
+        ],
+        [
+            "number_of_cards": #,
+            ...
+        ],
+    ], 
+    "current_player": 2, 
+    "color_to_be_matched": yellow, 
+    "card": yellow_0
+}
+
+error/ illegal move
+{
+    "type": "error",
+    "msg": "..."
+}
