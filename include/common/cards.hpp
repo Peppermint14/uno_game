@@ -17,9 +17,11 @@ namespace ck_Cards {
         GREEN   =   0,
         RED     =   1,
         YELLOW  =   2,
-        BLUE    =   3
+        BLUE    =   3,
+	NONE 	=   4 //for wild cards
     };
 
+    //TODO: should include action_type for special cards, value
     struct Card {
         Card(Cards _id, Color _col) : id(_id), color(_col){}
         const Cards id;

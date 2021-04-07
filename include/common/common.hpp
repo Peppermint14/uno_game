@@ -29,7 +29,7 @@ template<class T>
     return (_a < _b) ? _b : _a;
 };
 
-enum class Player : uint32_t {
+enum class Player_id : uint32_t {
     PLAYER_ERROR    =   0,
     PLAYER_1        =   1,
     PLAYER_2        =   2,

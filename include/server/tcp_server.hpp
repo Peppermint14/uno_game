@@ -4,6 +4,7 @@
 #include "../common/common.hpp"
 #include "../common/utils.hpp"
 
+
 #include <sockpp/tcp_socket.h>
 #include <sockpp/tcp_acceptor.h>
 
@@ -28,9 +29,9 @@ namespace net {
     public:
         static void terminate() noexcept;
         static void barrier() noexcept;
-        static void disconect(Player) noexcept;
+        static void disconect(Player_id) noexcept;
         static void broadcast(const std::string& /*_msg*/);
-        static void sendToPlayer(Player /*_player*/, const std::string /*_msg*/);
+        static void sendToPlayer(Player_id /*_player*/, const std::string /*_msg*/);
 
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
@@ -111,7 +112,7 @@ namespace net {
                                                         curMsg.pop();
                                                     }
                                                     logger->debug("Received: {}", message);
-                                                    callback(static_cast<Player>(id+1),message);
+                                                    callback(static_cast<Player_id>(id+1),message);
                                                 } else
                                                     curMsg.push(c);                                                
                                             }                                   
@@ -128,7 +129,7 @@ namespace net {
                             
                             nlohmann::json msg;
                             msg["id"] = i+1;
-                            TCP_Server::sendToPlayer(static_cast<Player>(i+1), msg.dump());
+                            TCP_Server::sendToPlayer(static_cast<Player_id>(i+1), msg.dump());
                             break;
                         }
                         if (er)
