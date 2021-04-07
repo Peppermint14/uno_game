@@ -1,2 +1,2 @@
 
-#include "../../include/client/player.hpp"
+#include "../../include/common/player.hpp"
