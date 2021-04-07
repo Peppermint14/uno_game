@@ -22,21 +22,42 @@ void net::TCP_Server::disconect(Player_id _player) noexcept {
 }
 
 void net::TCP_Server::terminate() noexcept {
-    auto logger = Logger::get("server_main");
-    for(size_t i = 0; i < 4; ++i)
-        instance->shutdown[i]._a = true; 
+    auto logger = Logger::get("server_main");  
     instance->server_shutdown = true;
     logger->info("Shutdown recieved...");
 }
 
 void net::TCP_Server::barrier() noexcept {
+    using clock = std::chrono::high_resolution_clock;
     auto logger = Logger::get("server_main");
     logger->info("Waiting for shutdown...");
-    char i;
-    std::cin >> i;
-    terminate();
-    //while(!instance->shutdown)
-        //std::this_thread::sleep_for(1s);
+
+    auto f = std::async(std::launch::async, []{
+        while(true) {
+            std::string in;
+            std::cin >> in;
+            if(in == "q")
+                return in;
+        }
+        return std::string("q");
+    });
+
+    while(!f.valid() && !instance->server_shutdown){
+        auto now = clock::now();
+
+        while(!instance->cbQueue.empty()){
+            const auto v = instance->cbQueue.front();
+            instance->cbQueue.pop();
+            instance->cb(std::get<0>(v), std::get<1>(v));
+        }
+
+        //max 60 fps
+        const auto delta = 16ms - std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - now);
+        if(delta > 0ms) std::this_thread::sleep_for(delta);
+    }
+    for(size_t i = 0; i < 4; ++i)
+        instance->shutdown[i]._a = true; 
+
     logger->info("Waiting for threads to shut down...");
 
     instance->listener.wait_for(2s);

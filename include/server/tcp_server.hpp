@@ -24,6 +24,9 @@ namespace net {
         TCP_Server(const TCP_Server&) noexcept = delete;
 
         std::vector<std::unique_ptr<util::BlockQueue<std::string>>> sendQueue;
+        util::BlockQueue<std::pair<Player_id, std::string>> cbQueue;
+
+        std::function<void(Player_id, const std::string&)> cb = 0;
         
     public:
         static void terminate() noexcept;
@@ -36,6 +39,7 @@ namespace net {
         static void init(Port _port, Callback _callback){
             if(instance->isInit) throw new ckException("TCP_Server already initialised");
             instance->isInit = true;
+            instance->cb = _callback;
             auto logger = Logger::create("server_main");
             logger->info("Welcome. Initializing server...");
             instance->listener = std::async(std::launch::async, [port = _port, callback = _callback] {
@@ -111,7 +115,8 @@ namespace net {
                                                         curMsg.pop();
                                                     }
                                                     logger->debug("Received: {}", message);
-                                                    callback(static_cast<Player_id>(id+1),message);
+                                                    //callback(static_cast<Player>(id+1),message);
+                                                    instance->cbQueue.push( {static_cast<Player_id>(id+1),message} );
                                                 } else
                                                     curMsg.push(c);                                                
                                             }                                   
