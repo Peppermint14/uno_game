@@ -4,13 +4,13 @@
 #include "../common/common.hpp"
 #include "game_state.hpp"
 
-class game_controller {
+class Game_Controller {
 public:
-    game_controller(); //constructor constructs game_state_
+    Game_Controller();
 
     void eval_request(Player_id, std::string&); //evaluate requests and send responses
 
-    void init(); //initialize game_state
+    void initialize_game(); //initialize game
 
     void update_game_state();
 

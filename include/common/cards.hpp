@@ -15,7 +15,7 @@ namespace ck_Cards {
         BLUE_6_A = 6,
         BLUE_7_A = 7,
         BLUE_8_A = 8,
-	BLUE_9_A = 9,
+	    BLUE_9_A = 9,
         BLUE_1_B = 10,
         BLUE_2_B = 11,
         BLUE_3_B = 12,
@@ -85,7 +85,7 @@ namespace ck_Cards {
 	BLUE_SKIP_A = 76,
 	BLUE_SKIP_B = 77,
 	YELLOW_SKIP_A = 78,
-	YELLOW_SKIP_B = 79
+	YELLOW_SKIP_B = 79,
 	GREEN_SKIP_A = 80,
 	GREEN_SKIP_B = 81,
 	RED_SKIP_A =  82,
@@ -113,9 +113,10 @@ namespace ck_Cards {
 	WILD_DRAW4_A = 104,
 	WILD_DRAW4_B = 105,
 	WILD_DRAW4_C = 106,
-	WILD_DRAW_D = 107
-
+	WILD_DRAW4_D = 107
 };
+    //to iterate over enum
+    Cards& operator++ (Cards& it);
 
     enum class Color : uint32_t {
         GREEN   =   0,
@@ -125,18 +126,18 @@ namespace ck_Cards {
 	NONE 	=   4 //for wild cards
     };
 
-    enum class Value: uint32_t {
-	0 = 0,
-	1 = 1, 
-	2 = 2,
-	3 = 3,
-	4 = 4,
-	5 = 5,
-	6 = 6,
-	7 = 7,
-	8 = 8,
-	9 = 9,
-	NONE = 10 //for action_cards
+    enum class Value : uint32_t {
+	ZERO = 0,
+	ONE = 1,
+	TWO = 2,
+	THREE = 3,
+	FOUR = 4,
+	FIVE = 5,
+	SIX = 6,
+	SEVEN = 7,
+	EIGHT = 8,
+	NINE = 9,
+	NONE = 10//for action_cards
     };
 
     enum class Action : uint32_t {
@@ -144,15 +145,16 @@ namespace ck_Cards {
 	SKIP = 1,
 	DRAW2 = 2,
 	WILD = 3,	
-	WILD_DRAW4 = 4
+	WILD_DRAW4 = 4,
+	NONE = 5
     };
 
     struct Card {
         Card(Cards _id, Color _col, Value _val, Action _act) : id(_id), color(_col), value(_val), action(_act) {}
         const Cards id;
         const Color color;
-	const Value value;
-	const Action action;
+	    const Value value;
+	    const Action action;
     };
 
     class Deck {
@@ -171,8 +173,10 @@ namespace ck_Cards {
     protected:
         std::list<Cards> cards;
     public:
-        [[nodiscard]] Cards top() const;
+        [[nodiscard]] Cards get_top_card();
+        Cards front();
         void pop();
+        void push_back(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
         void push(const std::vector<Cards> /*cards*/) noexcept;      
         void shuffle() noexcept;
@@ -182,6 +186,7 @@ namespace ck_Cards {
         [[nodiscard]] bool empty() const noexcept;
         void clear() noexcept;
         [[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
+        Pile(std::list<Cards> /*cards_*/); //constructor
     };
 
     typedef Pile Draw_Pile;

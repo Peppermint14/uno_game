@@ -1,8 +1,12 @@
 
 #include "../../include/common/common.hpp"
 #include "../../include/server/tcp_server.hpp"
+#include "../../include/server/game_controller.hpp"
 
 int main() {
+
+    Game_Controller game_controller;
+    game_controller.initialize_game();
 
     Logger::init();
 
