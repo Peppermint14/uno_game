@@ -6,7 +6,7 @@
 class game_controller
 {
 public:
-    game_controller()
+    game_controller(); //constructor constructs game_state_
 
     void eval_request(Player_id, std::string&); //evaluate requests and send responses
 
@@ -15,7 +15,7 @@ public:
     void update_game_state();
 
 private:
-    game_state game_state_;
+    game_state* game_state_;
 };
 #endif /* GAME_CONTROLLER_HPP */
 
