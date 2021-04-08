@@ -3,6 +3,7 @@
 
 #include "../common/common.hpp"
 #include "game_state.hpp"
+#include "../common/cards.hpp"
 
 class Game_Controller {
 public:
