@@ -3,10 +3,10 @@
 
 #include "../common/common.hpp"
 #include "game_state.hpp"
-class game_controller
-{
+
+class game_controller {
 public:
-    game_controller()
+    game_controller();
 
     void eval_request(Player_id, std::string&); //evaluate requests and send responses
 

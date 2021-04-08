@@ -1,3 +1,14 @@
+++++++++++ SERVER ++++++++++
+message to player on succesfull connections
+{  
+    "id": #
+}
+
+internal message on connections
+{
+    "type": "new_player",
+    "id": #
+}
 
 ++++++++++ REQUESTS ++++++++++
 
