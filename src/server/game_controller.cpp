@@ -1,18 +1,11 @@
 #include "../../include/server/game_controller.hpp"
 
-#include "game_state.hpp"
-
-
-class game_controller
+//constructor, constructs game_state
+game_controller::game_controller()
 {
-public:
+    game_state_ = new game_state();
+    game_state_->discard_pile
+
+}
 
 
-
-
-
-
-private:
-	game_state game_state_;
-	
-};

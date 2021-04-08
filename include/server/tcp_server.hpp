@@ -66,7 +66,7 @@ namespace net {
                         for (size_t i = 0; i < 4; ++i) {
                             if (instance->connections[i].has_value()) continue;
                             er = false;
-                            instance->connections[i] = {std::async(std::launch::async, [id = i, instance = instance, sock = std::move(sock), callback = callback]() mutable {
+                            instance->connections[i] = {std::async(std::launch::async, [id = i, instance = instance, sock = std::move(sock)]() mutable {
                                 char buf[1024];
                                 std::queue<char> msg;
                                 std::queue<char> curMsg;
@@ -75,6 +75,13 @@ namespace net {
                                 std::stringstream ss;
                                 ss << "server_player_" << id+1;
                                 auto logger = Logger::create(ss.str());
+
+                                //notify the connection of a new player
+                                nlohmann::json cmsg;
+                                cmsg["type"] = "new_player";
+                                cmsg["id"] = id + 1;
+                                instance->cbQueue.push({static_cast<Player_id>(id+1), cmsg.dump()});
+                                
                                 while (!instance->shutdown[id]._a) {
                                     auto now = clock::now();
 
