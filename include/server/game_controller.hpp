@@ -3,8 +3,8 @@
 
 #include "../common/common.hpp"
 #include "game_state.hpp"
-class game_controller
-{
+
+class game_controller {
 public:
     game_controller(); //constructor constructs game_state_
 
