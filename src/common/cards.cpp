@@ -116,6 +116,20 @@ ck_Cards::Deck* ck_Cards::Deck::instance = new ck_Cards::Deck([]{
     return out;
 });
 
+//to iterate over enum
+ck_Cards::Cards& operator++ (ck_Cards::Cards& it)
+{
+    if (it == ck_Cards::Cards::WILD_DRAW4_D) {
+        throw std::out_of_range("for Cards& operator ++ (Cards&)");
+    }
+    it = ck_Cards::Cards(static_cast<std::underlying_type<ck_Cards::Cards>::type>(it) + 1);
+    return it;
+
+}
+
+
+
+
 
 const ck_Cards::Card& ck_Cards::Deck::get(ck_Cards::Cards _card) noexcept {
     assert(instance->cards.count(_card) == 1);
@@ -131,12 +145,18 @@ const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByC
 }
 
 
-ck_Cards::Cards ck_Cards::Pile::get_top_card()
+const ck_Cards::Cards ck_Cards::Pile::get_top_card()
 {
     if(empty()) throw new ckException("Error: Pile is empty");
     ck_Cards::Cards top_card = cards.front();
     cards.pop_front();
     return top_card;
+}
+
+const ck_Cards::Cards ck_Cards::Pile::front()
+{
+	if(empty()) throw new ckException("Error: Pile is empty");
+	return cards.front();
 }
 
 void ck_Cards::Pile::pop() {

@@ -173,8 +173,8 @@ namespace ck_Cards {
     protected:
         std::list<Cards> cards;
     public:
-        [[nodiscard]] Cards get_top_card();
-        Cards front();
+        [[nodiscard]] const Cards get_top_card();
+        const Cards front();
         void pop();
         void push_back(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
