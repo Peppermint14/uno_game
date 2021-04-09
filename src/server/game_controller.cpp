@@ -1,7 +1,7 @@
 #include "../../include/server/game_controller.hpp"
 
 //constructor, constructs game_state
-void Game_Controller::initialize_game()
+Game_Controller::Game_Controller()
 {
     //create deck
     //draw_pile = deck at initialization

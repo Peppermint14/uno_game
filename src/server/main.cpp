@@ -6,8 +6,7 @@
 int main() {
 
     Game_Controller game_controller;
-    game_controller.initialize_game();
-
+    
     Logger::init();
 
     try{ 

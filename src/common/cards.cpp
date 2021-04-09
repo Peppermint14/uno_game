@@ -117,7 +117,7 @@ ck_Cards::Deck* ck_Cards::Deck::instance = new ck_Cards::Deck([]{
 });
 
 //to iterate over enum
-ck_Cards::Cards& operator++ (ck_Cards::Cards& it)
+ck_Cards::Cards& ck_Cards::operator++ (ck_Cards::Cards& it)
 {
     if (it == ck_Cards::Cards::WILD_DRAW4_D) {
         throw std::out_of_range("for Cards& operator ++ (Cards&)");
@@ -144,6 +144,11 @@ const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByC
     return out;
 }
 
+ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> cards_)
+{
+	cards = cards_;
+}
+
 
 const ck_Cards::Cards ck_Cards::Pile::get_top_card()
 {
@@ -167,6 +172,7 @@ void ck_Cards::Pile::pop() {
 void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
 }
+
 
 void ck_Cards::Pile::push(const std::vector<Cards> _cards) noexcept {
     for(const auto& c : _cards)

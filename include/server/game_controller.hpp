@@ -7,11 +7,11 @@
 
 class Game_Controller {
 public:
-    Game_Controller();
+    Game_Controller(); //constructor, initialize game
 
     void eval_request(Player_id, std::string&); //evaluate requests and send responses
 
-    void initialize_game(); //initialize game
+    //void initialize_game(); //initialize game
 
     void update_game_state();
 
