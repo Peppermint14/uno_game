@@ -215,3 +215,8 @@ const std::string ck_Cards::Pile::to_json() const noexcept {
 bool ck_Cards::Pile::valid(ck_Cards::Cards _card) const noexcept {
     return !(std::find(cards.begin(), cards.end(), _card) == cards.end());
 }
+
+std::list<ck_Cards::Cards>& get_cards() const
+{
+    return cards;
+}

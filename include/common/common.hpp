@@ -43,6 +43,22 @@ enum class State {
     ERROR_       =   2 //some flag shadows ERROR
 };
 
+enum class Request_Type : uint32_t {
+	NEW_PLAYER = 0,
+	PLAY_REQUEST = 1,
+	DRAW_REQUEST = 2,
+	EXIT_REQUEST = 3,
+	START_GAME = 4
+
+};
+
+enum class Respond_Type: uint32_t {
+    SUCCESFUL_CONNECTION = 0,
+    SEND_CARDS = 1,
+    GAME_UPDATE = 2,
+    ERROR = 3
+};
+
 class ckException : public std::exception {
     const std::string msg;
 public:
