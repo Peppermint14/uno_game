@@ -14,9 +14,11 @@ public:
     MainGamePanel(wxWindow* parent);
 
     void buildGameState(game_state* gameState, Player* me);
+    wxString colourPicker();
 
 
 private:
+
 
     void buildOtherPlayerHand(game_state* gameState, Player* otherPlayer, double playerAngle);
     void buildOtherPlayerLabels(game_state* gameState, Player* otherPlayer, double playerAngle, int side);

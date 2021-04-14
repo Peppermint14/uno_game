@@ -1,6 +1,7 @@
 // Copied from Lama example Project
 
 #include "../../include/client/player_controller.hpp"
+#include "../../include/client/UI/MainGamePanel.hpp"
 
 // #include "../common/network/requests/join_game_request.h"
 // #include "../common/network/requests/start_game_request.h"
@@ -47,7 +48,9 @@ void player_controller::connectToServer() {
     wxString inputServerPort = player_controller::_connectionPanel->getServerPort().Trim();
     wxString inputPlayerName = player_controller::_connectionPanel->getPlayerName().Trim();
 
+    
     _gameWindow->showPanel(_mainGamePanel);
+    _mainGamePanel->colourPicker();
 
     // check that all values were provided
     // if(inputServerAddress.IsEmpty()) {
@@ -74,13 +77,13 @@ void player_controller::connectToServer() {
     // }
     // uint16_t port = (uint16_t) portAsLong;
 
-    // convert player name from wxString to std::string
+    // //convert player name from wxString to std::string
     // std::string playerName = inputPlayerName.ToStdString();
 
-    // connect to network
+    // //connect to network
     // ClientNetworkManager::init(host, port);
 
-    // send request to join game
+    // //send request to join game
     // player_controller::_me = new player(playerName);
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
@@ -128,6 +131,15 @@ void player_controller::startGame() {
 
 
 void player_controller::drawCard() {
+
+    // Send request
+    //TCP_client::requestDrawCard();
+
+    // Update Cards
+    //MainGamePanel::redrawCards();
+
+
+
     // draw_card_request request = draw_card_request(player_controller::_currentGameState->get_id(), player_controller::_me->get_id());
     // ClientNetworkManager::sendRequest(request);
 }

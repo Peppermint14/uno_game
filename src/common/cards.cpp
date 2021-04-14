@@ -1,3 +1,4 @@
+// Copied from Lama example Project
 
 #include "../../include/common/cards.hpp"
 

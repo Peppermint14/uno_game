@@ -3,9 +3,40 @@
 #include "../../../include/client/UI/MainGamePanel.hpp"
 #include "../../../include/client/UI/ImagePanel.hpp"
 #include "../../../include/client/player_controller.hpp"
+// #include <wx/aboutdlg.h> 
+// #include <wx/colordlg.h> 
+// #include <wx/propdlg.h>
+#include <wx/choicdlg.h> 
 
 
 MainGamePanel::MainGamePanel(wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(960, 680)) {
+}
+
+wxString MainGamePanel::colourPicker(){
+    
+    
+    wxArrayString choices;
+    choices.Add("Red");
+    choices.Add("Green");
+    choices.Add("Blue");
+    choices.Add("Yellow");
+    wxString msg("Choose the color");
+    wxString caption("Wildcard");
+
+    int x,y,width,height,initialSelection;
+    bool centre;
+
+    // wxSize size(400, 500);
+
+    // wxDialog dialog(NULL, -1, "test", wxDefaultPosition, size);
+
+    // dialog.Show();
+
+    wxString  res = wxGetSingleChoice(msg, caption, choices);
+    // test.SetSelection(initialSelection);
+    // return test.ShowModal() == wxID_OK ? test.GetStringSelection() : wxString();
+
+    return res;
 }
 
 void MainGamePanel::buildGameState(game_state* gameState, Player* me) {
@@ -237,6 +268,7 @@ void MainGamePanel::buildTurnIndicator(game_state *gameState, Player *me) {
 
 
 void MainGamePanel::buildThisPlayer(game_state* gameState, Player* me) {
+
 
     /*
 
