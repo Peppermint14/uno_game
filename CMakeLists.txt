@@ -24,6 +24,14 @@ set(CLIENT_FILES
 	"src/client/tcp_client.cpp"
 	"src/client/player_state.cpp"
 	"src/client/player_controller.cpp"
+	"src/client/digital_UNO.cpp"
+	#UI
+	"src/client/UI/ConnectionPanel.cpp"
+	"src/client/UI/GameWindow.cpp"
+	"src/client/UI/ImagePanel.cpp"
+	"src/client/UI/InputField.cpp"
+	"src/client/UI/MainGamePanel.cpp"
+	
 )
 
 set(SERVER_FILES
@@ -131,10 +139,13 @@ else()
 endif()
 
 # ------------------ TESTS ------------------
-
 #if(CK_BUILD_TESTS)
 
-	add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
-	target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
+    # add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
+	# if (MSVC)
+    # 	target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
+	# else()
+	# 	target_link_libraries(test_client "${CLIENT_LIBS}")
+	# endif()
 
 #endif()
