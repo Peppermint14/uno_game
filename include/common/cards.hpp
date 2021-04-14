@@ -187,7 +187,7 @@ namespace ck_Cards {
         void clear() noexcept;
         [[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
         Pile(std::list<Cards> /*cards_*/); //constructor
-        std::list<Cards>& get_cards() const;
+        std::list<Cards> get_cards();
     };
 
     typedef Pile Draw_Pile;

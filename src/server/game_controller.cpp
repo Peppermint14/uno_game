@@ -35,17 +35,27 @@ void Game_Controller::eval_request(Player_id player_id, std::string& msg)
     switch (request_type)
     {
         case Request_Type::NEW_PLAYER:
+	{
             Player_id player_id = request["id"]; //retrieve player id
             add_new_player(player_id);
             break;
+	}
         case Request_Type::START_GAME:
+	{
             break;
+	}
         case Request_Type::PLAY_REQUEST:
+	{
             break;
+	}
         case Request_Type::DRAW_REQUEST:
+	{
             break;
+	}
         case Request_Type::EXIT_REQUEST:
+	{
             break;
+	}
     }
 }
 

@@ -1,21 +1,21 @@
 
 #include "../../include/common/player.hpp"
 
-Player(Player_id player_id_, bool is_active_) //constructor
+Player::Player(Player_id player_id_, bool is_active_) //constructor
 {
     player_id = player_id_;
-    is_acive = is_active_;
+    is_active = is_active_;
 }
 
-Player_id get_player_id() const
+Player_id Player::get_player_id() const
 {
     return player_id;
 }
-Player_State* get_player_state() const
+Player_State* Player::get_player_state() const
 {
     return player_state;
 }
-bool get_is_active() const
+bool Player::get_is_active() const
 {
     return is_active;
 }

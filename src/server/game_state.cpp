@@ -30,12 +30,12 @@ ck_Cards::Discard_Pile* Game_State::get_discard_pile() const
     return discard_pile;
 }
 
-Player_id get_current_player() const
+Player_id Game_State::get_current_player() const
 {
     return current_player;
 }
 
-ck_Cards::Color get_color_to_be_matched() const
+ck_Cards::Color Game_State::get_color_to_be_matched() const
 {
     return color_to_be_matched;
 }
