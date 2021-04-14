@@ -4,7 +4,7 @@
 #define DIGITALUNO_CLIENT_MAINGAMEPANEL_HPP
 
 #include <wx/wx.h>
-#include "../../server/game_state.hpp"
+#include "../player_state.hpp"
 #include "../player.hpp"
 
 
@@ -13,18 +13,18 @@ class MainGamePanel : public wxPanel {
 public:
     MainGamePanel(wxWindow* parent);
 
-    void buildGameState(game_state* gameState, Player* me);
+    void buildGameState(Player_State* gameState, Player* me);
     wxString colourPicker();
 
 
 private:
 
 
-    void buildOtherPlayerHand(game_state* gameState, Player* otherPlayer, double playerAngle);
-    void buildOtherPlayerLabels(game_state* gameState, Player* otherPlayer, double playerAngle, int side);
-    void buildCardPiles(game_state* gameState, Player *me);
-    void buildTurnIndicator(game_state* gameState, Player* me);
-    void buildThisPlayer(game_state* gameState, Player* me);
+    void buildOtherPlayerHand(Player_State* gameState, Player* otherPlayer, double playerAngle);
+    void buildOtherPlayerLabels(Player_State* gameState, Player* otherPlayer, double playerAngle, int side);
+    void buildCardPiles(Player_State* gameState, Player *me);
+    void buildTurnIndicator(Player_State* gameState, Player* me);
+    void buildThisPlayer(Player_State* gameState, Player* me);
 
     wxStaticText* buildStaticText(std::string content, wxPoint position, wxSize size, long textAlignment, bool bold = false);
 

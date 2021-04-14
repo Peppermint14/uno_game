@@ -6,7 +6,7 @@
 #include "UI/GameWindow.hpp"
 #include "UI/ConnectionPanel.hpp"
 #include "UI/MainGamePanel.hpp"
-#include "../server/game_state.hpp"
+#include "player_state.hpp"
 
 
 class player_controller {
@@ -15,7 +15,7 @@ public:
     static void init(GameWindow* gameWindow);
 
     static void connectToServer();
-    static void updateGameState(game_state* newGameState);
+    static void updateGameState(Player_State* newGameState);
     static void startGame();
     static void drawCard();
     static void fold();
@@ -24,7 +24,7 @@ public:
     static wxEvtHandler* getMainThreadEventHandler();
     static void showError(const std::string& title, const std::string& message);
     static void showStatus(const std::string& message);
-    static void showNewRoundMessage(game_state* oldGameState, game_state* newGameState);
+    static void showNewRoundMessage(Player_State* oldGameState, Player_State* newGameState);
     static void showGameOverMessage();
 
 private:
@@ -33,7 +33,7 @@ private:
     static MainGamePanel* _mainGamePanel;
 
     static Player* _me;
-    static game_state* _currentGameState;
+    static Player_State* _currentGameState;
 
 };
 

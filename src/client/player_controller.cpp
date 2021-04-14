@@ -17,7 +17,7 @@ ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
 
 Player* player_controller::_me = nullptr;
-game_state* player_controller::_currentGameState = nullptr;
+Player_State* player_controller::_currentGameState = nullptr;
 
 
 
@@ -91,11 +91,11 @@ void player_controller::connectToServer() {
 }
 
 
-void player_controller::updateGameState(game_state* newGameState) {
+void player_controller::updateGameState(Player_State* newGameState) {
 
     /*
     // the existing game state is now old
-    game_state* oldGameState = player_controller::_currentGameState;
+    Player_State* oldGameState = player_controller::_currentGameState;
 
     // save the new game state as our current game state
     player_controller::_currentGameState = newGameState;
@@ -172,7 +172,7 @@ void player_controller::showStatus(const std::string& message) {
 }
 
 
-void player_controller::showNewRoundMessage(game_state* oldGameState, game_state* newGameState) {
+void player_controller::showNewRoundMessage(Player_State* oldGameState, Player_State* newGameState) {
     /*
     std::string title = "Round Completed";
     std::string message = "The players gained the following minus points:\n";

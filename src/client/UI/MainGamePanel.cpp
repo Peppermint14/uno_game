@@ -39,7 +39,7 @@ wxString MainGamePanel::colourPicker(){
     return res;
 }
 
-void MainGamePanel::buildGameState(game_state* gameState, Player* me) {
+void MainGamePanel::buildGameState(Player_State* gameState, Player* me) {
 
     // remove any existing UI
     this->DestroyChildren();
@@ -91,7 +91,7 @@ void MainGamePanel::buildGameState(game_state* gameState, Player* me) {
 }
 
 
-void MainGamePanel::buildOtherPlayerHand(game_state* gameState, Player* otherPlayer, double playerAngle) {
+void MainGamePanel::buildOtherPlayerHand(Player_State* gameState, Player* otherPlayer, double playerAngle) {
 
     /*
     // define the ellipse which represents the virtual player circle
@@ -127,7 +127,7 @@ void MainGamePanel::buildOtherPlayerHand(game_state* gameState, Player* otherPla
 }
 
 
-void MainGamePanel::buildOtherPlayerLabels(game_state* gameState, Player* otherPlayer, double playerAngle, int side) {
+void MainGamePanel::buildOtherPlayerLabels(Player_State* gameState, Player* otherPlayer, double playerAngle, int side) {
 
     /*
     long textAlignment = wxALIGN_CENTER;
@@ -203,7 +203,7 @@ void MainGamePanel::buildOtherPlayerLabels(game_state* gameState, Player* otherP
 }
 
 
-void MainGamePanel::buildCardPiles(game_state* gameState, Player *me) {
+void MainGamePanel::buildCardPiles(Player_State* gameState, Player *me) {
 
     /*
     if(gameState->is_started()) {
@@ -243,7 +243,7 @@ void MainGamePanel::buildCardPiles(game_state* gameState, Player *me) {
 
 }
 
-void MainGamePanel::buildTurnIndicator(game_state *gameState, Player *me) {
+void MainGamePanel::buildTurnIndicator(Player_State *gameState, Player *me) {
 
     /*
     if(gameState->is_started() && gameState->get_current_player() != nullptr) {
@@ -267,7 +267,7 @@ void MainGamePanel::buildTurnIndicator(game_state *gameState, Player *me) {
 }
 
 
-void MainGamePanel::buildThisPlayer(game_state* gameState, Player* me) {
+void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
 
 
     /*

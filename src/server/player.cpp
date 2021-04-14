@@ -1,5 +1,5 @@
 
-#include "../../include/common/player.hpp"
+#include "../../include/server/player.hpp"
 
 Player::Player(Player_id player_id_, bool is_active_) //constructor
 {
