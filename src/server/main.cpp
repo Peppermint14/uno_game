@@ -1,15 +1,19 @@
 
 #include "../../include/common/common.hpp"
 #include "../../include/server/tcp_server.hpp"
+#include "../../include/server/game_controller.hpp"
 
 int main() {
 
+    Game_Controller game_controller;
+    
     Logger::init();
 
     try{ 
     net::TCP_Server::init(8080, [](Player_id _player, const std::string& _msg){
         //auto logger = Logger::get("server_main");
-        //logger->info("[callback][{}] {}", static_cast<size_t>(_player), _msg);
+        //logger->info("[callback][{}] {}", static_cast<size_t>(_player), _msg)
+        //game_controller.eval_request(_player, _msg);
         net::TCP_Server::sendToPlayer(_player, _msg);
     });
     } catch(const ckException& _e){

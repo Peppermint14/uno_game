@@ -50,7 +50,6 @@ void net::TCP_Server::barrier() noexcept {
             instance->cbQueue.pop();
             instance->cb(std::get<0>(v), std::get<1>(v));
         }
-
         //max 60 fps
         const auto delta = 16ms - std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - now);
         if(delta > 0ms) std::this_thread::sleep_for(delta);

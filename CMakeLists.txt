@@ -38,6 +38,7 @@ set(COMMON_FILES
 	"src/common/cards.cpp"
 	"src/common/logger.cpp"
 	"src/common/player.cpp"
+	"src/common/player_state.cpp"
 )
 # ------------------------------------------------------------
 
