@@ -216,7 +216,7 @@ bool ck_Cards::Pile::valid(ck_Cards::Cards _card) const noexcept {
     return !(std::find(cards.begin(), cards.end(), _card) == cards.end());
 }
 
-std::list<ck_Cards::Cards> ck_Cards::Pile::get_cards() 
+const std::list<ck_Cards::Cards> ck_Cards::Pile::get_cards() const
 {
     return cards;
 }

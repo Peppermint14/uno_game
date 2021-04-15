@@ -14,13 +14,13 @@ void Game_State::add_Players(Player* player)
     players.push_back(player);
 }
 
-void Game_State::set_current_player(Player_id id)
+void Game_State::set_current_player(Player_id& id)
 {
 	current_player = id;
 
 }
 
-void Game_State::set_color_to_be_matched(ck_Cards::Color color)
+void Game_State::set_color_to_be_matched(ck_Cards::Color& color)
 {
 	color_to_be_matched = color;
 }
@@ -30,12 +30,22 @@ ck_Cards::Discard_Pile* Game_State::get_discard_pile() const
     return discard_pile;
 }
 
-Player_id Game_State::get_current_player() const
+ck_Cards::Draw_Pile* Game_State::get_draw_pile() const
+{
+    return draw_pile;
+}
+
+const std::vector<Player*>& Game_State::get_players() const
+{
+    return players;
+}
+
+const Player_id& Game_State::get_current_player() const
 {
     return current_player;
 }
 
-ck_Cards::Color Game_State::get_color_to_be_matched() const
+const ck_Cards::Color& Game_State::get_color_to_be_matched() const
 {
     return color_to_be_matched;
 }

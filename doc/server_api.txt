@@ -54,7 +54,7 @@ update player state (shared information) (broadcast)
             number_of_cards": #,
         ],
         [
-            "Player_id": #
+            "Player_name": #
             "number_of_cards": #,
         ],
         ...

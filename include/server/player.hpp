@@ -1,0 +1,33 @@
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
+
+#include "../common/common.hpp" //retrieve Player_id of type enum class
+#include "../common/cards.hpp"
+#include <string>
+
+class Player
+{
+public:
+	Player(Player_id /*player_id_*/, bool /*is_active_*/); //constructor
+	void set_is_active(bool);
+	void set_hand(ck_Cards::Hand* /*hand_*/); //also set number of cards
+	//void update_hand(); //also update number of cards;
+	const size_t number_of_cards() const;
+	const Player_id& get_player_id() const;
+	const std::string& get_player_name() const;
+	const bool& get_is_active() const;
+	const ck_Cards::Hand* get_hand() const;
+
+private:
+
+	const Player_id player_id; //unique player id
+	const std::string player_name;
+	ck_Cards::Hand* hand;
+	//size_t number_of_cards; //maybe omit it
+	bool players_turn;
+	bool has_won;
+	bool is_active; //if player has exited set is_active to false
+	
+};
+
+#endif /* PLAYER_HPP */
