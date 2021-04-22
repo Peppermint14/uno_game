@@ -2,7 +2,11 @@
 #include "../../include/server/player.hpp"
 
 //constructor
-Player::Player(Player_id player_id_, bool is_active_) : player_id(player_id_), is_active(is_active_) {};
+Player::Player(Player_id& player_id_, bool is_active_, std::string& player_name_) : player_id(player_id_), is_active(is_active_), player_name(player_name_)
+{
+    has_won = false;
+    players_turn = false;
+};
 
 const Player_id& Player::get_player_id() const
 {
@@ -24,7 +28,7 @@ const size_t Player::number_of_cards() const
     return hand->get_cards().size();
 }
 
-const ck_Cards::Hand* Player::get_hand() const
+ck_Cards::Hand* Player::get_hand() const
 {
     return hand;
 }
@@ -32,4 +36,9 @@ const ck_Cards::Hand* Player::get_hand() const
 const std::string& Player::get_player_name() const
 {
     return player_name;
+}
+
+void Player::set_players_turn(bool players_turn_)
+{
+    players_turn = players_turn_;
 }

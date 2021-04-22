@@ -15,30 +15,35 @@ internal message on connections
 
 play request
 {
-    "type": "play_request", 
-    "unique_player_id": #, 
+    "type": "PLAY_REQUEST",
+    "id": #,
     "card": card_type
     //"color": "color"
 }
 
 draw request
 {
-    "type": "draw_request", 
-    "unique_player_id": #, 
+    "type": "DRAW_REQUEST",
+    "id": #,
 }
 
 exit request
 {
-    "type": "exit_request", 
-    "unique_player_id": #, 
+    "type": "EXIT_REQUEST",
+    "id": #,
+}
+
+select color request
+{
+    "type": "SELECT_COLOR"
 }
 
 ++++++++++ RESPONDS ++++++++++
 
-send cards
+send_hand
 {
-    "type": SEND_CARDS,
-    "cards": [
+    "type": SEND_HAND,
+    "hand": [
         "id",
         "id",
         ...
@@ -66,6 +71,13 @@ update player state (shared information) (broadcast)
 
 error/ illegal move
 {
-    "type": "error",
+    "type": "ERROR",
     "msg": "..."
+}
+
+++++++++++++++++++++++++++++++Respond client side e.g. selected_color++++++++++++++++++++++++++++
+selected color
+{
+    "type": "SELECTED_COLOR"
+    "color": ck_Cards::Color
 }

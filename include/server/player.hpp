@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	Player(Player_id /*player_id_*/, bool /*is_active_*/); //constructor
+	Player(Player_id& /*player_id_*/, bool /*is_active_*/, std::string& /*player_name_*/); //constructor
 	void set_is_active(bool);
 	void set_hand(ck_Cards::Hand* /*hand_*/); //also set number of cards
 	//void update_hand(); //also update number of cards;
@@ -16,15 +16,15 @@ public:
 	const Player_id& get_player_id() const;
 	const std::string& get_player_name() const;
 	const bool& get_is_active() const;
-	const ck_Cards::Hand* get_hand() const;
+	ck_Cards::Hand* get_hand() const;
+	void set_players_turn(bool /*players_turn_*/);
 
 private:
 
 	const Player_id player_id; //unique player id
 	const std::string player_name;
 	ck_Cards::Hand* hand;
-	//size_t number_of_cards; //maybe omit it
-	bool players_turn;
+	bool players_turn; //is this set to 0 when constructing?
 	bool has_won;
 	bool is_active; //if player has exited set is_active to false
 	

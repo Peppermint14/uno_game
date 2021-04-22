@@ -6,6 +6,7 @@ Game_Controller::Game_Controller()
     //create deck
     //draw_pile = deck at initialization
     std::list<ck_Cards::Cards> draw_cards(108);
+    //loop over enum class
     for(ck_Cards::Cards card = ck_Cards::Cards::BLUE_0; card != ck_Cards::Cards::WILD_DRAW4_D; ++card)
         draw_cards.push_back(card);
 
@@ -35,44 +36,147 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
     switch (request_type)
     {
         case Request_Type::NEW_PLAYER:
-	{
+	    {
             Player_id player_id = request["id"]; //retrieve player id
-            add_new_player(player_id);
+            //TODO: set player_name as well
+            std::string player_name = "dummy";
+            add_new_player(player_id, player_name);
             break;
-	}
+	    }
         case Request_Type::START_GAME:
-	{
+        {
+            Player_id player_id = request["id"];
+            //TODO: check if player is active (maybe better delete player, write good destructor), check if player is in game
+            if (game_state->get_has_started())
+            {
+                nlohmann::json error_respond;
+                error_respond["type"] = Respond_Type::ERROR;
+                error_respond["msg"] = "ERROR: game is already ongoing";
+                net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
+            }
+	        else
+            {
+                //set has_started to 1
+                game_state->set_has_started(true);
+                //retrieve first player
+                Player *first_player = game_state->get_players().at(player_id);
+                first_player->set_players_turn(true);
+                game_state->set_current_player(first_player->get_player_id());
+                //should we set and send the discard_pile just now, what to use as default when constructing, e.g. send the hand
+                broadcast_game_state();
+            }
             break;
-	}
+	    }
         case Request_Type::PLAY_REQUEST:
-	{
+	    {
+	        Player_id player_id = request["id"];
+	        //check if player is allowed to play
+            if(player_id == game_state->get_current_player())
+            {
+                ck_Cards::Cards card = request["card"];
+                //check if this is a valid move (e.g is compatible with top_card)
+                bool valid_card = valid_move(card);
+
+                if(valid_card)
+                {
+                    //add the card to discard_pile
+                    game_state->get_discard_pile()->push(card);
+                    //TODO: check if player has won
+                    //delete from player hand
+                    Player* player = game_state->get_players().at(player_id);
+                    player->get_hand()->remove(card);
+                    //send hand to player
+                    send_hand(player_id);
+                    //evaluate effect of card
+                    effect_of_card(player_id, card);
+                    //broadcast game state
+                    broadcast_game_state();
+                }
+                else //error message
+                {
+                    nlohmann::json error_respond;
+                    error_respond["type"] = Respond_Type::ERROR;
+                    //TODO: make error message more specific by telling the client what he can play e.g. convert enum to string
+                    error_respond["msg"] = "ERROR: please play a valid card";
+                    net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
+                }
+            }
             break;
-	}
+	    }
         case Request_Type::DRAW_REQUEST:
-	{
+	    {
+            Player_id player_id = request["id"];
+            Player* player = game_state->get_players().at(player_id);
+            //check if allowed to draw
+	        if(game_state->get_current_player() == player_id)
+            {
+                //retrieve a card from draw_pile and add to hand
+                draw_card(player_id);
+
+                //send hand
+                send_hand(player_id);
+
+                //switch players turn
+                switch_player(player_id);
+
+                //broadcast game_update
+                broadcast_game_state();
+            }
             break;
-	}
+	    }
         case Request_Type::EXIT_REQUEST:
-	{
+	    {
+            Player_id player_id = request["id"];
+            //check how many players are in the game
+            unsigned int number_of_players = game_state->get_players().size();
+            if(number_of_players == 1)
+            {
+                //TODO: maybe end game here
+            }
+            if(number_of_players == 2)
+            {
+                Player* player = game_state->get_players().at(player_id);
+                //game_state->get_players().erase(player_id);
+
+            }
+            else
+            {
+                //remove from players vector of game_state
+                Player* player = game_state->get_players().at(player_id);
+                //game_state->get_players().erase(player_id); //does thid delete pointer to player
+                //add hand to draw_pile
+                const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
+                game_state->get_draw_pile()->push(hand);
+
+                //skip player if he is currently playing
+                if(game_state->get_current_player() == player_id)
+                {
+                    switch_player(player_id);
+                }
+
+                //TODO: delete player write destructor
+            }
             break;
-	}
+	    }
     }
 }
 
-void Game_Controller::add_new_player(Player_id& _player_id) {
-    //TODO: check if there are already four players playing.
+/////////////////////add_new_player//////////////////////////////////////////////////
 
-    //retrieve hand
+void Game_Controller::add_new_player(Player_id& _player_id, std::string& player_name)
+{
+    //TODO: check if there are already four players playing.
+    //create hand
     std::list<ck_Cards::Cards> hand_list(7);
     for (unsigned int i = 0; i < 7; ++i)
     {
-        ck_Cards::Cards card = game_state->get_draw_pile()->get_top_card(); //get cards from top card
+        ck_Cards::Cards card = game_state->get_draw_pile()->get_top_card(); //get cards from draw_pile
         hand_list.push_back(card);
     }
     ck_Cards::Hand* hand = new ck_Cards::Hand(hand_list);
 
     //construct a new player
-    Player* player = new Player(_player_id, /*is_active*/ true);
+    Player* player = new Player(_player_id, /*is_active*/ true, player_name);
     player->set_hand(hand);
 
     //add_player to player list of game_state
@@ -84,24 +188,204 @@ void Game_Controller::add_new_player(Player_id& _player_id) {
     respond1["id"] = _player_id;
     net::TCP_Server::sendToPlayer(_player_id,respond1.dump());
 
+    //TODO: obtional maybe send after game has started depends what client side implements
     //send Hand to player
-    nlohmann::json respond2;
-    respond2["type"] = Respond_Type::SEND_CARDS;
-    respond2["cards"] = player->get_hand()->get_cards(); //how to handle vectors
-    net::TCP_Server::sendToPlayer(_player_id,respond2.dump());
+    send_hand(_player_id);
 
     //broadcast game_update
-    nlohmann::json respond3;
-    respond3["type"] = Respond_Type::GAME_UPDATE;
+    broadcast_game_state();
+}
+
+//////////////////////////////////////broadcast game state////////////////////////////////////
+
+void Game_Controller::broadcast_game_state() const
+{
+    //broadcast game_update
+    nlohmann::json respond;
+    respond["type"] = Respond_Type::GAME_UPDATE;
     //add player_name and number of cards of all players
-    respond3["players"] = nlohmann::json::array();
-    for(auto player : game_state->get_players())
+    respond["players"] = nlohmann::json::array();
+    for(auto iterator : game_state->get_players())
     {
+        Player* player = iterator.second;
         nlohmann::json player_info = nlohmann::json::array({{"Player_name", player->get_player_name()}, {"number_of_cards", player->number_of_cards()}});
-        respond3["players"].push_back(player_info);
+        respond["players"].push_back(player_info);
     }
-    respond3["current_player"] = game_state->get_current_player();
-    respond3["color_to_be_matched"] = game_state->get_color_to_be_matched();
-    respond3["top_card"] = game_state->get_discard_pile()->front();
-    net::TCP_Server::broadcast(respond3);
+    respond["current_player"] = game_state->get_current_player();
+    respond["color_to_be_matched"] = game_state->get_color_to_be_matched();
+    respond["top_card"] = game_state->get_discard_pile()->front();
+    net::TCP_Server::broadcast(respond);
+}
+
+////////////////////////////////////draw_card///////////////////////////////////////////////
+
+void Game_Controller::draw_card(Player_id& player_id)
+{
+    //check if one has to reshuffle
+    ck_Cards::Draw_Pile* draw_pile = game_state->get_draw_pile();
+
+    if(draw_pile->empty())
+    {
+        ck_Cards::Discard_Pile* discard_pile = game_state->get_discard_pile();
+
+        ck_Cards::Cards top_card = discard_pile->get_top_card();
+        discard_pile->shuffle();
+        draw_pile->push(discard_pile->get_cards());
+        discard_pile->clear();
+        discard_pile->push(top_card);
+    }
+    ck_Cards::Cards card = draw_pile->get_top_card();
+
+    //add to hand
+    Player* player = game_state->get_players().at(player_id);
+    player->get_hand()->push(card); //maybe call this method add
+}
+
+//////////////////////////////valid_move//////////////////////////////////////////////////
+
+//checks if card is allowed to be played
+bool Game_Controller::valid_move(ck_Cards::Cards& card)
+{
+    ck_Cards::Cards top_card = game_state->get_discard_pile()->front();
+    ck_Cards::Card top_card_object = ck_Cards::Deck::get(top_card);
+    ck_Cards::Card card_object = ck_Cards::Deck::get(card);
+    if(card_object.action == ck_Cards::Action::WILD || card_object.action == ck_Cards::Action::WILD_DRAW4)
+        return true;
+    else if(card_object.color == top_card_object.color)
+        return true;
+    else if((card_object.value == top_card_object.value) && (card_object.action == top_card_object.action))
+        return true;
+    else
+        return false;
+}
+
+///////////////////////////////////send_hand/////////////////////////////////////////////////
+
+void Game_Controller::send_hand(Player_id& player_id)
+{
+    Player* player = game_state->get_players().at(player_id);
+    nlohmann::json respond2;
+    respond2["type"] = Respond_Type::SEND_HAND;
+    respond2["hand"] = player->get_hand()->get_cards(); //how to handle vectors
+    net::TCP_Server::sendToPlayer(player_id,respond2.dump());
+}
+
+///////////////////////////////effect_of_card/////////////////////////////////////////////////
+
+void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
+{
+    ck_Cards::Card card_object = ck_Cards::Deck::get(card);
+
+    if(card_object.action == ck_Cards::Action::NONE)
+    {
+        //switch player
+        switch_player(player_id);
+
+        //set color_to_be_matched
+        game_state->set_color_to_be_matched(card_object.color);
+    }
+    if(card_object.action == ck_Cards::Action::DRAW2)
+    {
+        //set current_player to next player
+        switch_player(player_id);
+
+        //set color_to_be_matched
+        game_state->set_color_to_be_matched(card_object.color);
+
+        Player_id next_player_id = game_state->get_current_player();
+        //add two cards to other players hand
+        draw_card(next_player_id);
+        draw_card(next_player_id);
+
+        //send hand to player
+        send_hand(next_player_id);
+    }
+    if(card_object.action == ck_Cards::Action::WILD_DRAW4)
+    {
+        //ask for color
+        nlohmann::json request;
+        request["type"] = Request_Type::SELECT_COLOR;
+        net::TCP_Server::sendToPlayer(player_id,request.dump());
+
+        //TODO: Block until color is not set e.g. respond comes in
+        //set color to be matched
+
+        //switch player
+        switch_player(player_id);
+
+        Player_id next_player_id = game_state->get_current_player();
+
+        //add two cards to other players hand
+        draw_card(next_player_id);
+        draw_card(next_player_id);
+        draw_card(next_player_id);
+        draw_card(next_player_id);
+        //send hand
+        send_hand(next_player_id);
+    }
+    if(card_object.action == ck_Cards::Action::WILD)
+    {
+        //ask for color
+        nlohmann::json request;
+        request["type"] = Request_Type::SELECT_COLOR;
+        net::TCP_Server::sendToPlayer(player_id,request.dump());
+
+        //TODO: Block until color is not set e.g. respond comes in
+        //set color to be matched
+
+        //change current_player
+        switch_player(player_id);
+
+    }
+    if(card_object.action == ck_Cards::Action::SKIP)
+    {
+        //set next player
+        Player_id next_player_id = get_next_player(player_id);
+        switch_player(next_player_id);
+
+        //set color_to_be_matched
+        game_state->set_color_to_be_matched(card_object.color);
+    }
+    if(card_object.action == ck_Cards::Action::REVERSE)
+    {
+        //reverse order
+        std::map<const Player_id, Player*> players = game_state->get_players();
+        //TODO: reverse map
+        //std::reverse(players.begin(), players.end());
+        //change current_player
+        switch_player(player_id);
+
+        //set color_to_be_matched
+        game_state->set_color_to_be_matched(card_object.color);
+    }
+}
+
+///////////////////////next_player/////////////////////////////////////////////////////////
+Player_id Game_Controller::get_next_player(Player_id& player_id)
+{
+    std::map<const Player_id, Player*> players = game_state->get_players();
+    std::map<const Player_id, Player*>::iterator it = players.find(player_id);
+
+    //lambda function checking if player_id is last element in map
+    auto is_last = [&players] (std::map<const Player_id, Player*>::iterator iter) {if(++iter == players.end()) {return true;} return false;};
+
+    //periodic increment
+    if(is_last(it))
+    {
+        it = players.begin();
+        return it->first;
+    }
+    else
+    {
+        ++it;
+        return it->first;
+    }
+}
+////////////////////////////switch_player//////////////////////////////////
+void Game_Controller::switch_player(Player_id& player_id)
+{
+    Player_id next_player_id = get_next_player(player_id);
+    Player* next_player = game_state->get_players().at(next_player_id);
+    next_player->set_players_turn(true);
+    game_state->set_current_player(next_player->get_player_id());
 }
