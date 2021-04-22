@@ -59,7 +59,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
                 //set has_started to 1
                 game_state->set_has_started(true);
                 //retrieve first player
-                Player *first_player = game_state->get_players().at(player_id);
+                Player *first_player = game_state->get_player(player_id);
                 first_player->set_players_turn(true);
                 game_state->set_current_player(first_player->get_player_id());
                 //should we set and send the discard_pile just now, what to use as default when constructing, e.g. send the hand
@@ -83,7 +83,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
                     game_state->get_discard_pile()->push(card);
                     //TODO: check if player has won
                     //delete from player hand
-                    Player* player = game_state->get_players().at(player_id);
+                    Player* player = game_state->get_player(player_id);
                     player->get_hand()->remove(card);
                     //send hand to player
                     send_hand(player_id);
@@ -106,7 +106,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
         case Request_Type::DRAW_REQUEST:
 	    {
             Player_id player_id = request["id"];
-            Player* player = game_state->get_players().at(player_id);
+            Player* player = game_state->get_player(player_id);
             //check if allowed to draw
 	        if(game_state->get_current_player() == player_id)
             {
@@ -135,14 +135,14 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
             }
             if(number_of_players == 2)
             {
-                Player* player = game_state->get_players().at(player_id);
+                Player* player = game_state->get_player(player_id);
                 //game_state->get_players().erase(player_id);
 
             }
             else
             {
                 //remove from players vector of game_state
-                Player* player = game_state->get_players().at(player_id);
+                Player* player = game_state->get_player(player_id);
                 //game_state->get_players().erase(player_id); //does thid delete pointer to player
                 //add hand to draw_pile
                 const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
@@ -237,7 +237,7 @@ void Game_Controller::draw_card(Player_id& player_id)
     ck_Cards::Cards card = draw_pile->get_top_card();
 
     //add to hand
-    Player* player = game_state->get_players().at(player_id);
+    Player* player = game_state->get_player(player_id);
     player->get_hand()->push(card); //maybe call this method add
 }
 
@@ -263,7 +263,7 @@ bool Game_Controller::valid_move(ck_Cards::Cards& card)
 
 void Game_Controller::send_hand(Player_id& player_id)
 {
-    Player* player = game_state->get_players().at(player_id);
+    Player* player = game_state->get_player(player_id);
     nlohmann::json respond2;
     respond2["type"] = Respond_Type::SEND_HAND;
     respond2["hand"] = player->get_hand()->get_cards(); //how to handle vectors
@@ -349,8 +349,7 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
     if(card_object.action == ck_Cards::Action::REVERSE)
     {
         //reverse order
-        std::map<const Player_id, Player*> players = game_state->get_players();
-        //TODO: reverse map
+        std::vector<std::pair<const Player_id, Player*> > players = game_state->get_players();
         //std::reverse(players.begin(), players.end());
         //change current_player
         switch_player(player_id);
@@ -363,11 +362,14 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
 ///////////////////////next_player/////////////////////////////////////////////////////////
 Player_id Game_Controller::get_next_player(Player_id& player_id)
 {
-    std::map<const Player_id, Player*> players = game_state->get_players();
-    std::map<const Player_id, Player*>::iterator it = players.find(player_id);
+    //using std::vector<std::pair<const Player_id, Player*> >::iterator;
+    std::vector<std::pair<const Player_id, Player*> > players = game_state->get_players();
+    //return pair with player_id as first value
+    auto find = [&players](Player_id player_id) {for(auto elem = players.begin(); elem != players.end(); ++elem) if(elem->first == player_id) return elem;};
+    std::vector<std::pair<const Player_id, Player*> >::iterator it = find(player_id);
 
     //lambda function checking if player_id is last element in map
-    auto is_last = [&players] (std::map<const Player_id, Player*>::iterator iter) {if(++iter == players.end()) {return true;} return false;};
+    auto is_last = [&players] (std::vector<std::pair<const Player_id, Player*> >::iterator iter) {if(++iter == players.end()) {return true;} return false;};
 
     //periodic increment
     if(is_last(it))
@@ -385,7 +387,7 @@ Player_id Game_Controller::get_next_player(Player_id& player_id)
 void Game_Controller::switch_player(Player_id& player_id)
 {
     Player_id next_player_id = get_next_player(player_id);
-    Player* next_player = game_state->get_players().at(next_player_id);
+    Player* next_player = game_state->get_player(next_player_id);
     next_player->set_players_turn(true);
     game_state->set_current_player(next_player->get_player_id());
 }

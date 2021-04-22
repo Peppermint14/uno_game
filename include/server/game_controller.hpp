@@ -5,6 +5,7 @@
 #include "game_state.hpp"
 #include "../common/cards.hpp"
 #include "tcp_server.hpp"
+#include <iterator>
 
 class Game_Controller {
 public:

@@ -13,7 +13,7 @@ Game_State::Game_State(ck_Cards::Draw_Pile* draw_pile_, ck_Cards::Discard_Pile* 
 void Game_State::add_Players(Player* player)
 {
     //maybe take player id as argument and generate player
-    players.insert(std::pair<const Player_id,Player*>(player->get_player_id(),player));
+    players.push_back(std::pair<const Player_id,Player*>(player->get_player_id(),player));
 }
 
 void Game_State::set_current_player(const Player_id& id)
@@ -37,7 +37,7 @@ ck_Cards::Draw_Pile* Game_State::get_draw_pile() const
     return draw_pile;
 }
 
-const std::map<const Player_id, Player*>& Game_State::get_players() const
+const std::vector<std::pair<const Player_id, Player*> >& Game_State::get_players() const
 {
     return players;
 }
@@ -59,6 +59,18 @@ const bool& Game_State::get_has_started() const
 void Game_State::set_has_started(bool has_started_)
 {
    has_started = has_started_;
+}
+
+Player* Game_State::get_player(Player_id player_id) const
+{
+    for(auto iter = players.begin(); iter != players.end(); ++iter)
+    {
+        if(iter->first == player_id)
+            return iter->second;
+    }
+    //TODO: write better error message
+    throw new ckException("Error: no player with such player_id");
+    return 0;
 }
 
 
