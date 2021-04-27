@@ -3,30 +3,7 @@
 //constructor, constructs game_state
 Game_Controller::Game_Controller()
 {
-    //create deck
-    //draw_pile = deck at initialization
-    std::list<ck_Cards::Cards> draw_cards(108);
-    //loop over enum class
-    for(ck_Cards::Cards card = ck_Cards::Cards::BLUE_0; card != ck_Cards::Cards::WILD_DRAW4_D; ++card)
-        draw_cards.push_back(card);
-
-    draw_cards.push_back(ck_Cards::Cards::WILD_DRAW4_D);
-    ck_Cards::Draw_Pile* draw_pile = new ck_Cards::Pile(draw_cards);
-    //reshuffle draw_pile
-    draw_pile->shuffle();
-    //retrieve top card
-    ck_Cards::Cards top_card = draw_pile->get_top_card();
-
-    while(ck_Cards::Deck::get(top_card).action != ck_Cards::Action::NONE)
-    {
-        draw_pile->push(top_card);
-        top_card = draw_pile->get_top_card();
-    }
-    std::list<ck_Cards::Cards> discard_cards;
-    discard_cards.push_back(top_card);
-
-    ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile(discard_cards);
-    game_state = new Game_State(draw_pile, discard_pile);
+    game_state = new Game_State();
 }
 
 void Game_Controller::eval_request(const Player_id& player_id, const std::string& msg)
@@ -50,7 +27,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             if (game_state->get_has_started())
             {
                 nlohmann::json error_respond;
-                error_respond["type"] = Respond_Type::ERROR;
+                error_respond["type"] = Respond_Type::ERROR_;
                 error_respond["msg"] = "ERROR: game is already ongoing";
                 net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
             }
@@ -87,7 +64,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 if(valid_card)
                 {
                     //add the card to discard_pile
-                    game_state->get_discard_pile()->push(card);
+                    game_state->get_discard_pile().push(card);
                     //delete from player hand
                     Player* player = game_state->get_player(player_id);
                     player->get_hand()->remove(card);
@@ -101,6 +78,16 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     {
                        player->set_has_won(true);
                        //TODO: broadcast popup "player has won"
+                       //finish game
+                       if(game_state->have_all_won())
+                       {
+                           //TODO: broadcast popup "game is finished"
+                           //reset game
+                           delete game_state;
+                           game_state = new Game_State();
+                           broadcast_game_state();
+                       }
+
                     }
                     else
                     {
@@ -114,10 +101,20 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 }
                 else //error message
                 {
+                    const ck_Cards::Card& card_object = ck_Cards::Deck::get(game_state->get_discard_pile().get_top_card());
                     nlohmann::json error_respond;
-                    error_respond["type"] = Respond_Type::ERROR;
+                    error_respond["type"] = Respond_Type::ERROR_;
                     //TODO: make error message more specific by telling the client what he can play e.g. convert enum to string
-                    error_respond["msg"] = "ERROR: please play a valid card";
+                    std::stringstream error_msg;
+                    if(card_object.action == ck_Cards::Action::NONE)
+                    {
+                        error_msg << "ERROR: please play a " << card_object.get_color_as_string() << " card or a card with the same number.";
+                    }
+                    if(card_object.value == ck_Cards::Value::NONE)
+                    {
+                        error_msg << "ERROR: please play a ";
+                    }
+                    error_respond["msg"] = error_msg.str();
                     net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
                 }
             }
@@ -152,6 +149,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             if(number_of_players == 1)
             {
                 //TODO: maybe end game here, how to end the game anyway, e.g. end main????
+
             }
             if(number_of_players == 2)
             {
@@ -162,11 +160,12 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 {
                     switch_player(player_id);
                 }
-                game_state->remove_player(player_id);
                 //add hand to draw_pile
                 const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
-                game_state->get_draw_pile()->push(hand);
+                game_state->get_draw_pile().push(hand);
 
+                //remove player from players vector
+                game_state->remove_player(player_id);
                 //set has won
                 Player_id next_player_id = game_state->get_current_player(); //single player in game
                 Player* next_player = game_state->get_player(next_player_id);
@@ -186,13 +185,13 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 {
                     switch_player(player_id);
                 }
-                //remove player from players vector
-                game_state->remove_player(player_id);
+
                 //add hand to draw_pile
                 const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
-                game_state->get_draw_pile()->push(hand);
+                game_state->get_draw_pile().push(hand);
 
-                //TODO: maybe delete player write destructor??
+                //remove player from players vector
+                game_state->remove_player(player_id);
             }
             break;
 	    }
@@ -203,15 +202,11 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 
 void Game_Controller::add_new_player(const Player_id& _player_id, const std::string& player_name)
 {
-    //TODO: Do i actually have to check that or will the socket not allow to connect anyway
-    //check if there are already four players playing.
-    if(game_state->get_players().size() < 4)
-    {
         //create hand
         std::list<ck_Cards::Cards> hand_list(7);
         for (unsigned int i = 0; i < 7; ++i)
         {
-            ck_Cards::Cards card = game_state->get_draw_pile()->get_top_card(); //get cards from draw_pile
+            ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile
             hand_list.push_back(card);
         }
         ck_Cards::Hand* hand = new ck_Cards::Hand(hand_list);
@@ -231,15 +226,7 @@ void Game_Controller::add_new_player(const Player_id& _player_id, const std::str
 
         //broadcast game_update
         broadcast_game_state();
-    }
-    else
-    {
-        //send Player_id to player
-        nlohmann::json respond1;
-        respond1["type"] = Respond_Type::ERROR;
-        respond1["msg"] = "there are already four players playing";
-        net::TCP_Server::sendToPlayer(_player_id,respond1.dump());
-    }
+
 }
 
 //////////////////////////////////////broadcast game state////////////////////////////////////
@@ -259,7 +246,7 @@ void Game_Controller::broadcast_game_state() const
     }
     respond["current_player"] = game_state->get_current_player();
     respond["color_to_be_matched"] = game_state->get_color_to_be_matched();
-    respond["top_card"] = game_state->get_discard_pile()->front();
+    respond["top_card"] = game_state->get_discard_pile().front();
     net::TCP_Server::broadcast(respond);
 }
 
@@ -268,19 +255,19 @@ void Game_Controller::broadcast_game_state() const
 void Game_Controller::draw_card(const Player_id& player_id)
 {
     //check if one has to reshuffle
-    ck_Cards::Draw_Pile* draw_pile = game_state->get_draw_pile();
+    ck_Cards::Draw_Pile draw_pile = game_state->get_draw_pile();
 
-    if(draw_pile->empty())
+    if(draw_pile.empty())
     {
-        ck_Cards::Discard_Pile* discard_pile = game_state->get_discard_pile();
+        ck_Cards::Discard_Pile& discard_pile = game_state->get_discard_pile();
 
-        ck_Cards::Cards top_card = discard_pile->get_top_card();
-        discard_pile->shuffle();
-        draw_pile->push(discard_pile->get_cards());
-        discard_pile->clear();
-        discard_pile->push(top_card);
+        ck_Cards::Cards top_card = discard_pile.get_top_card();
+        discard_pile.shuffle();
+        draw_pile.push(discard_pile.get_cards());
+        discard_pile.clear();
+        discard_pile.push(top_card);
     }
-    ck_Cards::Cards card = draw_pile->get_top_card();
+    ck_Cards::Cards card = draw_pile.get_top_card();
 
     //add to hand
     Player* player = game_state->get_player(player_id);
@@ -292,7 +279,7 @@ void Game_Controller::draw_card(const Player_id& player_id)
 //checks if card is allowed to be played
 bool Game_Controller::valid_move(const ck_Cards::Cards& card)
 {
-    ck_Cards::Cards top_card = game_state->get_discard_pile()->front();
+    ck_Cards::Cards top_card = game_state->get_discard_pile().front();
     ck_Cards::Card top_card_object = ck_Cards::Deck::get(top_card);
     ck_Cards::Card card_object = ck_Cards::Deck::get(card);
     if(card_object.action == ck_Cards::Action::WILD || card_object.action == ck_Cards::Action::WILD_DRAW4)
@@ -447,6 +434,7 @@ Player_id Game_Controller::get_next_player(const Player_id& player_id)
     }
 
 }
+
 ////////////////////////////switch_player//////////////////////////////////
 void Game_Controller::switch_player(const Player_id& player_id)
 {

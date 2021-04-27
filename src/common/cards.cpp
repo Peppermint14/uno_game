@@ -127,9 +127,52 @@ ck_Cards::Cards& ck_Cards::operator++ (ck_Cards::Cards& it)
 
 }
 
+std::string ck_Cards::Card::get_color_as_string() const
+{
+    switch(color)
+    {
+        case Color::BLUE:
+          return "blue";
+        case Color::YELLOW:
+            return "yellow";
+        case Color::RED:
+            return "red";
+        case Color::GREEN:
+            return "green";
+        case Color::NONE:
+            return "";
+        default:
+            return "";
+    }
+}
+std::string ck_Cards::Card::get_action_as_string() const
+{
+    switch(action)
+    {
+        case Action::SKIP:
+            return "skip";
+        case Action::REVERSE:
+            return "reverse";
+        case Action::DRAW2:
+            return "draw two";
+        case Action::WILD_DRAW4:
+            return "wild draw four";
+        case Action::WILD:
+            return "wild";
+        case Action::NONE:
+            return "";
+        default:
+            return "";
+    }
+}
+std::string ck_Cards::Card::get_value_as_string() const
+{
+    if(value == Value::NONE)
+        return "";
+    else
+        return "";
 
-
-
+}
 
 const ck_Cards::Card& ck_Cards::Deck::get(ck_Cards::Cards _card) noexcept {
     assert(instance->cards.count(_card) == 1);
@@ -148,6 +191,8 @@ ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> cards_)
 {
 	cards = cards_;
 }
+
+ck_Cards::Pile::Pile() {};
 
 
 const ck_Cards::Cards ck_Cards::Pile::get_top_card()

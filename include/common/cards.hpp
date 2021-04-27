@@ -155,6 +155,9 @@ namespace ck_Cards {
         const Color color;
 	    const Value value;
 	    const Action action;
+	    std::string get_color_as_string() const;
+	    std::string get_action_as_string() const;
+	    std::string get_value_as_string() const;
     };
 
     class Deck {
@@ -184,6 +187,7 @@ namespace ck_Cards {
         void clear() noexcept;
         //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
         Pile(std::list<Cards> /*cards_*/); //constructor
+        Pile(); //default constructor
         const std::list<Cards> get_cards() const;
     };
 

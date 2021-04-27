@@ -1,11 +1,30 @@
 #include "../../include/server/game_state.hpp"
 
 //default constructor
-Game_State::Game_State(ck_Cards::Draw_Pile* draw_pile_, ck_Cards::Discard_Pile* discard_pile_)
+Game_State::Game_State()
 {
-    discard_pile = discard_pile_;
-    draw_pile = draw_pile_; //maybe should be another default value before game has started
-    color_to_be_matched = ck_Cards::Deck::get(discard_pile->front()).color; //maybe should be another default value before game was started
+    //create deck
+    //draw_pile = deck at initialization
+    std::list<ck_Cards::Cards> draw_cards(108);
+    //loop over enum class
+    for(ck_Cards::Cards card = ck_Cards::Cards::BLUE_0; card != ck_Cards::Cards::WILD_DRAW4_D; ++card)
+        draw_cards.push_back(card);
+
+    draw_cards.push_back(ck_Cards::Cards::WILD_DRAW4_D);
+    draw_pile.push(draw_cards);
+    //reshuffle draw_pile
+    draw_pile.shuffle();
+    //retrieve top card
+    ck_Cards::Cards top_card = draw_pile.get_top_card();
+
+    while(ck_Cards::Deck::get(top_card).action != ck_Cards::Action::NONE)
+    {
+        draw_pile.push(top_card);
+        top_card = draw_pile.get_top_card();
+    }
+
+    discard_pile.push(top_card);
+    color_to_be_matched = ck_Cards::Deck::get(discard_pile.front()).color; //maybe should be another default value before game was started
     current_player = Player_id::PLAYER_ERROR;
     has_started = false;
 }
@@ -27,12 +46,12 @@ void Game_State::set_color_to_be_matched(const ck_Cards::Color& color)
 	color_to_be_matched = color;
 }
 
-ck_Cards::Discard_Pile* Game_State::get_discard_pile() const
+ck_Cards::Discard_Pile& Game_State::get_discard_pile()
 {
     return discard_pile;
 }
 
-ck_Cards::Draw_Pile* Game_State::get_draw_pile() const
+ck_Cards::Draw_Pile& Game_State::get_draw_pile()
 {
     return draw_pile;
 }
@@ -78,8 +97,25 @@ void Game_State::remove_player(const Player_id& player_id)
     for(auto iter = players.begin(); iter != players.end(); ++iter)
     {
         if(iter->first == player_id)
+        {
+            delete iter->second;
             players.erase(iter);
+        }
+
     }
+}
+
+bool Game_State::have_all_won() const
+{
+    size_t number_of_winners;
+    for(const auto& elem : players )
+    {
+        number_of_winners += elem.second->get_has_won();
+    }
+    if(number_of_winners == players.size()-1)
+        return true;
+    else
+        return false;
 }
 
 
