@@ -22,9 +22,9 @@ public:
 	const bool& get_has_started() const;
 	void set_has_started(bool /*has_started_*/);
 	//return Player with player_id in vector players
-	Player* get_player(Player_id /*player_id*/) const;
+	Player* get_player(const Player_id& /*player_id*/) const;
 	//removes player from vector of players
-	void remove_player(Player_id /*player_id*/);
+	void remove_player(const Player_id& /*player_id*/);
 private:
 	ck_Cards::Draw_Pile* draw_pile;
 	ck_Cards::Discard_Pile* discard_pile;

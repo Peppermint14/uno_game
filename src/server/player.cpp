@@ -2,7 +2,7 @@
 #include "../../include/server/player.hpp"
 
 //constructor
-Player::Player(Player_id& player_id_, bool is_active_, std::string& player_name_) : player_id(player_id_), is_active(is_active_), player_name(player_name_)
+Player::Player(const Player_id& player_id_, bool is_active_, const std::string& player_name_) : player_id(player_id_), is_active(is_active_), player_name(player_name_)
 {
     has_won = false;
     players_turn = false;

@@ -29,7 +29,7 @@ Game_Controller::Game_Controller()
     game_state = new Game_State(draw_pile, discard_pile);
 }
 
-void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
+void Game_Controller::eval_request(const Player_id& player_id, const std::string& msg)
 {
     nlohmann::json request = nlohmann::json::parse(msg);
     Request_Type request_type = request["type"];
@@ -201,7 +201,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
 
 /////////////////////add_new_player//////////////////////////////////////////////////
 
-void Game_Controller::add_new_player(Player_id& _player_id, std::string& player_name)
+void Game_Controller::add_new_player(const Player_id& _player_id, const std::string& player_name)
 {
     //TODO: Do i actually have to check that or will the socket not allow to connect anyway
     //check if there are already four players playing.
@@ -265,7 +265,7 @@ void Game_Controller::broadcast_game_state() const
 
 ////////////////////////////////////draw_card///////////////////////////////////////////////
 
-void Game_Controller::draw_card(Player_id& player_id)
+void Game_Controller::draw_card(const Player_id& player_id)
 {
     //check if one has to reshuffle
     ck_Cards::Draw_Pile* draw_pile = game_state->get_draw_pile();
@@ -290,7 +290,7 @@ void Game_Controller::draw_card(Player_id& player_id)
 //////////////////////////////valid_move//////////////////////////////////////////////////
 
 //checks if card is allowed to be played
-bool Game_Controller::valid_move(ck_Cards::Cards& card)
+bool Game_Controller::valid_move(const ck_Cards::Cards& card)
 {
     ck_Cards::Cards top_card = game_state->get_discard_pile()->front();
     ck_Cards::Card top_card_object = ck_Cards::Deck::get(top_card);
@@ -307,7 +307,7 @@ bool Game_Controller::valid_move(ck_Cards::Cards& card)
 
 ///////////////////////////////////send_hand/////////////////////////////////////////////////
 
-void Game_Controller::send_hand(Player_id& player_id)
+void Game_Controller::send_hand(const Player_id& player_id)
 {
     Player* player = game_state->get_player(player_id);
     nlohmann::json respond2;
@@ -318,7 +318,7 @@ void Game_Controller::send_hand(Player_id& player_id)
 
 ///////////////////////////////effect_of_card/////////////////////////////////////////////////
 
-void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
+void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards card)
 {
     ck_Cards::Card card_object = ck_Cards::Deck::get(card);
 
@@ -349,9 +349,11 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
     if(card_object.action == ck_Cards::Action::WILD_DRAW4)
     {
         //ask for color
+        /*
         nlohmann::json request;
         request["type"] = Request_Type::SELECT_COLOR;
         net::TCP_Server::sendToPlayer(player_id,request.dump());
+         */
 
         //TODO: Block until color is not set e.g. respond comes in
         //set color to be matched
@@ -372,9 +374,11 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
     if(card_object.action == ck_Cards::Action::WILD)
     {
         //ask for color
+        /*
         nlohmann::json request;
         request["type"] = Request_Type::SELECT_COLOR;
         net::TCP_Server::sendToPlayer(player_id,request.dump());
+         */
 
         //TODO: Block until color is not set e.g. respond comes in
         //set color to be matched
@@ -412,12 +416,12 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
 }
 
 ///////////////////////next_player/////////////////////////////////////////////////////////
-Player_id Game_Controller::get_next_player(Player_id& player_id)
+Player_id Game_Controller::get_next_player(const Player_id& player_id)
 {
     //using std::vector<std::pair<const Player_id, Player*> >::iterator;
     std::vector<std::pair<Player_id, Player*> > players = game_state->get_players();
     //return pair with player_id as first value
-    auto find = [&players](Player_id player_id) {for(auto elem = players.begin(); elem != players.end(); ++elem) {if(elem->first == player_id) return elem;}};
+    auto find = [&players](Player_id player_id) {for(auto elem = players.begin(); elem != players.end(); ++elem) if(elem->first == player_id) return elem; throw new ckException("Error: Player not found");};
     std::vector<std::pair<Player_id, Player*> >::iterator it = find(player_id);
 
     //lambda function checking if player_id is last element in map
@@ -444,7 +448,7 @@ Player_id Game_Controller::get_next_player(Player_id& player_id)
 
 }
 ////////////////////////////switch_player//////////////////////////////////
-void Game_Controller::switch_player(Player_id& player_id)
+void Game_Controller::switch_player(const Player_id& player_id)
 {
     Player_id next_player_id = get_next_player(player_id);
     Player* next_player = game_state->get_player(next_player_id);

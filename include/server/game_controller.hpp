@@ -11,25 +11,25 @@ class Game_Controller {
 public:
     Game_Controller(); //constructor, initialize game
 
-    void eval_request(Player_id& /*player_id*/, std::string& /*msg*/); //evaluate requests and send responses
+    void eval_request(const Player_id& /*player_id*/, const std::string& /*msg*/); //evaluate requests and send responses
 
     //void initialize_game(); //initialize game
     //add player to game_state
-    void add_new_player(Player_id& /*player_id*/, std::string& player_name);
+    void add_new_player(const Player_id& /*player_id*/, const std::string& player_name);
 
     //draw number_of_cards cards and add to players hand
-    void draw_card(Player_id& /*player_id*/);
-    void send_hand(Player_id& /*player_id*/);
+    void draw_card(const Player_id& /*player_id*/);
+    void send_hand(const Player_id& /*player_id*/);
     //check if played card can be played
-    bool valid_move(ck_Cards::Cards& /*card*/);
+    bool valid_move(const ck_Cards::Cards& /*card*/);
 
     //get the Player id of the next player in players vector
-    Player_id get_next_player(Player_id& /*player_id*/);
+    Player_id get_next_player(const Player_id& /*player_id*/);
     //set current_player to the next player in players vector
-    void switch_player(Player_id& /*player_id*/);
+    void switch_player(const Player_id& /*player_id*/);
 
     //updates game_state according to played card
-    void effect_of_card(Player_id& /*player_id*/, ck_Cards::Cards /*card*/);
+    void effect_of_card(const Player_id& /*player_id*/, const ck_Cards::Cards /*card*/);
 
     void broadcast_game_state() const;
 

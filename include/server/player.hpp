@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	Player(Player_id& /*player_id_*/, bool /*is_active_*/, std::string& /*player_name_*/); //constructor
+	Player(const Player_id& /*player_id_*/, bool /*is_active_*/, const std::string& /*player_name_*/); //constructor
 	void set_is_active(bool);
 	void set_hand(ck_Cards::Hand* /*hand_*/); //also set number of cards
 	void set_has_won(bool /*has_won_*/);

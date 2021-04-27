@@ -61,7 +61,7 @@ void Game_State::set_has_started(bool has_started_)
    has_started = has_started_;
 }
 
-Player* Game_State::get_player(Player_id player_id) const
+Player* Game_State::get_player(const Player_id& player_id) const
 {
     for(auto iter = players.begin(); iter != players.end(); ++iter)
     {
@@ -73,7 +73,7 @@ Player* Game_State::get_player(Player_id player_id) const
     return 0;
 }
 
-void Game_State::remove_player(Player_id player_id)
+void Game_State::remove_player(const Player_id& player_id)
 {
     for(auto iter = players.begin(); iter != players.end(); ++iter)
     {
