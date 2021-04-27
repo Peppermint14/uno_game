@@ -23,6 +23,16 @@ void Player::set_hand(ck_Cards::Hand* hand_)
     hand = hand_;
 }
 
+void Player::set_has_won(bool has_won_)
+{
+    has_won = has_won_;
+}
+
+bool Player::get_has_won() const
+{
+    return has_won;
+}
+
 const size_t Player::number_of_cards() const
 {
     return hand->get_cards().size();

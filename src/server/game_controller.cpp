@@ -38,7 +38,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
         case Request_Type::NEW_PLAYER:
 	    {
             Player_id player_id = request["id"]; //retrieve player id
-            //TODO: set player_name as well
+            //TODO: set player_name as well (e.g internal message from server should send player id)
             std::string player_name = "dummy";
             add_new_player(player_id, player_name);
             break;
@@ -46,7 +46,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
         case Request_Type::START_GAME:
         {
             Player_id player_id = request["id"];
-            //TODO: check if player is active (maybe better delete player, write good destructor), check if player is in game
+            //check if game has already started
             if (game_state->get_has_started())
             {
                 nlohmann::json error_respond;
@@ -62,7 +62,14 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
                 Player *first_player = game_state->get_player(player_id);
                 first_player->set_players_turn(true);
                 game_state->set_current_player(first_player->get_player_id());
-                //should we set and send the discard_pile just now, what to use as default when constructing, e.g. send the hand
+                //should we set and send the discard_pile just now, what to use as default when constructing,
+                //send Hand to players
+                std::vector<std::pair<Player_id, Player*> > players = game_state->get_players();
+                for(auto& elem : players)
+                {
+                    send_hand(elem.first);
+                }
+
                 broadcast_game_state();
             }
             break;
@@ -81,12 +88,25 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
                 {
                     //add the card to discard_pile
                     game_state->get_discard_pile()->push(card);
-                    //TODO: check if player has won
                     //delete from player hand
                     Player* player = game_state->get_player(player_id);
                     player->get_hand()->remove(card);
-                    //send hand to player
-                    send_hand(player_id);
+                    //UNO
+                    if(player->number_of_cards()==1)
+                    {
+                        //TODO: broadcast popup "UNO"
+                    }
+                    //check if player has won
+                    if(player->get_hand()->empty())
+                    {
+                       player->set_has_won(true);
+                       //TODO: broadcast popup "player has won"
+                    }
+                    else
+                    {
+                        //send hand to player
+                        send_hand(player_id);
+                    }
                     //evaluate effect of card
                     effect_of_card(player_id, card);
                     //broadcast game state
@@ -108,7 +128,7 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
             Player_id player_id = request["id"];
             Player* player = game_state->get_player(player_id);
             //check if allowed to draw
-	        if(game_state->get_current_player() == player_id)
+	        if(game_state->get_current_player() == player_id && !(player->get_has_won()))
             {
                 //retrieve a card from draw_pile and add to hand
                 draw_card(player_id);
@@ -131,30 +151,48 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
             unsigned int number_of_players = game_state->get_players().size();
             if(number_of_players == 1)
             {
-                //TODO: maybe end game here
+                //TODO: maybe end game here, how to end the game anyway, e.g. end main????
             }
             if(number_of_players == 2)
             {
                 Player* player = game_state->get_player(player_id);
-                //game_state->get_players().erase(player_id);
+                //switch players turn if player is currently playing
+                //skip player if he is currently playing
+                if(game_state->get_current_player() == player_id)
+                {
+                    switch_player(player_id);
+                }
+                game_state->remove_player(player_id);
+                //add hand to draw_pile
+                const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
+                game_state->get_draw_pile()->push(hand);
 
+                //set has won
+                Player_id next_player_id = game_state->get_current_player(); //single player in game
+                Player* next_player = game_state->get_player(next_player_id);
+                next_player->set_has_won(true);
+
+                //TODO:should we terminate the game and how??
+                //enable new game as it cannot be continued
+                //game_state->set_has_started(false);
             }
             else
             {
                 //remove from players vector of game_state
                 Player* player = game_state->get_player(player_id);
-                //game_state->get_players().erase(player_id); //does thid delete pointer to player
-                //add hand to draw_pile
-                const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
-                game_state->get_draw_pile()->push(hand);
 
                 //skip player if he is currently playing
                 if(game_state->get_current_player() == player_id)
                 {
                     switch_player(player_id);
                 }
+                //remove player from players vector
+                game_state->remove_player(player_id);
+                //add hand to draw_pile
+                const std::list<ck_Cards::Cards> hand = player->get_hand()->get_cards();
+                game_state->get_draw_pile()->push(hand);
 
-                //TODO: delete player write destructor
+                //TODO: maybe delete player write destructor??
             }
             break;
 	    }
@@ -165,35 +203,43 @@ void Game_Controller::eval_request(Player_id& player_id, std::string& msg)
 
 void Game_Controller::add_new_player(Player_id& _player_id, std::string& player_name)
 {
-    //TODO: check if there are already four players playing.
-    //create hand
-    std::list<ck_Cards::Cards> hand_list(7);
-    for (unsigned int i = 0; i < 7; ++i)
+    //TODO: Do i actually have to check that or will the socket not allow to connect anyway
+    //check if there are already four players playing.
+    if(game_state->get_players().size() < 4)
     {
-        ck_Cards::Cards card = game_state->get_draw_pile()->get_top_card(); //get cards from draw_pile
-        hand_list.push_back(card);
+        //create hand
+        std::list<ck_Cards::Cards> hand_list(7);
+        for (unsigned int i = 0; i < 7; ++i)
+        {
+            ck_Cards::Cards card = game_state->get_draw_pile()->get_top_card(); //get cards from draw_pile
+            hand_list.push_back(card);
+        }
+        ck_Cards::Hand* hand = new ck_Cards::Hand(hand_list);
+
+        //construct a new player
+        Player* player = new Player(_player_id, /*is_active*/ true, player_name);
+        player->set_hand(hand);
+
+        //add_player to player list of game_state
+        game_state->add_Players(player);
+
+        //send Player_id to player
+        nlohmann::json respond1;
+        respond1["type"] = Respond_Type::SUCCESFUL_CONNECTION;
+        respond1["id"] = _player_id;
+        net::TCP_Server::sendToPlayer(_player_id,respond1.dump());
+
+        //broadcast game_update
+        broadcast_game_state();
     }
-    ck_Cards::Hand* hand = new ck_Cards::Hand(hand_list);
-
-    //construct a new player
-    Player* player = new Player(_player_id, /*is_active*/ true, player_name);
-    player->set_hand(hand);
-
-    //add_player to player list of game_state
-    game_state->add_Players(player);
-
-    //send Player_id to player
-    nlohmann::json respond1;
-    respond1["type"] = Respond_Type::SUCCESFUL_CONNECTION;
-    respond1["id"] = _player_id;
-    net::TCP_Server::sendToPlayer(_player_id,respond1.dump());
-
-    //TODO: obtional maybe send after game has started depends what client side implements
-    //send Hand to player
-    send_hand(_player_id);
-
-    //broadcast game_update
-    broadcast_game_state();
+    else
+    {
+        //send Player_id to player
+        nlohmann::json respond1;
+        respond1["type"] = Respond_Type::ERROR;
+        respond1["msg"] = "there are already four players playing";
+        net::TCP_Server::sendToPlayer(_player_id,respond1.dump());
+    }
 }
 
 //////////////////////////////////////broadcast game state////////////////////////////////////
@@ -348,9 +394,15 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
     }
     if(card_object.action == ck_Cards::Action::REVERSE)
     {
-        //reverse order
-        std::vector<std::pair<const Player_id, Player*> > players = game_state->get_players();
-        //std::reverse(players.begin(), players.end());
+        std::vector<std::pair<Player_id, Player*> > players = game_state->get_players();
+        //reverse order of vec players
+        auto copy = players;
+        auto reverse_it = copy.rbegin();
+        for(std::vector<std::pair<Player_id, Player*> >::iterator  it = players.begin(); it != players.end(); ++it)
+        {
+            *it = *reverse_it;
+            ++reverse_it;
+        }
         //change current_player
         switch_player(player_id);
 
@@ -363,25 +415,33 @@ void Game_Controller::effect_of_card(Player_id& player_id, ck_Cards::Cards card)
 Player_id Game_Controller::get_next_player(Player_id& player_id)
 {
     //using std::vector<std::pair<const Player_id, Player*> >::iterator;
-    std::vector<std::pair<const Player_id, Player*> > players = game_state->get_players();
+    std::vector<std::pair<Player_id, Player*> > players = game_state->get_players();
     //return pair with player_id as first value
-    auto find = [&players](Player_id player_id) {for(auto elem = players.begin(); elem != players.end(); ++elem) if(elem->first == player_id) return elem;};
-    std::vector<std::pair<const Player_id, Player*> >::iterator it = find(player_id);
+    auto find = [&players](Player_id player_id) {for(auto elem = players.begin(); elem != players.end(); ++elem) {if(elem->first == player_id) return elem;}};
+    std::vector<std::pair<Player_id, Player*> >::iterator it = find(player_id);
 
     //lambda function checking if player_id is last element in map
-    auto is_last = [&players] (std::vector<std::pair<const Player_id, Player*> >::iterator iter) {if(++iter == players.end()) {return true;} return false;};
+    auto is_last = [&players] (std::vector<std::pair<Player_id, Player*> >::iterator iter) {if(++iter == players.end()) {return true;} return false;};
 
-    //periodic increment
-    if(is_last(it))
+    //periodic increment skip player which have won
+    while(true)
     {
-        it = players.begin();
-        return it->first;
+        if(is_last(it))
+        {
+            it = players.begin();
+            auto next_player = it;
+            if(!(it->second->get_has_won()))
+                return it->first;
+        }
+        else
+        {
+            ++it;
+            if(!(it->second->get_has_won()))
+                return it->first;
+        }
+
     }
-    else
-    {
-        ++it;
-        return it->first;
-    }
+
 }
 ////////////////////////////switch_player//////////////////////////////////
 void Game_Controller::switch_player(Player_id& player_id)

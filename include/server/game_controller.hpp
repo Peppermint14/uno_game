@@ -23,8 +23,9 @@ public:
     //check if played card can be played
     bool valid_move(ck_Cards::Cards& /*card*/);
 
+    //get the Player id of the next player in players vector
     Player_id get_next_player(Player_id& /*player_id*/);
-    //set current_player to the next player in players map
+    //set current_player to the next player in players vector
     void switch_player(Player_id& /*player_id*/);
 
     //updates game_state according to played card
