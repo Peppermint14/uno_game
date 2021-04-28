@@ -17,7 +17,7 @@
 #include <chrono>
 #include <atomic>
 
-#include <nlohmann/json.hpp>
+#include "../../build/_deps/json-src/include/nlohmann/json.hpp"
 
 #include "logger.hpp"
 
