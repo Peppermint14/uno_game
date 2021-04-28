@@ -184,7 +184,7 @@ void ck_Cards::Pile::shuffle() noexcept {
     if(empty()) return;
     std::mt19937_64 gen;
     gen.seed(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-    std::vector tmp(cards.begin(), cards.end());
+    std::vector<Cards> tmp(cards.begin(), cards.end());
     std::shuffle(tmp.begin(), tmp.end(), gen);
     cards.clear();
     std::copy(tmp.begin(), tmp.end(), std::front_inserter(cards));
