@@ -145,6 +145,49 @@ const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByC
     return out;
 }
 
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//HAND
+ck_Cards::Hand(std::vector<ck_Cards::Cards> cards_)
+{
+	cards = cards_;
+}
+
+size_t ck_Cards::Hand::get_size()
+{
+	return cards.size();
+}
+
+const ck_Cards::Cards* ck_Cards::Hand::get_card_ptr(int i)
+{
+	ck_Cards::Cards *ptr = cards[i];
+
+	return ptr;
+}
+
+ck_Cards::Cards ck_Cards::Hand::play_card(int i)
+{
+	ck_Cards::Cards played_card = cards[i];
+        cards.erase(cards.begin()+i);	
+	return played_card;
+}
+
+void ck_Cards::Hand::pick_up_card(ck_Cards::Cards cards_)
+{
+	cards.push_back(cards_);
+}
+
+std::vector<ck_Cards::Cards> ck_Cards::Hand::get_cards() 
+{
+    return cards;
+}
+
+
+
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//PILE
+
 ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> cards_)
 {
 	cards = cards_;
@@ -158,6 +201,7 @@ const ck_Cards::Cards ck_Cards::Pile::get_top_card()
     cards.pop_front();
     return top_card;
 }
+
 
 const ck_Cards::Cards ck_Cards::Pile::front()
 {
@@ -201,7 +245,7 @@ bool ck_Cards::Pile::empty() const noexcept{
 void ck_Cards::Pile::clear() noexcept{
     cards.clear();
 }
-
+/*
 void ck_Cards::Pile::from_json(const std::string& _json) {
     if(!empty()) throw new ckException("Pile needs to be empty first. call clear()");
     auto vals = nlohmann::json::parse(_json);
@@ -212,7 +256,7 @@ const std::string ck_Cards::Pile::to_json() const noexcept {
     nlohmann::json json(cards);
     return json.dump();
 }
-
+*/
 bool ck_Cards::Pile::valid(ck_Cards::Cards _card) const noexcept {
     return !(std::find(cards.begin(), cards.end(), _card) == cards.end());
 }

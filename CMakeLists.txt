@@ -51,10 +51,10 @@ set(COMMON_FILES
 
 if (MSVC)
 	add_executable(ck_client WIN32 "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	#	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 else()
 	add_executable(ck_client "${CLIENT_FILES}" "${COMMON_FILES}")
-	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	#	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 endif()
 
 # ------------------ wxWidgets ------------------
@@ -131,10 +131,10 @@ set(SERVER_LIBS
 
 if (MSVC)
 	target_link_libraries(ck_client "${CLIENT_LIBS}" wsock32 ws2_32) 
-	target_link_libraries(ck_server "${SERVER_LIBS}" wsock32 ws2_32)
+	#target_link_libraries(ck_server "${SERVER_LIBS}" wsock32 ws2_32)
 else()
 	target_link_libraries(ck_client "${CLIENT_LIBS}") 
-	target_link_libraries(ck_server "${SERVER_LIBS}")
+	#target_link_libraries(ck_server "${SERVER_LIBS}")
 endif()
 
 # ------------------ TESTS ------------------

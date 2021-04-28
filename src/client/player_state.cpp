@@ -12,7 +12,7 @@
 void Player_State::set_hand(ck_Cards::Hand* hand_)
  {
      hand = hand_;
-     size_t number_of_cards = hand->size();
+     size_t number_of_cards = hand->get_size();
      set_number_of_cards(number_of_cards);
  }
 
@@ -20,15 +20,23 @@ void Player_State::set_number_of_cards(size_t number_of_cards_)
 {
      number_of_cards = number_of_cards_;
 }
-
+size_t Player_State::get_number_of_cards()
+{
+	return number_of_cards;
+}
 // void Player_State::update_hand(const std::vector<ck_Cards::Cards cards)
 // {
 //     hand->push(cards);
 //     size_t number_of_cards = hand->cards.size();
 //     set_number_of_cards(number_of_cards);
 // }
+//
+ck_Cards::Hand* Player_State::get_hand() const
+{
+     return hand;
+}
 
-// ck_Cards::Hand* Player_State::get_hand() const
-// {
-//     return hand;
-// }
+Player_id Player_State::get_current_player(){
+        return current_Player;
+}
+

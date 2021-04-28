@@ -169,19 +169,44 @@ namespace ck_Cards {
         [[nodiscard]] static const std::vector<std::reference_wrapper<Card>> getByColor(Color /*_color*/) noexcept;
     };
 
+    class Hand {
+    protected:
+	std::vector<Cards> cards;
+    public:
+        Hand(std::vector<Cards> /*cards_*/); //constructor
+	size_t get_size();
+        //[[nodiscard]] const Cards get_top_card();
+        const Cards* get_card_ptr(int i);
+	Cards play_card(int i);
+	void pick_up_card(ck_Cards::Cards cards_);
+	//const Cards front();
+        //void pop();
+        //void push_back(Cards /*_card*/);
+        //void push(Cards /*_card*/) noexcept;
+        //void push(const std::vector<Cards> /*cards*/) noexcept;      
+        //void shuffle() noexcept;
+        //virtual void from_json(const std::string&);
+        //[[nodiscard]] virtual const std::string to_json() const noexcept;
+        //[[nodiscard]] bool size() const noexcept;
+        //[[nodiscard]] bool empty() const noexcept;
+        //void clear() noexcept;
+        //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
+        std::vector<Cards> get_cards();
+    };
+
     class Pile {
     protected:
         std::list<Cards> cards;
     public:
         [[nodiscard]] const Cards get_top_card();
-        const Cards front();
+	const Cards front();
         void pop();
         void push_back(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
         void push(const std::vector<Cards> /*cards*/) noexcept;      
         void shuffle() noexcept;
-        virtual void from_json(const std::string&);
-        [[nodiscard]] virtual const std::string to_json() const noexcept;
+        //virtual void from_json(const std::string&);
+        //[[nodiscard]] virtual const std::string to_json() const noexcept;
         [[nodiscard]] bool size() const noexcept;
         [[nodiscard]] bool empty() const noexcept;
         void clear() noexcept;
@@ -192,7 +217,7 @@ namespace ck_Cards {
 
     typedef Pile Draw_Pile;
     typedef Pile Discard_Pile;
-    typedef Pile Hand;
+    //typedef Pile Hand;
 }
 
 #endif /*CARDS_HPP*/

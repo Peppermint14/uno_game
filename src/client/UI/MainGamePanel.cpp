@@ -270,7 +270,7 @@ void MainGamePanel::buildTurnIndicator(Player_State *gameState, Player *me) {
 void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
 
 
-    /*
+    
 
     // Setup two nested box sizers, in order to align our player's UI to the bottom center
     wxBoxSizer* outerLayout = new wxBoxSizer(wxHORIZONTAL);
@@ -289,7 +289,7 @@ void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
     innerLayout->Add(playerName, 0, wxALIGN_CENTER);
 
     // if the game has not yet started we say so
-    if(!gameState->is_started()) {
+    if(0 /*!gameState->is_started()*/) {
 
         wxStaticText* playerPoints = buildStaticText(
                 "waiting for game to start...",
@@ -300,23 +300,23 @@ void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
         innerLayout->Add(playerPoints, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
         // show button that allows our player to start the game
-        wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
+        /*wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
         startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
             GameController::startGame();
         });
         innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
-
+	*/
     } else {
 
         // show our player's minus points
-        wxStaticText *playerPoints = buildStaticText(
+        /*wxStaticText *playerPoints = buildStaticText(
                 std::to_string(me->get_score()) + " minus points",
                 wxDefaultPosition,
                 wxSize(200, 18),
                 wxALIGN_CENTER
         );
         innerLayout->Add(playerPoints, 0, wxALIGN_CENTER | wxBOTTOM, 8);
-
+	
         // if our player folded, we display that as status
         if (me->has_folded()) {
             wxStaticText *playerStatus = buildStaticText(
@@ -345,9 +345,9 @@ void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
             );
             innerLayout->Add(playerStatus, 0, wxALIGN_CENTER | wxBOTTOM, 8);
         }
-
+	*/
         // display our player's hand, if we have cards
-        int numberOfCards = me->get_nof_cards();
+        int numberOfCards = me->get_player_state()->get_number_of_cards();
         if (numberOfCards > 0) {
 
             // create horizontal layout for the individual hand cards of our player
@@ -367,25 +367,25 @@ void MainGamePanel::buildThisPlayer(Player_State* gameState, Player* me) {
             }
 
             // Show all cards
-            for (int i = 0; i < me->get_hand()->get_cards().size(); i++) {
-
-                card *handCard = me->get_hand()->get_cards().at(i);
-                std::string cardFile = "assets/lama_" + std::to_string(handCard->get_value()) + ".png";
+            for (int i = 0; i < me->get_player_state()->get_hand()->get_cards().size(); i++) {
+	    	ck_Cards::Cards handCard = me->get_player_state()->get_hand()->get_cards().at(i);
+	    	int  handCard_id = (int)(me->get_player_state()->get_hand()->get_cards().at(i));
+                std::string cardFile = "assets/uno_cards/" + std::to_string(handCard_id) + ".png";
 
                 ImagePanel *cardButton = new ImagePanel(this, cardFile, wxBITMAP_TYPE_ANY, wxDefaultPosition, scaledCardSize);
 
-                if (gameState->get_current_player() == me && !me->has_folded()) {
+                if (gameState->get_current_player() == me->get_player_id() /*&& !me->has_folded()*/) {
                     cardButton->SetToolTip("Play card");
                     cardButton->SetCursor(wxCursor(wxCURSOR_HAND));
                     cardButton->Bind(wxEVT_LEFT_UP, [handCard](wxMouseEvent& event) {
-                        GameController::playCard(handCard);
+                        //GameController::playCard(handCard);
                     });
                 }
                 handLayout->Add(cardButton, 0, wxLEFT | wxRIGHT, 4);
             }
         }
     }
-    */
+    
 }
 
 
