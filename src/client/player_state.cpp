@@ -59,8 +59,9 @@ bool Player_State::get_players_turn() const {
      return players_turn;
 }
 
+// TODO: Handle player names
 void Player_State::set_all_player_names(){
-     all_Player_Names.resize(4);
+
 }
 
 

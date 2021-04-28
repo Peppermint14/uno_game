@@ -48,8 +48,6 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     // remove any existing UI
     this->DestroyChildren();
 
-    std::cout << "Test";
-
     /*
     std::vector<player*> players = playerState->get_players();
     int numberOfPlayers = players.size();
@@ -362,7 +360,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         
         // display our player's hand, if we have cards
         int numberOfCards = playerState->get_nof_cards();
-        std::cout << " " <<numberOfCards << std::endl;
         if (numberOfCards > 0) {
 
             // create horizontal layout for the individual hand cards of our player

@@ -164,7 +164,7 @@ void player_controller::fold() {
 void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
     // play_card_request request = play_card_request(player_controller::_currentGameState->get_id(), player_controller::_me->get_id(), cardToPlay->get_id());
     // ClientNetworkManager::sendRequest(request);
-    std::cout << "PLAYING CARD" << std::endl;
+    std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
 }
 
 
