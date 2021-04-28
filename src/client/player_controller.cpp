@@ -17,7 +17,10 @@ ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
 
 Player* player_controller::_me = nullptr;
-Player_State* player_controller::_currentGameState = nullptr;
+Player_State* player_controller::_currentPlayerState = nullptr;
+
+
+Player_State test_state = Player_State();
 
 
 
@@ -41,6 +44,12 @@ void player_controller::init(GameWindow* gameWindow) {
 }
 
 
+void player_controller::PickColour(){
+
+    wxString colour = _mainGamePanel->colourPicker();
+    //send_request that 'colour' was picked
+}
+
 void player_controller::connectToServer() {
 
     // get values form UI input fields
@@ -48,9 +57,10 @@ void player_controller::connectToServer() {
     wxString inputServerPort = player_controller::_connectionPanel->getServerPort().Trim();
     wxString inputPlayerName = player_controller::_connectionPanel->getPlayerName().Trim();
 
-    
+    updateGameState(&test_state);    
     _gameWindow->showPanel(_mainGamePanel);
-    _mainGamePanel->colourPicker();
+    
+    //PickColour();
 
     // check that all values were provided
     // if(inputServerAddress.IsEmpty()) {
@@ -93,13 +103,13 @@ void player_controller::connectToServer() {
 
 void player_controller::updateGameState(Player_State* newGameState) {
 
-    /*
+    
     // the existing game state is now old
-    Player_State* oldGameState = player_controller::_currentGameState;
+    Player_State* oldPlayerState = player_controller::_currentPlayerState;
 
     // save the new game state as our current game state
-    player_controller::_currentGameState = newGameState;
-
+    player_controller::_currentPlayerState = newGameState;
+/*
     if(oldGameState != nullptr) {
 
         // check if a new round started, and display message accordingly
@@ -114,13 +124,13 @@ void player_controller::updateGameState(Player_State* newGameState) {
     if(player_controller::_currentGameState->is_finished()) {
         player_controller::showGameOverMessage();
     }
-
+*/
     // make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
     player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
 
     // command the main game panel to rebuild itself, based on the new game state
-    player_controller::_mainGamePanel->buildGameState(player_controller::_currentGameState, player_controller::_me);
-    */
+    player_controller::_mainGamePanel->buildPlayerState(_currentPlayerState, player_controller::_me);
+    
 }
 
 
@@ -151,10 +161,11 @@ void player_controller::fold() {
 }
 
 
-//void player_controller::playCard(card* cardToPlay) {
+void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
     // play_card_request request = play_card_request(player_controller::_currentGameState->get_id(), player_controller::_me->get_id(), cardToPlay->get_id());
     // ClientNetworkManager::sendRequest(request);
-//}
+    std::cout << "PLAYING CARD" << std::endl;
+}
 
 
 wxEvtHandler* player_controller::getMainThreadEventHandler() {
