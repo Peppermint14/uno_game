@@ -100,6 +100,72 @@ void player_controller::connectToServer() {
 
 }
 
+//possible requesttypes: NEW_PLAYER, START_GAME, PLAY_REQUEST, DRAW_REQUEST,EXIT_REQUEST
+void player_controller::send_request(Request_Type request_type,ck_Cards::Cards card)
+{
+	Player_id id = _me->get_player_id();
+	nlohmann::json request;
+	request["id"] = id;
+	request["type"] = request_type;
+	
+	if(request_type == Request_Type::PLAY_REQUEST){
+		request["card"] = card;
+	}
+	//-> send this: request.dump() with tcp to server
+}
+
+void player_controller::eval_response(const std::string& msg)
+{
+	nlohmann::json response = nlohmann::json::parse(msg);
+	Respond_Type response_type = response["type"];
+	switch(response_type)
+	{
+		case Respond_Type::SUCCESFUL_CONNECTION:
+			{
+				_me->set_is_active(true);
+				break;
+			}
+		case Respond_Type::SEND_HAND:
+			{
+				//sendet hand vo me (charte ids)
+				//ck_Cards::Hand hand = response["hand"];
+				break;
+			}
+		case Respond_Type::GAME_UPDATE:
+			{
+				/*
+				//update number of cards of all players
+				//liste mit zweier listen, welche player id und number of cards von der jeweiligen person enthalten
+				//"players": "Player_id": , number_of_cars_],[......
+				nlohmann::json::array pla = response["players"]
+				for(player:players){
+					set_number_cards_player(player.first,player.second);
+				}
+				*/
+				//update whos turn it is
+				Player_id current_id= response["current_player"];
+				set_current_player(current_id);
+				
+				//update, which color has to be played
+				ck_Cards::Color color = response["color_to_be_matched"];
+				set_color(color);
+				
+				//update, which card is on top of the discard Pile
+				ck_Cards::Cards top_card = response["top_card"];
+				set_top_card_discardp(top_card);
+
+				break;
+			}
+		case Respond_Type::ERROR_:
+			{
+				std::string message = response["msg"];
+				set_error_message(message);
+
+				break;
+			}
+	}
+
+}
 
 void player_controller::updateGameState(Player_State* newGameState) {
 
@@ -259,7 +325,43 @@ void player_controller::showGameOverMessage() {
     }
     */
 }
+void player_controller::set_number_cards_player(Player_id id, int number_cards){
+	players_number_of_cards[(int)id] = number_cards;
+}
+int player_controller::get_number_cards_player(Player_id id){
+	int number_of_cards = players_number_of_cards[(int)id];
+	return number_of_cards;
+}
+
+void player_controller::set_current_player(Player_id id){
+	current_player = id;
+}
+Player_id player_controller::get_current_player(){
+	return current_player;
+}
+
+void player_controller::set_color(ck_Cards::Color color){
+	color_to_be_played = color;
+}
+ck_Cards::Color player_controller::get_color(){
+	return color_to_be_played;
+}
 
 
+void player_controller::set_top_card_discardp(ck_Cards::Cards top){
+	top_card_on_discard = top;
+}
+ck_Cards::Cards player_controller::get_top_card_discardp(){
+	return top_card_on_discard;
+}
 
-
+void player_controller::set_error_message(std::string message){
+	error_occured = true;
+	error_message = message;
+}
+void player_controller::error_read(){
+	error_occured = false;
+}
+std::string player_controller::get_error_message(){
+	return error_message;
+}
