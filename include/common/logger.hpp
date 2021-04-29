@@ -1,8 +1,10 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include <spdlog/spdlog.h>
-#include "spdlog/sinks/stdout_color_sinks.h"
+//#include <spdlog/spdlog.h>
+
+#include "../../build/_deps/spdlog-src/include/spdlog/spdlog.h"
+#include "../../build/_deps/spdlog-src/include/spdlog/sinks/stdout_color_sinks.h"
 
 namespace Logger {
     void init() noexcept;

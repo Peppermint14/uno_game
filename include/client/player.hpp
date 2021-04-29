@@ -7,7 +7,7 @@
 class Player
 {
 public:
-	Player(Player_id /*player_id_*/, bool /*is_active_*/); //constructor
+	Player(Player_id /*player_id_*/, std::string name_, bool /*is_active_*/); //constructor
 	void set_is_active(bool);
 	Player_id get_player_id() const;
 	std::string get_player_name() const;

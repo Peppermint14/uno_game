@@ -15,6 +15,7 @@ public:
 	void set_players_turn(bool); 
 	void set_player_won(bool); 
 	void set_number_of_cards(size_t);
+	size_t get_number_of_cards();
 	void set_hand(ck_Cards::Hand* /*hand_*/);
 	void update_hand(); //also update number of cards
 	void change_play_direction(); // for reverse
@@ -22,7 +23,7 @@ public:
 	ck_Cards::Hand* get_hand() const;
 	int get_nof_cards() const;
 	bool get_players_turn() const;
-	int get_player_id() const;
+	Player_id get_current_player() const;
 	bool has_player_won() const;
 	bool is_waiting() const;
 	std::string get_player_name() const;
@@ -34,7 +35,7 @@ private:
 	size_t number_of_cards;
 	bool players_turn;
 	bool play_direction;
-	int player_id;
+	Player_id current_Player;
 	bool player_won;
 	bool player_waiting;
 	std::vector<std::string> all_Player_Names;

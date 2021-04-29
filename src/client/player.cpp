@@ -2,9 +2,10 @@
 #include "../../include/client/player_state.hpp"
 
 
-Player::Player(Player_id player_id_, bool is_active_)
+Player::Player(Player_id player_id_, std::string name_, bool is_active_)
 {
 	player_id = player_id_;
+	player_name = name_;
 	is_active = is_active_;
 	
 	player_state = new Player_State();

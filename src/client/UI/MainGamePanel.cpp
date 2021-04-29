@@ -318,7 +318,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
 
         /*
         // show our player's minus points
-        wxStaticText *playerPoints = buildStaticText(
+        /*wxStaticText *playerPoints = buildStaticText(
                 std::to_string(me->get_score()) + " minus points",
                 wxDefaultPosition,
                 wxSize(200, 18),

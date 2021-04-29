@@ -29,6 +29,7 @@ public:
     static void showStatus(const std::string& message);
     static void showNewRoundMessage(Player_State* oldGameState, Player_State* newGameState);
     static void showGameOverMessage();
+    
 
 private:
     static GameWindow* _gameWindow;
@@ -37,6 +38,7 @@ private:
 
     static Player* _me;
     static Player_State* _currentPlayerState;
+
 
 };
 
