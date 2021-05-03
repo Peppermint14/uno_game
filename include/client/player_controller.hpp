@@ -23,7 +23,9 @@ public:
     static void fold();
     static void PickColour();
     static void playCard(const ck_Cards::Cards* cardToPlay);
-    
+    static void join(std::string);
+    static void exit();
+
 
     static wxEvtHandler* getMainThreadEventHandler();
     static void showError(const std::string& title, const std::string& message);
