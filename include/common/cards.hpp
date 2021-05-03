@@ -174,11 +174,12 @@ namespace ck_Cards {
 	    std::vector<Cards> cards;
     public:
         Hand_vector(std::vector<Cards> /*cards_*/); //constructor
-	size_t get_size();
+        Hand_vector(std::list<Cards>);
+	    size_t get_size();
         //[[nodiscard]] const Cards get_top_card();
         const Cards* get_card_ptr(int i);
-	Cards play_card(int i);
-	void pick_up_card(ck_Cards::Cards cards_);
+	    Cards play_card(int i);
+	    void pick_up_card(ck_Cards::Cards cards_);
 	//const Cards front();
         //void pop();
         //void push_back(Cards /*_card*/);

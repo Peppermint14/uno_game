@@ -79,13 +79,13 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
         this->buildOtherPlayerHand(playerState, otherPlayer, playerAngle);
         this->buildOtherPlayerLabels(playerState, otherPlayer, playerAngle, side);
     }
-
+*/
     // show both card piles at the center
     this->buildCardPiles(playerState, me);
 
     // show turn indicator below card piles
-    this->buildTurnIndicator(playerState, me);
-    */
+    //this->buildTurnIndicator(playerState, me);
+    
     // show our own player
     this->buildThisPlayer(playerState, me);
 
@@ -211,13 +211,13 @@ void MainGamePanel::buildOtherPlayerLabels(Player_State* playerState, Player* ot
 
 void MainGamePanel::buildCardPiles(Player_State* playerState, Player *me) {
 
-    /*
+    
     if(playerState->is_waiting()) {
 
         // Show discard pile
-        const card* topCard = playerState->get_discard_pile()->get_top_card();
+        const ck_Cards::Cards* topCard = playerState->get_top_discard();
         if(topCard != nullptr) {
-            std::string cardImage = "assets/lama_" + std::to_string(topCard->get_value()) + ".png";
+            std::string cardImage = "../assets/uno_cards/" + std::to_string(u_int32_t(*topCard)) + ".png";
 
             wxPoint discardPilePosition = MainGamePanel::tableCenter + MainGamePanel::discardPileOffset;
 
@@ -228,13 +228,13 @@ void MainGamePanel::buildCardPiles(Player_State* playerState, Player *me) {
         // Show draw pile
         wxPoint drawPilePosition = MainGamePanel::tableCenter + MainGamePanel::drawPileOffset;
 
-        ImagePanel* drawPile = new ImagePanel(this, "assets/lama_back.png", wxBITMAP_TYPE_ANY, drawPilePosition, MainGamePanel::cardSize);
+        ImagePanel* drawPile = new ImagePanel(this, "../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, drawPilePosition, MainGamePanel::cardSize);
 
-        if(playerState->get_current_player() == me && !me->has_folded()) {
+        if(playerState->get_players_turn() && !playerState->has_player_quit()) {
             drawPile->SetToolTip("Draw card");
             drawPile->SetCursor(wxCursor(wxCURSOR_HAND));
             drawPile->Bind(wxEVT_LEFT_UP, [](wxMouseEvent& event) {
-                GameController::drawCard();
+                player_controller::drawCard();
             });
         } else {
             drawPile->SetToolTip("Draw pile");
@@ -243,9 +243,9 @@ void MainGamePanel::buildCardPiles(Player_State* playerState, Player *me) {
     } else {
         // if the game did not start yet, show a back side of a card in the center (only for the mood)
         wxPoint cardPosition = MainGamePanel::tableCenter - (MainGamePanel::cardSize / 2);
-        new ImagePanel(this, "assets/lama_back.png", wxBITMAP_TYPE_ANY, cardPosition, MainGamePanel::cardSize);
+        new ImagePanel(this, "../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, cardPosition, MainGamePanel::cardSize);
     }
-    */
+    
 
 }
 
@@ -300,7 +300,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
     if(playerState->is_waiting()) {
 
         wxStaticText* playerPoints = buildStaticText(
-                "waiting for game to start...",
+                "Waiting for game to start...",
                 wxDefaultPosition,
                 wxSize(200, 18),
                 wxALIGN_CENTER
@@ -387,7 +387,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
 
                 ImagePanel *cardButton = new ImagePanel(this, cardFile, wxBITMAP_TYPE_ANY, wxDefaultPosition, scaledCardSize);
 
-                if (playerState->get_players_turn()) {
+                if (playerState->get_players_turn() && !playerState->has_player_quit()) {
                     cardButton->SetToolTip("Play card");
                     cardButton->SetCursor(wxCursor(wxCURSOR_HAND));
                     cardButton->Bind(wxEVT_LEFT_UP, [i](wxMouseEvent& event) {

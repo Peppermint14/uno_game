@@ -5,6 +5,9 @@
 //default constructor
 Player_State::Player_State()
 {
+     this->top_discard = ck_Cards::Cards::RED_5_A; // Would be nullptr if discard empty
+     this->discard_empty = 0; //TODO: Check if necessary
+
      std::list<ck_Cards::Cards> c = {ck_Cards::Cards::BLUE_0, ck_Cards::Cards::BLUE_1_A, ck_Cards::Cards::BLUE_2_A, ck_Cards::Cards::BLUE_3_A};
      // This was previously a 
      this->hand = new ck_Cards::Hand(c);
@@ -13,7 +16,8 @@ Player_State::Player_State()
      this->play_direction = 1;
      this->current_Player = Player_id::PLAYER_1;
      this->player_won = 0;
-     this->player_waiting = 0;
+     this->player_quit = 0;
+     this->player_waiting = 1;
      this->all_Player_Names.resize(4);
      this->all_Player_Names[0] = "test1";
      this->all_Player_Names[1] = "test2";
@@ -26,6 +30,11 @@ Player_State::~Player_State(){
      hand = nullptr;
      number_of_cards = -1;
 
+}
+
+void Player_State::set_top_discard(ck_Cards::Cards new_top){
+     top_discard = new_top;
+     discard_empty = 0;
 }
 
 void Player_State::set_players_turn(bool p_turn){
@@ -53,6 +62,10 @@ size_t Player_State::get_number_of_cards()
 //     set_number_of_cards(number_of_cards);
 // }
 //
+ck_Cards::Cards* Player_State::get_top_discard(){
+     return &top_discard;
+}
+
 ck_Cards::Hand* Player_State::get_hand() const
 {
      return hand;
@@ -83,6 +96,9 @@ bool Player_State::has_player_won() const {
 }
 bool Player_State::is_waiting() const {
      return player_waiting;
+}
+bool Player_State::has_player_quit() const {
+     return player_quit;
 }
 std::string Player_State::get_player_name() const {
      return all_Player_Names[uint32_t(current_Player)];

@@ -94,7 +94,7 @@ void player_controller::connectToServer() {
     // ClientNetworkManager::init(host, port);
 
     // //send request to join game
-    // player_controller::_me = new player(playerName);
+    player_controller::_me = new Player(Player_id::PLAYER_1, "Yolo Man", true);
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
 

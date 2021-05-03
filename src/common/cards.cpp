@@ -153,7 +153,10 @@ ck_Cards::Hand_vector::Hand_vector(std::vector<ck_Cards::Cards> cards_)
 {
 	cards = cards_;
 }
-
+ck_Cards::Hand_vector::Hand_vector(std::list<ck_Cards::Cards> card_list)
+{
+	cards = {std::begin(card_list), std::end(card_list)};
+}
 size_t ck_Cards::Hand_vector::get_size()
 {
 	return cards.size();
