@@ -100,7 +100,7 @@ void player_controller::connectToServer() {
 
 }
 
-//possible requesttypes: NEW_PLAYER, START_GAME, PLAY_REQUEST, DRAW_REQUEST,EXIT_REQUEST
+/* //possible requesttypes: NEW_PLAYER, START_GAME, PLAY_REQUEST, DRAW_REQUEST,EXIT_REQUEST
 void player_controller::send_request(Request_Type request_type,ck_Cards::Cards card)
 {
 	Player_id id = _me->get_player_id();
@@ -113,7 +113,7 @@ void player_controller::send_request(Request_Type request_type,ck_Cards::Cards c
 	}
 	//-> send this: request.dump() with tcp to server
 }
-
+*/
 void player_controller::eval_response(const std::string& msg)
 {
 	nlohmann::json response = nlohmann::json::parse(msg);
@@ -127,25 +127,23 @@ void player_controller::eval_response(const std::string& msg)
 			}
 		case Respond_Type::SEND_HAND:
 			{
-				//sendet hand vo me (charte ids)
-				//ck_Cards::Hand hand = response["hand"];
+				std::list<ck_Cards::Cards> hand_cards = response["hand"];
+				ck_Cards::Hand hand = ck_Cards::Pile(hand_cards);
+				_currentPlayerState->set_hand(&hand);
 				break;
 			}
 		case Respond_Type::GAME_UPDATE:
 			{
-				/*
+				
 				//update number of cards of all players
-				//liste mit zweier listen, welche player id und number of cards von der jeweiligen person enthalten
-				//"players": "Player_id": , number_of_cars_],[......
-				nlohmann::json::array pla = response["players"]
-				for(player:players){
-					set_number_cards_player(player.first,player.second);
-				}
-				*/
+				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
+				set_number_cards_player(player_cards_list);
+				
 				//update whos turn it is
 				Player_id current_id= response["current_player"];
 				set_current_player(current_id);
-				
+				_currentPlayerState->set_players_turn(current_id == _me->get_player_id());
+
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				set_color(color);
@@ -325,12 +323,11 @@ void player_controller::showGameOverMessage() {
     }
     */
 }
-void player_controller::set_number_cards_player(Player_id id, int number_cards){
-	players_number_of_cards[(int)id] = number_cards;
+void player_controller::set_number_cards_player(std::list<std::pair<Player_id, int>> player_list){
+	players_number_of_cards  = player_list;
 }
-int player_controller::get_number_cards_player(Player_id id){
-	int number_of_cards = players_number_of_cards[(int)id];
-	return number_of_cards;
+std::list<std::pair<Player_id, int>> player_controller::get_number_cards_player(){
+	return players_number_of_cards;
 }
 
 void player_controller::set_current_player(Player_id id){

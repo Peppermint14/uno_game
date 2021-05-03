@@ -28,6 +28,9 @@ Player_State::~Player_State(){
 
 }
 
+void Player_State::set_players_turn(bool p_turn){
+	players_turn = p_turn;
+}
 void Player_State::set_hand(ck_Cards::Hand* hand_)
  {
      hand = hand_;

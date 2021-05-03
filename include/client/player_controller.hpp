@@ -16,7 +16,7 @@ public:
     static void init(GameWindow* gameWindow);
     static void connectToServer();
     void eval_response(const std::string& msg);
-    void send_request(Request_Type request_type, ck_Cards::Cards card);
+    //void send_request(Request_Type request_type, ck_Cards::Cards card);
     static void updateGameState(Player_State* newGameState);
     static void startGame();
     static void drawCard();
@@ -31,10 +31,10 @@ public:
     static void showNewRoundMessage(Player_State* oldGameState, Player_State* newGameState);
     static void showGameOverMessage();
 
-    void set_number_cards_player(Player_id id, int number_cards);
+    void set_number_cards_player(std::list<std::pair<Player_id, int>>);
     //in: Id of the player, of which you want to know the number of cards
     //out: integer telling how many cards the corresponding player has
-    int get_number_cards_player(Player_id id);
+    std::list<std::pair<Player_id, int>> get_number_cards_player();
     
     void set_current_player(Player_id);
     Player_id get_current_player();
@@ -54,7 +54,7 @@ private:
     static ConnectionPanel* _connectionPanel;
     static MainGamePanel* _mainGamePanel;
     //at position i is the number of cards that player i has stored (position 0 is zero (player zero is error)
-    std::vector<size_t> players_number_of_cards;
+    std::list<std::pair<Player_id, int>> players_number_of_cards;
     static Player* _me;
     Player_id current_player;
     static Player_State* _currentPlayerState;
