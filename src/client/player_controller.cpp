@@ -100,20 +100,6 @@ void player_controller::connectToServer() {
 
 }
 
-/* //possible requesttypes: NEW_PLAYER, START_GAME, PLAY_REQUEST, DRAW_REQUEST,EXIT_REQUEST
-void player_controller::send_request(Request_Type request_type,ck_Cards::Cards card)
-{
-	Player_id id = _me->get_player_id();
-	nlohmann::json request;
-	request["id"] = id;
-	request["type"] = request_type;
-	
-	if(request_type == Request_Type::PLAY_REQUEST){
-		request["card"] = card;
-	}
-	//-> send this: request.dump() with tcp to server
-}
-*/
 void player_controller::eval_response(const std::string& msg)
 {
 	nlohmann::json response = nlohmann::json::parse(msg);
@@ -203,7 +189,7 @@ void player_controller::startGame() {
 	nlohmann::json request;
 	request["id"]= id;
 	request["type"] = Request_Type::START_GAME;
-	//request.dump();
+	net::TCP_Client::send(request.dump());
 }
 
 
@@ -212,7 +198,7 @@ void player_controller::drawCard() {
 	nlohmann::json request;
 	request["id"]= id;
 	request["type"] = Request_Type::DRAW_REQUEST;
-	//request.dump();
+	net::TCP_Client::send(request.dump());
 
     // Send request
     //TCP_client::requestDrawCard();
@@ -239,7 +225,7 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
 	request["id"] = id;
 	request["type"] = Request_Type::PLAY_REQUEST;
 	request["card"] = *cardToPlay;
-	//request.dump()
+	net::TCP_Client::send(request.dump());
 	
      	std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
 }
@@ -249,7 +235,7 @@ void player_controller::exit(){
 	nlohmann::json request;
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
-	//request.dump();
+	net::TCP_Client::send(request.dump());
 }
 
 void player_controller::join(std::string name){
@@ -257,7 +243,7 @@ void player_controller::join(std::string name){
 	nlohmann::json request;
 	request["id"]= id;
 	request["type"] = Request_Type::NEW_PLAYER;
-	//request.dump();
+	net::TCP_Client::send(request.dump());
 }
 
 wxEvtHandler* player_controller::getMainThreadEventHandler() {

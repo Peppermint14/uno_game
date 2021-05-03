@@ -3,7 +3,7 @@
 
 #include "../common/common.hpp"
 #include "../common/cards.hpp"
-
+#include "tcp_client.hpp"
 #include "UI/GameWindow.hpp"
 #include "UI/ConnectionPanel.hpp"
 #include "UI/MainGamePanel.hpp"
@@ -16,7 +16,6 @@ public:
     static void init(GameWindow* gameWindow);
     static void connectToServer();
     void eval_response(const std::string& msg);
-    //void send_request(Request_Type request_type, ck_Cards::Cards card);
     static void updateGameState(Player_State* newGameState);
     static void startGame();
     static void drawCard();
