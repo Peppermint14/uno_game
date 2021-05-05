@@ -97,7 +97,8 @@ void player_controller::connectToServer() {
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
     updateGameState(&test_state);    
     _gameWindow->showPanel(_mainGamePanel);
-
+	
+    join(playerName);
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
 
@@ -245,6 +246,7 @@ void player_controller::join(std::string name){
 	Player_id id = _me->get_player_id();
 	nlohmann::json request;
 	request["id"]= id;
+	request["name"] = name;
 	request["type"] = Request_Type::NEW_PLAYER;
 	net::TCP_Client::send(request.dump());
 }
