@@ -285,17 +285,14 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
     outerLayout->Add(innerLayout, 1, wxALIGN_BOTTOM);
     
     // Show the label with our player name
-    std::string name = "MEEEE";
     wxStaticText* playerName = buildStaticText(
-            name,
-            //me->get_player_name(),
+            me->get_player_name(),
             wxDefaultPosition,
             wxSize(200, 18),
             wxALIGN_CENTER,
             true
     );
     innerLayout->Add(playerName, 0, wxALIGN_CENTER);
-
     // if the game has not yet started we say so
     if(playerState->is_waiting()) {
 

@@ -21,8 +21,7 @@ Player_id Player::get_player_id() const
 	return player_id;
 }
 
-std::string Player::get_player_name() const
-{
+std::string Player::get_player_name() const{
 	return player_name;
 }
 

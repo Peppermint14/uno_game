@@ -56,9 +56,9 @@ void player_controller::connectToServer() {
     wxString inputServerAddress = player_controller::_connectionPanel->getServerAddress().Trim();
     wxString inputServerPort = player_controller::_connectionPanel->getServerPort().Trim();
     wxString inputPlayerName = player_controller::_connectionPanel->getPlayerName().Trim();
-
-    updateGameState(&test_state);    
-    _gameWindow->showPanel(_mainGamePanel);
+   
+    //updateGameState(&test_state);    
+    //_gameWindow->showPanel(_mainGamePanel);
     
     //PickColour();
 
@@ -71,11 +71,11 @@ void player_controller::connectToServer() {
     //     player_controller::showError("Input error", "Please provide the server's port number");
     //     return;
     // }
-    // if(inputPlayerName.IsEmpty()) {
-    //     player_controller::showError("Input error", "Please enter your desired player name");
-    //     return;
-    // }
-
+    if(inputPlayerName.IsEmpty()) {
+         player_controller::showError("Input error", "Please enter your desired player name");
+         return;
+     }
+     
     // convert host from wxString to std::string
     // std::string host = inputServerAddress.ToStdString();
 
@@ -88,13 +88,16 @@ void player_controller::connectToServer() {
     // uint16_t port = (uint16_t) portAsLong;
 
     // //convert player name from wxString to std::string
-    // std::string playerName = inputPlayerName.ToStdString();
+    std::string playerName = inputPlayerName.ToStdString();
 
     // //connect to network
     // ClientNetworkManager::init(host, port);
 
     // //send request to join game
-    player_controller::_me = new Player(Player_id::PLAYER_1, "Yolo Man", true);
+    player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
+    updateGameState(&test_state);    
+    _gameWindow->showPanel(_mainGamePanel);
+
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
 

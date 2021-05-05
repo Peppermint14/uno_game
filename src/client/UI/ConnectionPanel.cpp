@@ -47,9 +47,10 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
         240 // width of field
     );
     verticalLayout->Add(this->_playerNameField, 0, wxTOP | wxLEFT | wxRIGHT, 10);
-
     wxButton* connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
-    connectButton->Bind(wxEVT_BUTTON, &ConnectionPanel::buttonClicked, this);
+    //connectButton->Bind(wxEVT_BUTTON, &ConnectionPanel::buttonClicked(&event), this);
+    connectButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
+       player_controller::connectToServer();});
     verticalLayout->Add(connectButton, 0, wxALIGN_RIGHT | wxALL, 10);
 
     this->SetSizerAndFit(verticalLayout);
