@@ -5,13 +5,16 @@ message to player on succesfull connections
     "id": #
 }
 
-internal message on connections
-{
-    "type": "NEW_PLAYER",
-    "id": #
-}
+
 
 ++++++++++ REQUESTS ++++++++++
+
+join request
+{
+    "type": "NEW_PLAYER",
+    "name": std::string
+    "id": #
+}
 
 play request
 {
