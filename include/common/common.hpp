@@ -40,7 +40,7 @@ enum class Player_id : uint32_t {
 enum class State {
     FAILED      =   0, 
     SUCCESS     =   1,  
-    ERROR_       =   2 //some flag shadows ERROR
+    ERROR_      =   2 //some flag shadows ERROR
 };
 
 enum class Request_Type : uint32_t {
@@ -48,15 +48,16 @@ enum class Request_Type : uint32_t {
 	PLAY_REQUEST = 1,
 	DRAW_REQUEST = 2,
 	EXIT_REQUEST = 3,
-	START_GAME = 4
+	START_GAME = 4,
+	//SELECT_COLOR_ = 5
 
 };
 
 enum class Respond_Type: uint32_t {
     SUCCESFUL_CONNECTION = 0,
-    SEND_CARDS = 1,
+    SEND_HAND = 1,
     GAME_UPDATE = 2,
-    ERROR = 3
+    ERROR_ = 3
 };
 
 class ckException : public std::exception {

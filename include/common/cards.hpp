@@ -44,7 +44,7 @@ namespace ck_Cards {
         YELLOW_7_B = 35,
         YELLOW_8_B = 36,
         YELLOW_9_B = 37,
-	GREEN_0 = 38,
+	    GREEN_0 = 38,
         GREEN_1_A = 39,
         GREEN_2_A = 40,
         GREEN_3_A = 41,
@@ -54,7 +54,7 @@ namespace ck_Cards {
         GREEN_7_A = 45,
         GREEN_8_A = 46,
         GREEN_9_A = 47,
-	GREEN_1_B = 48,
+	    GREEN_1_B = 48,
         GREEN_2_B = 49,
         GREEN_3_B = 50,
         GREEN_4_B = 51,
@@ -63,7 +63,7 @@ namespace ck_Cards {
         GREEN_7_B = 54,
         GREEN_8_B = 55,
         GREEN_9_B = 56,
-	RED_0 = 57,
+	    RED_0 = 57,
         RED_1_A = 58,
         RED_2_A = 59,
         RED_3_A = 60,
@@ -155,6 +155,9 @@ namespace ck_Cards {
         const Color color;
 	    const Value value;
 	    const Action action;
+	    std::string get_color_as_string() const;
+	    std::string get_action_as_string() const;
+	    std::string get_value_as_string() const;
     };
 
     class Deck {
@@ -175,19 +178,17 @@ namespace ck_Cards {
     public:
         [[nodiscard]] const Cards get_top_card();
         const Cards front();
-        void pop();
-        void push_back(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
-        void push(const std::vector<Cards> /*cards*/) noexcept;      
+        void push(const std::list<Cards> /*cards*/) noexcept;
+        void remove(const ck_Cards::Cards /*card*/);
         void shuffle() noexcept;
-        virtual void from_json(const std::string&);
-        [[nodiscard]] virtual const std::string to_json() const noexcept;
         [[nodiscard]] bool size() const noexcept;
         [[nodiscard]] bool empty() const noexcept;
         void clear() noexcept;
-        [[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
+        //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
         Pile(std::list<Cards> /*cards_*/); //constructor
-        std::list<Cards> get_cards();
+        Pile(); //default constructor
+        const std::list<Cards> get_cards() const;
     };
 
     typedef Pile Draw_Pile;

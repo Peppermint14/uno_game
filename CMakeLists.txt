@@ -22,7 +22,7 @@ include(FetchContent)
 set(CLIENT_FILES
 	"src/client/main.cpp"
 	"src/client/tcp_client.cpp"
-	"src/client/player_state.cpp"
+	#"src/client/player_state.cpp"
 	"src/client/player_controller.cpp"
 	"src/client/digital_UNO.cpp"
 	#UI
@@ -40,6 +40,7 @@ set(SERVER_FILES
 	"src/server/game_controller.cpp"
 	"src/server/game_state.cpp"
 	"src/server/player.cpp"
+
 )
 
 set(COMMON_FILES

@@ -128,9 +128,52 @@ ck_Cards::Cards& ck_Cards::operator++ (ck_Cards::Cards& it)
 
 }
 
+std::string ck_Cards::Card::get_color_as_string() const
+{
+    switch(color)
+    {
+        case Color::BLUE:
+          return "blue";
+        case Color::YELLOW:
+            return "yellow";
+        case Color::RED:
+            return "red";
+        case Color::GREEN:
+            return "green";
+        case Color::NONE:
+            return "";
+        default:
+            return "";
+    }
+}
+std::string ck_Cards::Card::get_action_as_string() const
+{
+    switch(action)
+    {
+        case Action::SKIP:
+            return "skip";
+        case Action::REVERSE:
+            return "reverse";
+        case Action::DRAW2:
+            return "draw two";
+        case Action::WILD_DRAW4:
+            return "wild draw four";
+        case Action::WILD:
+            return "wild";
+        case Action::NONE:
+            return "";
+        default:
+            return "";
+    }
+}
+std::string ck_Cards::Card::get_value_as_string() const
+{
+    if(value == Value::NONE)
+        return "";
+    else
+        return "";
 
-
-
+}
 
 const ck_Cards::Card& ck_Cards::Deck::get(ck_Cards::Cards _card) noexcept {
     assert(instance->cards.count(_card) == 1);
@@ -150,6 +193,8 @@ ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> cards_)
 	cards = cards_;
 }
 
+ck_Cards::Pile::Pile() {};
+
 
 const ck_Cards::Cards ck_Cards::Pile::get_top_card()
 {
@@ -165,20 +210,20 @@ const ck_Cards::Cards ck_Cards::Pile::front()
 	return cards.front();
 }
 
-void ck_Cards::Pile::pop() {
-    if(empty()) throw new ckException("Error: Pile is already empty");
-    cards.erase(cards.begin());
-}
-
 void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
 }
 
 
-void ck_Cards::Pile::push(const std::vector<Cards> _cards) noexcept {
+void ck_Cards::Pile::push(const std::list<Cards> _cards) noexcept {
     for(const auto& c : _cards)
         cards.push_back(c);
-}  
+}
+
+void ck_Cards::Pile::remove(const ck_Cards::Cards card)
+{
+    cards.remove(card);
+}
 
 void ck_Cards::Pile::shuffle() noexcept {
     if(empty()) return;
@@ -202,22 +247,25 @@ void ck_Cards::Pile::clear() noexcept{
     cards.clear();
 }
 
+/*
 void ck_Cards::Pile::from_json(const std::string& _json) {
     if(!empty()) throw new ckException("Pile needs to be empty first. call clear()");
     auto vals = nlohmann::json::parse(_json);
     std::copy(vals["cards"].begin(), vals["cards"].end(), std::front_inserter(cards)); 
 }
 
+
 const std::string ck_Cards::Pile::to_json() const noexcept {
     nlohmann::json json(cards);
     return json.dump();
 }
 
+
 bool ck_Cards::Pile::valid(ck_Cards::Cards _card) const noexcept {
     return !(std::find(cards.begin(), cards.end(), _card) == cards.end());
 }
-
-std::list<ck_Cards::Cards> ck_Cards::Pile::get_cards() 
+*/
+const std::list<ck_Cards::Cards> ck_Cards::Pile::get_cards() const
 {
     return cards;
 }
