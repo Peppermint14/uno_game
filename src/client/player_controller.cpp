@@ -151,6 +151,24 @@ void player_controller::eval_response(const std::string& msg)
 
 				break;
 			}
+		
+		case Respond_Type::UNO:
+			{
+				//create pop up uno
+				break;
+			}
+		case Respond_Type::GAME_OVER:
+			{
+				//create pop up game over
+				break;
+			}
+		
+		case Respond_Type::WINS:
+			{
+				Player_id winner_id = request["Player_id"]; 
+				//create pop up id wins
+				break;
+			}
 	}
 
 }
