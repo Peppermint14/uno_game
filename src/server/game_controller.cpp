@@ -85,6 +85,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            //reset game
                            delete game_state;
                            game_state = new Game_State();
+                           //TODO: send empty hand to player who has not finished yet
                            broadcast_game_state();
                        }
 
@@ -104,7 +105,6 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     const ck_Cards::Card& card_object = ck_Cards::Deck::get(game_state->get_discard_pile().get_top_card());
                     nlohmann::json error_respond;
                     error_respond["type"] = Respond_Type::ERROR_;
-                    //TODO: make error message more specific by telling the client what he can play e.g. convert enum to string
                     std::stringstream error_msg;
                     if(card_object.action == ck_Cards::Action::NONE)
                     {
@@ -112,7 +112,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     }
                     if(card_object.value == ck_Cards::Value::NONE)
                     {
-                        error_msg << "ERROR: please play a ";
+                        error_msg << "ERROR: please play a " << card_object.get_color_as_string() << " card or a " << card_object.get_action_as_string() << " card";
                     }
                     error_respond["msg"] = error_msg.str();
                     net::TCP_Server::sendToPlayer(player_id, error_respond.dump());

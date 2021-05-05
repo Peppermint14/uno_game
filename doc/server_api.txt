@@ -75,6 +75,24 @@ error/ illegal move
     "msg": "..."
 }
 
+popup UNO
+{
+    "type": UNO
+}
+
+popup Game_Finished
+{
+    "type": GAME_OVER
+
+}
+
+popup Player has won
+{
+    "type": WINS
+    "Player_id": some_PLAYER_ID
+
+}
+
 ++++++++++++++++++++++++++++++Respond client side e.g. selected_color++++++++++++++++++++++++++++
 selected color
 {
