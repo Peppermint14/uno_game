@@ -97,6 +97,9 @@ bool Player_State::has_player_won() const {
 bool Player_State::is_waiting() const {
      return player_waiting;
 }
+void Player_State::set_is_waiting(bool waiting){
+     player_waiting = waiting;
+}
 bool Player_State::has_player_quit() const {
      return player_quit;
 }

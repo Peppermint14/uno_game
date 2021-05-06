@@ -63,14 +63,14 @@ void player_controller::connectToServer() {
     //PickColour();
 
     // check that all values were provided
-    // if(inputServerAddress.IsEmpty()) {
-    //     player_controller::showError("Input error", "Please provide the server's address");
-    //     return;
-    // }
-    // if(inputServerPort.IsEmpty()) {
-    //     player_controller::showError("Input error", "Please provide the server's port number");
-    //     return;
-    // }
+    if(inputServerAddress.IsEmpty()) {
+         player_controller::showError("Input error", "Please provide the server's address");
+         return;
+    }
+    if(inputServerPort.IsEmpty()) {
+         player_controller::showError("Input error", "Please provide the server's port number");
+         return;
+    }
     if(inputPlayerName.IsEmpty()) {
          player_controller::showError("Input error", "Please enter your desired player name");
          return;
@@ -91,7 +91,7 @@ void player_controller::connectToServer() {
     std::string playerName = inputPlayerName.ToStdString();
 
     // //connect to network
-    // ClientNetworkManager::init(host, port);
+    //ClientNetworkManager::init(host, port);
 
     // //send request to join game
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
@@ -124,16 +124,18 @@ void player_controller::eval_response(const std::string& msg)
 			}
 		case Respond_Type::GAME_UPDATE:
 			{
-				
+				//update is waiting (is the game allready ongoing or do the players have to wait)
+				Player_id current_id= response["current_player"];
+				_me->get_player_state()->set_is_waiting(current_id == Player_id::NONE);
+
+				//update whos turn it is
+				set_current_player(current_id);
+				_currentPlayerState->set_players_turn(current_id == _me->get_player_id());
+	
 				//update number of cards of all players
 				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
 				set_number_cards_player(player_cards_list);
-				
-				//update whos turn it is
-				Player_id current_id= response["current_player"];
-				set_current_player(current_id);
-				_currentPlayerState->set_players_turn(current_id == _me->get_player_id());
-
+			
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				set_color(color);

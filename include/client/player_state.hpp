@@ -28,6 +28,7 @@ public:
 	Player_id get_current_player() const;
 	bool has_player_won() const;
 	bool is_waiting() const;
+	void set_is_waiting(bool);
 	bool has_player_quit() const;
 	std::string get_player_name() const;
 	std::string get_name_of_playerid(Player_id) const;
@@ -42,6 +43,7 @@ private:
 	bool play_direction;
 	Player_id current_Player;
 	bool player_won;
+	//true if player is waiting for the game to start, 0 if the game is already ongoing
 	bool player_waiting;
 	bool player_quit; // Exited the game without winning
 	std::vector<std::string> all_Player_Names;
