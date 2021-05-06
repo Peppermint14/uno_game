@@ -305,11 +305,11 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         innerLayout->Add(playerPoints, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
         // // show button that allows our player to start the game
-        // wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
-        // startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-        //     GameController::startGame();
-        // });
-        // innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
+        wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
+        startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
+             player_controller::startGame();
+         });
+        innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
     } else {
 
