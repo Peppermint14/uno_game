@@ -30,7 +30,7 @@ public:
 	bool is_waiting() const;
 	bool has_player_quit() const;
 	std::string get_player_name() const;
-
+	std::string get_name_of_playerid(Player_id) const;
 
 
 private:

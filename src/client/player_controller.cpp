@@ -146,26 +146,38 @@ void player_controller::eval_response(const std::string& msg)
 			}
 		case Respond_Type::ERROR_:
 			{
+
 				std::string message = response["msg"];
-				set_error_message(message);
+				player_controller::showError("error", message);
+				//set_error_message(message);
 
 				break;
 			}
 		
 		case Respond_Type::UNO:
 			{
-				//create pop up uno
+				player_controller::showStatus("UNO");
 				break;
 			}
 		case Respond_Type::GAME_OVER:
 			{
+				player_controller::showStatus("Game over");
 				//create pop up game over
 				break;
 			}
 		
 		case Respond_Type::WINS:
 			{
-				Player_id winner_id = request["Player_id"]; 
+				Player_id winner_id = response["Player_id"];
+			        if(winner_id == _me->get_player_id()){	
+					player_controller::showStatus("Wueeeeehhhhhh!!!!!!!!!!!!!! You won !!!!! :D");
+				}
+				else{
+					std::string player_name = _me->get_player_state()->get_name_of_playerid(winner_id);
+					std::string message = "Looser!!! you lost the game :(" + player_name +" won the game";
+					player_controller::showStatus("message");
+				}
+							
 				//create pop up id wins
 				break;
 			}
@@ -275,12 +287,12 @@ wxEvtHandler* player_controller::getMainThreadEventHandler() {
 
 
 void player_controller::showError(const std::string& title, const std::string& message) {
-    // wxMessageBox(message, title, wxICON_ERROR);
+    wxMessageBox(message, title, wxICON_ERROR);
 }
 
 
 void player_controller::showStatus(const std::string& message) {
-    // player_controller::_gameWindow->setStatus(message);
+    player_controller::_gameWindow->setStatus(message);
 }
 
 

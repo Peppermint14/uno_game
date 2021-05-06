@@ -103,3 +103,8 @@ bool Player_State::has_player_quit() const {
 std::string Player_State::get_player_name() const {
      return all_Player_Names[uint32_t(current_Player)];
 }
+
+std::string Player_State::get_name_of_playerid(Player_id id) const{
+	return all_Player_Names[int(id)-1];
+}
+
