@@ -155,7 +155,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             unsigned int number_of_players = game_state->get_players().size();
             if(number_of_players == 1)
             {
-                //TODO: maybe end game here, how to end the game anyway, e.g. end main????
+                reset_game();
 
             }
             if(number_of_players == 2)
@@ -177,9 +177,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 Player* next_player = game_state->get_player(next_player_id);
                 next_player->set_has_won(true);
 
-                //TODO:should we terminate the game and how??
-                //enable new game as it cannot be continued
-                //game_state->set_has_started(false);
+                reset_game();
             }
             else
             {
