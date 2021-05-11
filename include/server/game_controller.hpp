@@ -31,6 +31,9 @@ public:
     //updates game_state according to played card
     void effect_of_card(const Player_id& /*player_id*/, const ck_Cards::Cards /*card*/);
 
+    //constructs a new game_state, with new cards
+    void reset_game();
+
     void broadcast_game_state() const;
 
 private:

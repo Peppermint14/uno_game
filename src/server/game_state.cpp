@@ -101,7 +101,6 @@ void Game_State::remove_player(const Player_id& player_id)
             delete iter->second;
             players.erase(iter);
         }
-
     }
 }
 
