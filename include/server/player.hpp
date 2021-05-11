@@ -18,12 +18,10 @@ public:
 	Player_State* get_player_state() const;
 	bool get_is_active() const;
 
-private:
-
 	Player_id player_id; //unique player id
 	Player_State* player_state;
 	bool is_active; //if player has exited set is_active to false
-
+private:
 	Player(const Player_id& /*player_id_*/, bool /*is_active_*/, const std::string& /*player_name_*/); //constructor
 	void set_is_active(bool);
 	void set_hand(ck_Cards::Hand* /*hand_*/); //also set number of cards
