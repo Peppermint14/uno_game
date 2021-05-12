@@ -1,3 +1,4 @@
+
 ++++++++++ SERVER ++++++++++
 message to player on succesfull connections
 {
@@ -5,13 +6,14 @@ message to player on succesfull connections
     "id": #
 }
 
-internal message on connections
+++++++++++ REQUESTS ++++++++++
+
+join request
 {
     "type": "NEW_PLAYER",
+    "name": std::string
     "id": #
 }
-
-++++++++++ REQUESTS ++++++++++
 
 play request
 {
@@ -69,3 +71,107 @@ error/ illegal move
     "type": "error",
     "msg": "..."
 }
+=======
+++++++++++ SERVER ++++++++++
+message to player on succesfull connections
+{
+    "type:" SUCCESSFUL_CONNECTION
+    "id": #
+}
+
+internal message on connections
+{
+    "type": "NEW_PLAYER",
+    "id": #
+}
+
+++++++++++ REQUESTS ++++++++++
+
+play request
+{
+    "type": "PLAY_REQUEST",
+    "id": #,
+    "card": card_type
+    //"color": "color"
+}
+
+draw request
+{
+    "type": "DRAW_REQUEST",
+    "id": #,
+}
+
+exit request
+{
+    "type": "EXIT_REQUEST",
+    "id": #,
+}
+
+select color request
+{
+    "type": "SELECT_COLOR"
+}
+
+++++++++++ RESPONDS ++++++++++
+
+send_hand
+{
+    "type": SEND_HAND,
+    "hand": [
+        "id",
+        "id",
+        ...
+        ]
+}
+
+update player state (shared information) (broadcast)
+{
+    "type": GAME_UPDATE,
+    "players": [
+        [
+            "Player_id": #
+            "Player_name": #
+            number_of_cards": #,
+        ],
+        [
+            "Player_id:" #
+            "Player_name": #
+            "number_of_cards": #,
+        ],
+        ...
+    ], 
+    "current_player": 2, 
+    "color_to_be_matched": yellow, 
+    "top_card": yellow_0
+}
+
+error/ illegal move
+{
+    "type": "ERROR",
+    "msg": "..."
+}
+
+popup UNO
+{
+    "type": UNO
+}
+
+popup Game_Finished
+{
+    "type": GAME_OVER
+
+}
+
+popup Player has won
+{
+    "type": WINS
+    "player_name": some_PLAYER_name
+}
+
+++++++++++++++++++++++++++++++Respond client side e.g. selected_color++++++++++++++++++++++++++++
+selected color
+{
+    "type": "SELECTED_COLOR"
+    "color": ck_Cards::Color
+}
+>>>>>>> server

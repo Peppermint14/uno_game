@@ -41,6 +41,7 @@ set(SERVER_FILES
 	"src/server/game_controller.cpp"
 	"src/server/game_state.cpp"
 	"src/server/player.cpp"
+
 )
 
 set(COMMON_FILES
@@ -52,10 +53,10 @@ set(COMMON_FILES
 
 if (MSVC)
 	add_executable(ck_client WIN32 "${CLIENT_FILES}" "${COMMON_FILES}")
-	#	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 else()
 	add_executable(ck_client "${CLIENT_FILES}" "${COMMON_FILES}")
-	#	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
+	add_executable(ck_server "${SERVER_FILES}" "${COMMON_FILES}")
 endif()
 
 # ------------------ wxWidgets ------------------
@@ -132,13 +133,16 @@ set(SERVER_LIBS
 
 if (MSVC)
 	target_link_libraries(ck_client "${CLIENT_LIBS}" wsock32 ws2_32) 
-	#target_link_libraries(ck_server "${SERVER_LIBS}" wsock32 ws2_32)
+	target_link_libraries(ck_server "${SERVER_LIBS}" wsock32 ws2_32)
 else()
 	target_link_libraries(ck_client "${CLIENT_LIBS}") 
-	#target_link_libraries(ck_server "${SERVER_LIBS}")
+	target_link_libraries(ck_server "${SERVER_LIBS}")
 endif()
 
+#----------------------------------------------------------------
+
 # ------------------ TESTS ------------------
+
 #if(CK_BUILD_TESTS)
 
     # add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
@@ -149,3 +153,39 @@ endif()
 	# endif()
 
 #endif()
+
+set(SERVER_TEST "tests/servertest/test_game_controller.cpp")
+set(SERVER_FILES_TEST
+		"src/server/tcp_server.cpp"
+		"src/server/game_controller.cpp"
+		"src/server/game_state.cpp"
+		"src/server/player.cpp"
+		)
+
+add_executable(unit_tests_server ${SERVER_TEST} ${SERVER_FILES_TEST} ${COMMON_FILES})
+target_link_libraries(unit_tests_server "${SERVER_LIBS}")
+
+target_include_directories(unit_tests_server PRIVATE inc)
+target_link_libraries(unit_tests_server gtest gtest_main)
+
+#if(CK_BUILD_TESTS)
+
+add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
+target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
+
+#endif()
+
+# Include GoogleTest as an external source dependency
+
+include(FetchContent) # Import CMake's FetchContent module
+
+# Which GTest version, and where to obtain it from
+FetchContent_Declare(
+		googletest
+		GIT_REPOSITORY https://github.com/google/googletest.git
+		GIT_TAG release-1.10.0
+)
+
+FetchContent_MakeAvailable(googletest)
+
+

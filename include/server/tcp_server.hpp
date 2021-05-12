@@ -77,10 +77,12 @@ namespace net {
                                 auto logger = Logger::create(ss.str());
 
                                 //notify the connection of a new player
+                                /*
                                 nlohmann::json cmsg;
                                 cmsg["type"] = "new_player";
                                 cmsg["id"] = id + 1;
                                 instance->cbQueue.push({static_cast<Player_id>(id+1), cmsg.dump()});
+                                */
                                 
                                 while (!instance->shutdown[id]._a) {
                                     auto now = clock::now();
