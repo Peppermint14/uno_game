@@ -36,6 +36,9 @@ public:
 
     void broadcast_game_state() const;
 
+    //just for testing purposes
+    Game_State* get_game_state();
+
 private:
     Game_State* game_state;
 };

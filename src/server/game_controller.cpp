@@ -465,3 +465,8 @@ void Game_Controller::switch_player(const Player_id& player_id)
     next_player->set_players_turn(true);
     game_state->set_current_player(next_player->get_player_id());
 }
+
+Game_State* Game_Controller::get_game_state()
+{
+    return game_state;
+}
