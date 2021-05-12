@@ -49,15 +49,16 @@ enum class Request_Type : uint32_t {
 	DRAW_REQUEST = 2,
 	EXIT_REQUEST = 3,
 	START_GAME = 4,
-	//SELECT_COLOR_ = 5
+	SELECTED_COLOR = 5
 
 };
 
 enum class Respond_Type: uint32_t {
-    SUCCESFUL_CONNECTION = 0,
-    SEND_HAND = 1,
-    GAME_UPDATE = 2,
-    ERROR_ = 3
+    //SUCCESFUL_CONNECTION = 0,
+    SEND_HAND = 0,
+    GAME_UPDATE = 1,
+    ERROR_ = 2,
+    SELECT_COLOR = 3
 };
 
 class ckException : public std::exception {
