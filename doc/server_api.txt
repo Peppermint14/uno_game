@@ -56,9 +56,11 @@ update player state (shared information) (broadcast)
     "players": [
         [
             "Player_id": #
+            "Player_name": #
             number_of_cards": #,
         ],
         [
+            "Player_id:" #
             "Player_name": #
             "number_of_cards": #,
         ],
@@ -89,8 +91,7 @@ popup Game_Finished
 popup Player has won
 {
     "type": WINS
-    "Player_id": some_PLAYER_ID
-
+    "player_name": some_PLAYER_name
 }
 
 ++++++++++++++++++++++++++++++Respond client side e.g. selected_color++++++++++++++++++++++++++++

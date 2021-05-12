@@ -131,7 +131,6 @@ endif()
 
 #----------------------------------------------------------------
 
-
 # ------------------ TESTS ------------------
 set(SERVER_TEST "tests/servertest/test_game_controller.cpp")
 set(SERVER_FILES_TEST

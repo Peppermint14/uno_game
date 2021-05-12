@@ -87,7 +87,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                         */
                         nlohmann::json popup;
                         popup["type"] = "WINS";
-                        popup["Player_id"] = player_id;
+                        popup["player_name"] = player->get_player_name();
                         net::TCP_Server::broadcast(popup.dump());
                        //finish game
                        if(game_state->have_all_won())
@@ -249,7 +249,7 @@ void Game_Controller::broadcast_game_state() const
     for(auto iterator : game_state->get_players())
     {
         Player* player = iterator.second;
-        nlohmann::json player_info = nlohmann::json::array({{"Player_name", player->get_player_name()}, {"number_of_cards", player->number_of_cards()}});
+        nlohmann::json player_info = nlohmann::json::array({{"Player_id", player->get_player_id()}, {"Player_name", player->get_player_name()}, {"number_of_cards", player->number_of_cards()}});
         respond["players"].push_back(player_info);
     }
     respond["current_player"] = game_state->get_current_player();
