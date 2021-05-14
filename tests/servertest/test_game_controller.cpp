@@ -1,5 +1,6 @@
 #include "gtest/gtest.h"
 #include "../../include/server/game_controller.hpp"
+#include "./../../include/client/player_state.hpp"
 
 //What is testing for an object????
 //Thats our Test Fixture
