@@ -3,7 +3,8 @@
 
 //What is testing for an object????
 //Thats our Test Fixture
-class Game_StateTest : public ::testing::Test {
+// https://www.jetbrains.com/help/clion/unit-testing-tutorial.html#boost-test-framework test instead of Test
+class Game_StateTest : public ::testing::test {
 
 //why protected???? 
 // protected: only accessible by derived class.
