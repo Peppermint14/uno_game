@@ -4,10 +4,12 @@
 #include "../../../include/client/UI/ImagePanel.hpp"
 #include "../../../include/common/cards.hpp"
 #include "../../../include/client/player_controller.hpp"
-// #include <wx/aboutdlg.h> 
-// #include <wx/colordlg.h> 
-// #include <wx/propdlg.h>
-#include <wx/choicdlg.h> 
+#include <wx/wx.h>
+#include <wx/utils.h>
+#include <wx/choicdlg.h>
+#include <wx/msgdlg.h> 
+#include <wx/textctrl.h>
+// #include <wx/richtext/richtextctrl.h>
 
 
 MainGamePanel::MainGamePanel(wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(960, 680)) {
@@ -79,7 +81,10 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
         this->buildOtherPlayerHand(playerState, otherPlayer, playerAngle);
         this->buildOtherPlayerLabels(playerState, otherPlayer, playerAngle, side);
     }
-*/
+*/  
+    
+    this->buildOtherPlayerLabels(playerState);
+
     // show both card piles at the center
     this->buildCardPiles(playerState, me);
 
@@ -89,9 +94,17 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     // show our own player
     this->buildThisPlayer(playerState, me);
 
+    // show turn indicator below card piles
+    this->buildPlayerList(playerState);
+
     // update layout
     this->Layout();
-    
+
+    // Make player aware if the previous player has played his penultimate card
+    if(playerState->get_uno())this->show_uno_notification(playerState);
+
+    // Make player aware if a wild card is played and he has to match a chosen colour
+    if(playerState->get_match_colour()) this->show_colour_match_notification(playerState);
 }
 
 
@@ -132,8 +145,41 @@ void MainGamePanel::buildOtherPlayerHand(Player_State* playerState, Player* othe
     */
 }
 
+void MainGamePanel::buildPlayerList(Player_State* playerState){
+    
+    wxPoint pos = MainGamePanel::tableCenter + MainGamePanel::playerListOffset;
+        
+    std::string header = "Players: name (#cards)\n\n";
+    std::string player = "";
+    std::string nof_cards = "";
 
-void MainGamePanel::buildOtherPlayerLabels(Player_State* playerState, Player* otherPlayer, double playerAngle, int side) {
+    
+    wxTextCtrl* text = new wxTextCtrl(this, wxID_ANY, header, pos, playerListSize, wxBORDER_NONE|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_NOHIDESEL|wxTE_READONLY);
+    text->SetBackgroundColour(BG);
+
+    for(Player_id id : *(playerState->get_id_vec())){
+        player = playerState->get_name_of_playerid(id) + " (" + std::to_string(playerState->get_number_of_cards(id)) + ")\n";
+        if(id == playerState->get_current_player()){
+            text->SetDefaultStyle(wxTextAttr(Higlight));
+            text->AppendText(player);
+            text->SetDefaultStyle(wxTextAttr(*wxBLACK, BG));
+        }
+        else text->AppendText(player);        
+    }
+    text->SetSize(text->GetBestSize());
+    
+    // Play-Direction Indicator:
+    
+    wxPoint posInd = pos + playDirectionOffset;
+    double arrow_direction = -1 + 2*playerState->get_play_direction(); // maps bool to -1 or 1
+    ImagePanel* DirectionIndicator = new ImagePanel(this, "../assets/arrow.png", wxBITMAP_TYPE_ANY, posInd, playDirectionSize, arrow_direction*twoPi/4);
+    
+}
+
+
+void MainGamePanel::buildOtherPlayerLabels(Player_State* playerState/*, Player* otherPlayer, double playerAngle, int side*/) {
+    
+    //wxTextCtrl PlayerList = new wxTextCtrl()
 
     /*
     long textAlignment = wxALIGN_CENTER;
@@ -212,7 +258,7 @@ void MainGamePanel::buildOtherPlayerLabels(Player_State* playerState, Player* ot
 void MainGamePanel::buildCardPiles(Player_State* playerState, Player *me) {
 
     
-    if(playerState->is_waiting()) {
+    if(!playerState->is_waiting_for_start()) {
 
         // Show discard pile
         const ck_Cards::Cards* topCard = playerState->get_top_discard();
@@ -275,9 +321,6 @@ void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
 
 void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
 
-
-    
-
     // Setup two nested box sizers, in order to align our player's UI to the bottom center
     wxBoxSizer* outerLayout = new wxBoxSizer(wxHORIZONTAL);
     this->SetSizer(outerLayout);
@@ -286,7 +329,8 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
     
     // Show the label with our player name
     wxStaticText* playerName = buildStaticText(
-            me->get_player_name(),
+            playerState->get_player_name(),
+            //me->get_player_name(),
             wxDefaultPosition,
             wxSize(200, 18),
             wxALIGN_CENTER,
@@ -294,7 +338,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
     );
     innerLayout->Add(playerName, 0, wxALIGN_CENTER);
     // if the game has not yet started we say so
-    if(playerState->is_waiting()) {
+    if(playerState->is_waiting_for_start()) {
 
         wxStaticText* playerPoints = buildStaticText(
                 "Waiting for game to start...",
@@ -337,15 +381,16 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
 
         }
         // if we haven't folded yet, and it's our turn, display Fold button
-        // else if (playerState->get_current_player() == me) {
-        //     wxButton *ExitButton = new wxButton(this, wxID_ANY, "Fold", wxDefaultPosition, wxSize(80, 32));
-        //     foldButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-        //         Player::fold();
-        //     });
-        //     innerLayout->Add(foldButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
+        else if (playerState->get_players_turn()) {
+            wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
+            ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
+                player_controller::exit();
+            });
+            innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
-        // }// if it's not our turn, display "waiting..."
+        }
         else {
+            // if it's not our turn, display "waiting..."
             wxStaticText *playerStatus = buildStaticText(
                     "waiting for your turn...",
                     wxDefaultPosition,
@@ -356,7 +401,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         }
         
         // display our player's hand, if we have cards
-        int numberOfCards = playerState->get_nof_cards();
+        int numberOfCards = playerState->get_number_of_cards(playerState->get_this_player());
         if (numberOfCards > 0) {
 
             // create horizontal layout for the individual hand cards of our player
@@ -397,6 +442,47 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
     }    
 }
 
+void MainGamePanel::show_uno_notification(Player_State* ps){
+
+    wxPoint popupPosition = MainGamePanel::tableCenter + MainGamePanel::unoPopupOffset;
+    ImagePanel* uno_notification = new ImagePanel(this, "../assets/uno_popup.png", wxBITMAP_TYPE_ANY, popupPosition, MainGamePanel::popupSize);
+    uno_notification->Show(false);
+    if(ps->get_uno()){
+        uno_notification->Show();
+        std::cout << "sleep start" << std::endl;
+        // wxImage disabled = uno_notification->_image->convertToDisabled();
+
+    }
+    
+}
+void MainGamePanel::show_colour_match_notification(Player_State* ps){
+
+    wxString message("A wild card has been played! You have to match the following colour: \n");
+    switch (uint32_t(ps->get_to_be_matched()))
+    {
+    case 0:
+        message += "GREEN";
+        break;
+
+    case 1:
+        message += "RED";
+        break;
+
+    case 2:
+        message += "YELLOW";
+        break;
+
+    case 3:
+        message += "BLUE";
+        break;
+
+    case 4:
+        message += "ERROR";
+        break;
+
+    }
+    wxMessageBox(message, "Match Colour", wxICON_INFORMATION);
+}
 
 wxStaticText* MainGamePanel::buildStaticText(std::string content, wxPoint position, wxSize size, long textAlignment, bool bold) {
     wxStaticText* staticText = new wxStaticText(this, wxID_ANY, content, position, size, textAlignment);

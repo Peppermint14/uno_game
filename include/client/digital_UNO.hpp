@@ -5,7 +5,6 @@
 
 #include <wx/wx.h>
 #include "UI/GameWindow.hpp"
-//#include "player_controller.hpp"
 
 
 // Main app class

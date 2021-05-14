@@ -1,7 +1,7 @@
 // Copied from Lama example Project
 
 #include "../../../include/client/UI/GameWindow.hpp"
-
+#include <wx/colour.h>
 
 GameWindow::GameWindow(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame(nullptr, wxID_ANY, title, pos, size)
 {
@@ -17,8 +17,8 @@ GameWindow::GameWindow(const wxString& title, const wxPoint& pos, const wxSize& 
     this->_statusBar = this->CreateStatusBar(1);
 
     // Set background
-    wxColor lightBlue = wxColor(213, 231, 239);
-    this->SetBackgroundColour(lightBlue);
+    wxColour BG = wxColor(200,210,100);
+    this->SetBackgroundColour(BG);
 
     // Set the minimum size of the window. The user won't be able to resize the window to a size smaller than this
     this->SetMinSize(wxSize(1000, 720));

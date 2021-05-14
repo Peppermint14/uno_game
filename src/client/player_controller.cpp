@@ -2,7 +2,8 @@
 
 #include "../../include/client/player_controller.hpp"
 #include "../../include/client/UI/MainGamePanel.hpp"
-
+#include "../../include/common/cards.hpp"
+#include "../../include/common/common.hpp"
 // #include "../common/network/requests/join_game_request.h"
 // #include "../common/network/requests/start_game_request.h"
 // #include "../common/network/requests/draw_card_request.h"
@@ -47,7 +48,7 @@ void player_controller::init(GameWindow* gameWindow) {
 void player_controller::PickColour(){
 
     wxString colour = _mainGamePanel->colourPicker();
-    //send_request that 'colour' was picked
+    //TODO: send_request that 'colour' was picked
 }
 
 void player_controller::connectToServer() {
@@ -57,24 +58,24 @@ void player_controller::connectToServer() {
     wxString inputServerPort = player_controller::_connectionPanel->getServerPort().Trim();
     wxString inputPlayerName = player_controller::_connectionPanel->getPlayerName().Trim();
    
-    //updateGameState(&test_state);    
+    //updatePlayerState(&test_state);    
     //_gameWindow->showPanel(_mainGamePanel);
     
     //PickColour();
 
     // check that all values were provided
-    if(inputServerAddress.IsEmpty()) {
-         player_controller::showError("Input error", "Please provide the server's address");
-         return;
-    }
-    if(inputServerPort.IsEmpty()) {
-         player_controller::showError("Input error", "Please provide the server's port number");
-         return;
-    }
-    if(inputPlayerName.IsEmpty()) {
-         player_controller::showError("Input error", "Please enter your desired player name");
-         return;
-     }
+    // if(inputServerAddress.IsEmpty()) {
+    //      player_controller::showError("Input error", "Please provide the server's address");
+    //      return;
+    // }
+    // if(inputServerPort.IsEmpty()) {
+    //      player_controller::showError("Input error", "Please provide the server's port number");
+    //      return;
+    // }
+    // if(inputPlayerName.IsEmpty()) {
+    //      player_controller::showError("Input error", "Please enter your desired player name");
+    //      return;
+    //  }
      
     // convert host from wxString to std::string
     // std::string host = inputServerAddress.ToStdString();
@@ -95,7 +96,7 @@ void player_controller::connectToServer() {
 
     // //send request to join game
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
-    updateGameState(&test_state);    
+    updatePlayerState(&test_state);    
     _gameWindow->showPanel(_mainGamePanel);
 	
     join(playerName);
@@ -187,27 +188,27 @@ void player_controller::eval_response(const std::string& msg)
 
 }
 
-void player_controller::updateGameState(Player_State* newGameState) {
+void player_controller::updatePlayerState(Player_State* newPlayerState) {
 
     
     // the existing game state is now old
     Player_State* oldPlayerState = player_controller::_currentPlayerState;
 
     // save the new game state as our current game state
-    player_controller::_currentPlayerState = newGameState;
+    player_controller::_currentPlayerState = newPlayerState;
 /*
-    if(oldGameState != nullptr) {
+    if(oldPlayerState != nullptr) {
 
         // check if a new round started, and display message accordingly
-        if(oldGameState->get_round_number() > 0 && oldGameState->get_round_number() < newGameState->get_round_number()) {
-            player_controller::showNewRoundMessage(oldGameState, newGameState);
+        if(oldPlayerState->get_round_number() > 0 && oldPlayerState->get_round_number() < newPlayerState->get_round_number()) {
+            player_controller::showNewRoundMessage(oldPlayerState, newPlayerState);
         }
 
         // delete the old game state, we don't need it anymore
-        delete oldGameState;
+        delete oldPlayerState;
     }
 
-    if(player_controller::_currentGameState->is_finished()) {
+    if(player_controller::_currentPlayerState->is_finished()) {
         player_controller::showGameOverMessage();
     }
 */
@@ -244,13 +245,13 @@ void player_controller::drawCard() {
 
 
 
-    // draw_card_request request = draw_card_request(player_controller::_currentGameState->get_id(), player_controller::_me->get_id());
+    // draw_card_request request = draw_card_request(player_controller::_currentPlayerState->get_id(), player_controller::_me->get_id());
     // ClientNetworkManager::sendRequest(request);
 }
 
 
 void player_controller::fold() {
-    // fold_request request = fold_request(player_controller::_currentGameState->get_id(), player_controller::_me->get_id());
+    // fold_request request = fold_request(player_controller::_currentPlayerState->get_id(), player_controller::_me->get_id());
     // ClientNetworkManager::sendRequest(request);
 }
 
@@ -264,9 +265,17 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
 	net::TCP_Client::send(request.dump());
 	
      	std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
+        test_state.set_top_discard(*cardToPlay);
+        std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
+        ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
+        test_state.set_hand(new_hand);
+        test_state.set_uno(!test_state.get_uno());
+        updatePlayerState(&test_state);
+
 }
 
 void player_controller::exit(){
+    
 	Player_id id = _me->get_player_id();
 	nlohmann::json request;
 	request["id"]= id;
@@ -298,17 +307,17 @@ void player_controller::showStatus(const std::string& message) {
 }
 
 
-void player_controller::showNewRoundMessage(Player_State* oldGameState, Player_State* newGameState) {
+void player_controller::showNewRoundMessage(Player_State* oldPlayerState, Player_State* newPlayerState) {
     /*
     std::string title = "Round Completed";
     std::string message = "The players gained the following minus points:\n";
     std::string buttonLabel = "Start next round";
 
     // add the point differences of all players to the messages
-    for(int i = 0; i < oldGameState->get_players().size(); i++) {
+    for(int i = 0; i < oldPlayerState->get_players().size(); i++) {
 
-        player* oldPlayerState = oldGameState->get_players().at(i);
-        player* newPlayerState = newGameState->get_players().at(i);
+        player* oldPlayerState = oldPlayerState->get_players().at(i);
+        player* newPlayerState = newPlayerState->get_players().at(i);
 
         int scoreDelta = newPlayerState->get_score() - oldPlayerState->get_score();
         std::string scoreText = std::to_string(scoreDelta);
@@ -338,7 +347,7 @@ void player_controller::showGameOverMessage() {
     std::string buttonLabel = "Close Game";
 
     // sort players by score
-    std::vector<player*> players = player_controller::_currentGameState->get_players();
+    std::vector<player*> players = player_controller::_currentPlayerState->get_players();
     std::sort(players.begin(), players.end(), [](const player* a, const player* b) -> bool {
         return a->get_score() < b->get_score();
     });
