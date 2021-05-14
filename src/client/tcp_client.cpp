@@ -3,76 +3,155 @@
 
 net::TCP_Client* net::TCP_Client::instance = new net::TCP_Client();
 
-net::TCP_Server::TCP_Server() noexcept {
-    shutdown = false;
-    sendQueue = std::make_unique<util::BlockQueue<std::string>>();
-    /*connections.resize(4);
-    for(size_t i = 0; i < 4; ++i){
-        shutdown.emplace_back(false);
-        sendQueue.push_back(std::make_unique<util::BlockQueue<std::string>>());
-    }*/
+void net::TCP_Client::send(const std::string& _msg) noexcept {
+    std::lock_guard<std::mutex> lock(instance->mutex);
+    instance->toSend.push(_msg);
 }
 
-net::TCP_Server::~TCP_Server() noexcept{
-        shutdown._a = true; 
+void net::TCP_Client::terminate() noexcept {
+    auto log = Logger::get("client_main");
+    log->info("[Client] Shutdown recieved.");
+    instance->shutdown = true;
 }
 
-void net::TCP_Server::disconect(Player_id _player) noexcept {
-    const size_t id = static_cast<size_t>(_player) - 1;
-    instance->shutdown[id]._a = true;
-}
-
-void net::TCP_Server::terminate() noexcept {
-    auto logger = Logger::get("server_main");  
-    instance->server_shutdown = true;
-    logger->info("Shutdown recieved...");
-}
-
-void net::TCP_Server::barrier() noexcept {
-    using clock = std::chrono::high_resolution_clock;
-    auto logger = Logger::get("server_main");
+//use for debug and test purpose only
+void net::TCP_Client::barrier() noexcept {
+    auto logger = Logger::get("client_main");
     logger->info("Waiting for shutdown...");
-
-    auto f = std::async(std::launch::async, []{
-        while(true) {
-            std::string in;
-            std::cin >> in;
-            if(in == "q")
-                return in;
-        }
-        return std::string("q");
-    });
-
-    while(!f.valid() && !instance->server_shutdown){
-        auto now = clock::now();
-
-        while(!instance->cbQueue.empty()){
-            const auto v = instance->cbQueue.front();
-            instance->cbQueue.pop();
-            instance->cb(std::get<0>(v), std::get<1>(v));
-        }
-        //max 60 fps
-        const auto delta = 16ms - std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - now);
-        if(delta > 0ms) std::this_thread::sleep_for(delta);
-    }
-    for(size_t i = 0; i < 4; ++i)
-        instance->shutdown[i]._a = true; 
-
+    char i;
+    std::cin >> i;
+    terminate();
     logger->info("Waiting for threads to shut down...");
-
-    instance->listener.wait_for(2s);
-    for(auto& f : instance->connections){
-        if(f.has_value())
-            f.value().wait_for(2s);
-    }
 
     logger->info("Goodbye!");
 }
 
 
-void net::TCP_Client::send(const std::string _msg){ 
-    const size_t id = static_cast<size_t>(_player) - 1;
-    if(!instance->connection.has_value())
-        throw new ckException(_msg);
-    instance->sendQueue->push(_msg);
+//FROM LAMA PROJECT FILE CLIENTNETWORKManager
+/* 
+
+   sockpp::tcp_connector* ClientNetworkManager::_connection = nullptr;
+
+bool ClientNetworkManager::_connectionSuccess = false;
+bool ClientNetworkManager::_failedToConnect = false;
+
+
+
+void::ClientNetworkManager::init(const std::string& host, const uint16_t port) {
+
+    // initialize sockpp framework
+    sockpp::socket_initializer sockInit;
+
+    // reset connection status
+    ClientNetworkManager::_connectionSuccess = false;
+    ClientNetworkManager::_failedToConnect = false;
+
+    // delete exiting connection and create new one
+    if(ClientNetworkManager::_connection != nullptr) {
+        ClientNetworkManager::_connection->shutdown();
+        delete ClientNetworkManager::_connection;
+    }
+    
+ClientNetworkManager::_connection = new sockpp::tcp_connector();
+
+    // try to connect to server
+    if(ClientNetworkManager::connect(host, port)) {
+        GameController::showStatus("Connected to " + host + ":" + std::to_string(port));
+        ClientNetworkManager::_connectionSuccess = true;
+
+        // start network thread
+        ResponseListenerThread* responseListenerThread = new ResponseListenerThread(ClientNetworkManager::_connection);
+        if(responseListenerThread->Run() != wxTHREAD_NO_ERROR) {
+            GameController::showError("Connection error", "Could not create client network thread");
+        }
+
+    } else {
+        ClientNetworkManager::_failedToConnect = true;
+        GameController::showStatus("Not connected");
+    }
 }
+
+bool ClientNetworkManager::connect(const std::string& host, const uint16_t port) {
+
+    // create sockpp address and catch any errors
+    sockpp::inet_address address;
+    try {
+        address = sockpp::inet_address(host, port);
+    } catch (const sockpp::getaddrinfo_error& e) {
+        GameController::showError("Connection error", "Failed to resolve address " + e.hostname());
+        return false;
+    }
+
+    // establish connection to given address
+    if (!ClientNetworkManager::_connection->connect(address)) {
+        GameController::showError("Connection error", "Failed to connect to server " + address.to_string());
+        return false;
+    }
+
+    return true;
+}
+
+
+void ClientNetworkManager::sendRequest(const client_request &request) {
+
+    // wait until network is connected (max. 5 seconds)
+    int connectionCheckCounter = 0;
+    while(!ClientNetworkManager::_connectionSuccess
+          && !ClientNetworkManager::_failedToConnect
+          && connectionCheckCounter < 200) {
+        wxMilliSleep(25);
+        connectionCheckCounter++;
+    }
+
+    // do not continue if failed to connect to server
+    if(ClientNetworkManager::_failedToConnect) {
+        return;
+    }
+
+    if(ClientNetworkManager::_connectionSuccess && ClientNetworkManager::_connection->is_connected()) {
+
+        // serialize request into JSON string
+        rapidjson::Document* jsonDocument = request.to_json();
+        std::string message = json_utils::to_string(jsonDocument);
+        delete jsonDocument;
+// turn message into stream and prepend message length
+        std::stringstream messageStream;
+        messageStream << std::to_string(message.size()) << ':' << message;
+        message = messageStream.str();
+
+        // output message for debugging purposes
+#ifdef PRINT_NETWORK_MESSAGES
+        std::cout << "Sending request : " << message << std::endl;
+#endif
+
+        // send message to server
+        ssize_t bytesSent = ClientNetworkManager::_connection->write(message);
+
+        // if the number of bytes sent does not match the length of the message, probably something went wrong
+        if (bytesSent != ssize_t(message.length())) {
+            GameController::showError("Network error", "Error writing to the TCP stream: " + ClientNetworkManager::_connection->last_error_str());
+        }
+
+    } else {
+        GameController::showError("Network error", "Lost connection to server");
+    }
+}
+void ClientNetworkManager::parseResponse(const std::string& message) {
+
+    // output message for debugging purposes
+#ifdef PRINT_NETWORK_MESSAGES
+    std::cout << "Received response : " << message << std::endl;
+#endif
+
+    rapidjson::Document json = rapidjson::Document(rapidjson::kObjectType);
+    json.Parse(message.c_str());
+
+    try {
+        server_response* res = server_response::from_json(json);
+        res->Process();
+
+    } catch (std::exception e) {
+        GameController::showError("JSON parsing error", "Failed to parse message from server:\n" + message + "\n" + (std::string) e.what());
+    }
+}
+ */
