@@ -1,117 +1,161 @@
-#ifndef TCP_CLIENT_HPP
-#define TCP_CLIENT_HPP
+#ifndef TCP_SERVER_HPP
+#define TCP_SERVER_HPP
 
 #include "../common/common.hpp"
+#include "../common/utils.hpp"
 
 #include <sockpp/tcp_socket.h>
-#include <sockpp/tcp_connector.h>
-#include <sockpp/inet_address.h>
+#include <sockpp/tcp_acceptor.h>
 
 namespace net {
 
     class TCP_Client {
 
-        std::queue<std::string> toSend;
-        std::mutex mutex;
-        std::future<void> connection;
-        std::atomic<bool> shutdown = false;
         bool isInit = false;
 
+        std::future<void> listener;
+        std::optional<std::future<void>> connection;
+        //std::vector<std::optional<std::future<void>>> connections;
+        util::atomwrapper<bool> shutdown;
+        //std::vector<util::atomwrapper<bool>> shutdown;
+        std::atomic<bool> client_shutdown = false;
+
         static TCP_Client* instance;
+        TCP_Client() noexcept;
+        ~TCP_Client() noexcept;
+        TCP_Client(const TCP_Client&) noexcept = delete;
 
-        TCP_Client() noexcept {}
+        std::unique_ptr<util::BlockQueue<std::string>> sendQueue;
+        //std::vector<std::unique_ptr<util::BlockQueue<std::string>>> sendQueue;
+        util::BlockQueue<std::pair<Player_id, std::string>> cbQueue;
 
+        std::function<void(Player_id, const std::string&)> cb = 0;
+        
     public:
-
-        static void send(const std::string&) noexcept;
         static void terminate() noexcept;
         static void barrier() noexcept;
+        static void disconect(Player_id) noexcept;
+        static void send(const std::string /*_msg*/);
 
-        template<class T, class Func>
-        static void connect(const std::string& _adress, T _port, Func _callback){
+        template <class Port, class Callback>
+        static void init(Port _port, Callback _callback){
             if(instance->isInit) throw new ckException("TCP_Server already initialised");
             instance->isInit = true;
-            auto logger = Logger::create("client_main");
-
-            struct co{
+            instance->cb = _callback;
+            auto logger = Logger::create("server_main");
+            logger->info("Welcome. Initializing server...");
+            instance->listener = std::async(std::launch::async, [port = _port, callback = _callback] {
+                auto logger = Logger::create("server_listener");
                 sockpp::socket_initializer sockInit;
-                sockpp::tcp_connector conn;
-            };
-            std::unique_ptr<co> coptr = std::make_unique<co>();
-            if (!coptr->conn.connect(sockpp::inet_address(_adress, _port))){
-                logger->error("Error connecting: {}", coptr->conn.last_error_str());
-                throw new ckException(coptr->conn.last_error_str());
-            }
-            coptr->conn.read_timeout(0.25s);
-            coptr->conn.write_timeout(0.25s);
-            coptr->conn.set_non_blocking(true);
-            instance->connection = std::async(std::launch::async, [coptr = std::move(coptr), adress = _adress, port = _port, cb = _callback]() mutable {
-                auto logger = Logger::create("client_thread");
-
-                logger->info("connected to {} on port {}", adress, port);
-
-                char buf[1024];
-                std::queue<char> msg;
-                std::queue<char> curMsg;
-
-                using clock = std::chrono::high_resolution_clock;
-                
-                while (!instance->shutdown) {
-                    auto now = clock::now();
-
-                    //send
-                    {
-                        std::queue<std::string>& q = instance->toSend;
-                        std::lock_guard<std::mutex> lock(instance->mutex);
-                        while (!q.empty()) {
-                            std::string msg_ = q.front();
-                             msg_.push_back(static_cast<char>(3));
-                            if(coptr->conn.write(msg_) == 1)
-                                logger->error("Send failed: {}", msg_);
-                            else
-                                logger->debug("Sent: {}", msg_);
-                            q.pop();
-                        }
-                    }
-
-                    //recieve
-                    {
-                        ssize_t n;
-                        while ((n = coptr->conn.read(buf, sizeof(buf))) > 0) {
-                            for (size_t i = 0; i < n; ++i)
-                                msg.push(buf[i]);
-                        }
-                        if (!msg.empty()) {
-                            //parse all containing messages in the buffer
-                            while (!msg.empty()) {
-                                const char c = msg.front();
-                                msg.pop();
-                                //reached end of message
-                                if (c == static_cast<char>(3)) {
-                                    std::string message;
-                                    message.reserve(curMsg.size());
-                                    while (!curMsg.empty()) {
-                                        message.push_back(curMsg.front());
-                                        curMsg.pop();
-                                    }
-                                    logger->debug("Received: {}", message);
-                                    cb(message);
-                                } else
-                                    curMsg.push(c);
-                            }
-                        }
-                    }
-                    //max 60 fps
-                    const auto delta = 16ms - std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - now);
-                    if (delta > 0ms) std::this_thread::sleep_for(delta);
+                sockpp::tcp_acceptor acc(port);
+                if (!acc) {
+                    logger->error("Error opening acceptor: {}", acc.last_error_str());
+                    throw new ckException(acc.last_error_str());
                 }
-                
+
+                logger->info("Socket open and listening on port {}", port);
+
+                while (!instance->server_shutdown) {
+                    sockpp::tcp_socket sock = acc.accept();
+                    sock.read_timeout(0.25s);
+                    sock.write_timeout(0.25s);
+                    sock.set_non_blocking(true);
+
+                    if (!sock) {
+                        logger->error("Error accepting incoming connection: {}", acc.last_error_str());
+                    } else {
+                        bool er = true;
+                        for (size_t i = 0; i < 4; ++i) {
+                            if (instance->connections[i].has_value()) continue;
+                            er = false;
+                            instance->connections[i] = {std::async(std::launch::async, [id = i, instance = instance, sock = std::move(sock)]() mutable {
+                                char buf[1024];
+                                std::queue<char> msg;
+                                std::queue<char> curMsg;
+
+                                using clock = std::chrono::high_resolution_clock;
+                                std::stringstream ss;
+                                ss << "server_player_" << id+1;
+                                auto logger = Logger::create(ss.str());
+
+                                //notify the connection of a new player
+                                /*
+                                nlohmann::json cmsg;
+                                cmsg["type"] = "new_player";
+                                cmsg["id"] = id + 1;
+                                instance->cbQueue.push({static_cast<Player_id>(id+1), cmsg.dump()});
+                                */
+                                
+                                while (!instance->shutdown[id]._a) {
+                                    auto now = clock::now();
+
+                                    //send
+                                    {
+                                        auto& q = instance->sendQueue[id];
+                                        while (!q->empty()) {
+                                            std::string msg_ = q->front();
+                                            msg_.push_back(static_cast<char>(3));
+                                            if(sock.write(msg_) == 1)
+                                                logger->error("Send failed: {}", msg_);
+                                            else{
+                                                logger->debug("Sent: {}", msg_);
+                                                q->pop();
+                                            }                                     
+                                        }
+                                    }
+
+                                    //recieve
+                                    {
+                                        ssize_t n;
+                                        
+                                        while ((n = sock.read(buf, sizeof(buf))) > 0) {
+                                            for (size_t i = 0; i < n; ++i)
+                                                msg.push(buf[i]);
+                                        }
+                                        if (!msg.empty()) {
+                                            //parse all containing messages in the buffer
+                                            while(!msg.empty()){
+                                                const char c = msg.front();
+                                                msg.pop();
+                                                //reached end of message
+                                                if(c == static_cast<char>(3)){
+                                                    std::string message;
+                                                    message.reserve(curMsg.size());
+                                                    while(!curMsg.empty()){
+                                                        message.push_back(curMsg.front());
+                                                        curMsg.pop();
+                                                    }
+                                                    logger->debug("Received: {}", message);
+                                                    //callback(static_cast<Player>(id+1),message);
+                                                    instance->cbQueue.push( {static_cast<Player_id>(id+1),message} );
+                                                } else
+                                                    curMsg.push(c);                                                
+                                            }                                   
+                                        }
+                                    }
+                                    //max 60 fps
+                                    const auto delta = 16ms - std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - now);
+                                    if(delta > 0ms) std::this_thread::sleep_for(delta);
+                                }
+
+                                sock.shutdown();
+                                instance->connections[id].reset();
+                            })};
+                            
+                            nlohmann::json msg;
+                            msg["id"] = i+1;
+                            TCP_Server::sendToPlayer(static_cast<Player_id>(i+1), msg.dump());
+                            break;
+                        }
+                        if (er)
+                            logger->error("cannot accept more connections");
+                    }
+                }
             });
         }
 
-      
     };
 
 }
 
-#endif /* TCP_CLIENT_HPP */
+#endif /* TCP_SERVER_HPP */

@@ -49,7 +49,7 @@ enum class Request_Type : uint32_t {
 	PLAY_REQUEST = 1,
 	DRAW_REQUEST = 2,
 	EXIT_REQUEST = 3,
-	START_GAME = 4
+	START_GAME = 4,
 	SELECTED_COLOR = 5
 };
 

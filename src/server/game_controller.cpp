@@ -22,6 +22,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 	    }
         case Request_Type::START_GAME:
         {
+	    std::cout<<"receiiveeed staaaaart"<<std::endl;
             Player_id player_id = request["id"];
             //check if game has already started
             if (game_state->get_has_started())
