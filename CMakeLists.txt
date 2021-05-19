@@ -133,20 +133,6 @@ endif()
 
 # ------------------ TESTS ------------------
 
-set(SERVER_TEST "tests/servertest/test_game_controller.cpp")
-set(SERVER_FILES_TEST
-		"src/server/tcp_server.cpp"
-		"src/server/game_controller.cpp"
-		"src/server/game_state.cpp"
-		"src/server/player.cpp"
-		)
-
-add_executable(unit_tests_server ${SERVER_TEST} ${SERVER_FILES_TEST} ${COMMON_FILES})
-target_link_libraries(unit_tests_server "${SERVER_LIBS}")
-
-define_property()
-target_link_libraries(unit_tests_server gtest gtest_main)
-
 #if(CK_BUILD_TESTS)
 	add_library(ck_lib "${SERVER_FILES}" "${COMMON_FILES}")
 	if (MSVC)
