@@ -12,13 +12,13 @@ Player_State::Player_State()
      this->hand = new ck_Cards::Hand(c);
      //this->number_of_cards = c.size();
      this->to_be_matched = ck_Cards::Color::NONE;
-     this->players_turn = 1;
+     this->players_turn = 0;
      this->play_direction = 1;
-     this->current_Player = Player_id::PLAYER_1;
+     this->current_Player = Player_id::NONE;// Player_id::PLAYER_1;
      this->this_player = Player_id::PLAYER_1;
      this->player_won = 0;
      this->player_quit = 0;
-     this->waiting_for_start = 0;
+     this->waiting_for_start = 1;
      this->uno = 0;
      this->match_colour = 0;
 

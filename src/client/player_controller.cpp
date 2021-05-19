@@ -89,11 +89,11 @@ void player_controller::connectToServer() {
     // uint16_t port = (uint16_t) portAsLong;
 
     // //convert player name from wxString to std::string
-    std::string playerName = inputPlayerName.ToStdString();
-
+    std::string playerName = inputPlayerName.ToStdString();	
+    std::string serveraddress = inputServerAddress.ToStdString();
     // //connect to network
     //ClientNetworkManager::init(host, port);
-
+    net::TCP_Client::connect(serveraddress ,inputServerPort,[&](const std::string& _msg){eval_response(_msg);});
     // //send request to join game
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
     updatePlayerState(&test_state);    
