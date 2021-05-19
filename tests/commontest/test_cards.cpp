@@ -12,7 +12,9 @@ in command line :
 
 
 // test if the function Game_Controller::valid_move(); respects the UNO rules
-
+// ----- a test fixture for every type of card on top of the discard pile.
+// ----- a unit test for every type of card played on top of the discard pile.
+//----------------------------------------------------------------------------------
 class CardsTest : public ::testing::test {
 
 // protected: only accessible by derived class
@@ -26,6 +28,7 @@ protected:
 		
 		virtual void topDiscardPile(){
 			// push_back a given card to the pile
+			// top of discard pile : ck_Cards::Cards::RED_5_A
 			ck_Cards::Pile::push(ck_Cards::Cards::RED_5_A);
 		}
 		
@@ -39,12 +42,7 @@ protected:
 		ck_Cards::Discard_Pile discard_pile;
 };
 
-//---------------------- testing UNO rule ---------------------------------------
-//---------------------- playing an allowed card (color, action, value) ---------
-
 // TEST_F (TestFixtureName, UnitTestName) { can access game_controller declared in fixture Game_StateTest}
-// top of discard pile : ck_Cards::Cards::RED_5_A
-
 TEST_F(CardsTest, WrongColorWrongNumber) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::GREEN_2_A;
@@ -133,8 +131,34 @@ TEST_F(CardsTest, WrongColorSkip)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-//---------------------- testing UNO rule ---------------------------------------
-//---------------------- after an action card -----------------------------------
+//----------------------------------------------------------------------------------
+class CardsTest_SKIP : public ::testing::test {
+
+// protected: only accessible by derived class
+protected:
+		virtual void SetUp() 
+		{   
+			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
+			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
+		}
+		
+		virtual void topDiscardPile(){
+			// push_back a given card to the pile
+			ck_Cards::Pile::push(ck_Cards::Cards::YELLOW_SKIP_A);
+		}
+		
+		// ressource clean up
+		// dynamic memory allocation performed manually with new must be freed with delete
+		~CardsTest{
+			delete discard_pile;
+		}
+
+		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
+		ck_Cards::Discard_Pile discard_pile;
+};
+
+/* 
 class DiscardPile_SKIP : CardsTest {
 private:
 	virtual void topDiscardPile(){
@@ -142,8 +166,9 @@ private:
 		ck_Cards::Pile::push(ck_Cards::Cards::YELLOW_SKIP_A);
 	}
 };
+*/
 
-TEST_F(DiscardPile_SKIP, CorrectAction) 
+TEST_F(CardsTest_SKIP, CorrectAction) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::GREEN_SKIP_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -151,7 +176,7 @@ TEST_F(DiscardPile_SKIP, CorrectAction)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_SKIP, WrongActionWrongColor) 
+TEST_F(CardsTest_SKIP, WrongActionWrongColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::BLUE_REVERSE_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -159,7 +184,7 @@ TEST_F(DiscardPile_SKIP, WrongActionWrongColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_SKIP, CorrectColor) 
+TEST_F(CardsTest_SKIP, CorrectColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::YELLOW_8_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -167,7 +192,7 @@ TEST_F(DiscardPile_SKIP, CorrectColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_SKIP, Wild) 
+TEST_F(CardsTest_SKIP, Wild) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -175,7 +200,7 @@ TEST_F(DiscardPile_SKIP, Wild)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_SKIP, Wild_Draw4) 
+TEST_F(CardsTest_SKIP, Wild_Draw4) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_DRAW4_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -183,7 +208,34 @@ TEST_F(DiscardPile_SKIP, Wild_Draw4)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-//-------------------------------------------------
+//----------------------------------------------------------------------------------
+class CardsTest_REVERSE : public ::testing::test {
+
+// protected: only accessible by derived class
+protected:
+		virtual void SetUp() 
+		{   
+			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
+			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
+		}
+		
+		virtual void topDiscardPile(){
+			// push_back a given card to the pile
+			ck_Cards::Pile::push(ck_Cards::Cards::GREEN_REVERSE_A);
+		}
+		
+		// ressource clean up
+		// dynamic memory allocation performed manually with new must be freed with delete
+		~CardsTest{
+			delete discard_pile;
+		}
+
+		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
+		ck_Cards::Discard_Pile discard_pile;
+};
+
+/*
 class DiscardPile_REVERSE : CardsTest {
 private:
 	virtual void topDiscardPile(){
@@ -191,8 +243,9 @@ private:
 		ck_Cards::Pile::push(ck_Cards::Cards::GREEN_REVERSE_A);
 	}
 };
+*/
 
-TEST_F(DiscardPile_REVERSE, CorrectAction) 
+TEST_F(CardsTest_REVERSE, CorrectAction) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::YELLOW_REVERSE_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -200,7 +253,7 @@ TEST_F(DiscardPile_REVERSE, CorrectAction)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_REVERSE, WrongActionWrongColor) 
+TEST_F(CardsTest_REVERSE, WrongActionWrongColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::YELLOW_DRAW2_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -208,7 +261,7 @@ TEST_F(DiscardPile_REVERSE, WrongActionWrongColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_REVERSE, CorrectColor) 
+TEST_F(CardsTest_REVERSE, CorrectColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::GREEN_2_B;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -216,7 +269,7 @@ TEST_F(DiscardPile_REVERSE, CorrectColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_REVERSE, Wild) 
+TEST_F(CardsTest_REVERSE, Wild) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -224,7 +277,7 @@ TEST_F(DiscardPile_REVERSE, Wild)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_REVERSE, Wild_Draw4) 
+TEST_F(CardsTest_REVERSE, Wild_Draw4) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_DRAW4_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -232,7 +285,34 @@ TEST_F(DiscardPile_REVERSE, Wild_Draw4)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-//--------------------------------------------------
+//----------------------------------------------------------------------------------
+class CardsTest_DRAW_2 : public ::testing::test {
+
+// protected: only accessible by derived class
+protected:
+		virtual void SetUp() 
+		{   
+			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
+			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
+		}
+		
+		virtual void topDiscardPile(){
+			// push_back a given card to the pile
+			ck_Cards::Pile::push(ck_Cards::Cards::BLUE_DRAW2_A);
+		}
+		
+		// ressource clean up
+		// dynamic memory allocation performed manually with new must be freed with delete
+		~CardsTest{
+			delete discard_pile;
+		}
+
+		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
+		ck_Cards::Discard_Pile discard_pile;
+};
+
+/*
 class DiscardPile_DRAW_2 : CardsTest {
 private:
 	virtual void topDiscardPile(){
@@ -240,8 +320,9 @@ private:
 		ck_Cards::Pile::push(ck_Cards::Cards::BLUE_DRAW2_A);
 	}
 };
+*/
 
-TEST_F(DiscardPile_DRAW_2, CorrectAction) 
+TEST_F(CardsTest_DRAW_2, CorrectAction) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::YELLOW_DRAW2_B;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -249,7 +330,7 @@ TEST_F(DiscardPile_DRAW_2, CorrectAction)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_DRAW_2, WrongActionWrongColor) 
+TEST_F(CardsTest_DRAW_2, WrongActionWrongColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::BLUE_REVERSE_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -257,7 +338,7 @@ TEST_F(DiscardPile_DRAW_2, WrongActionWrongColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_DRAW_2, CorrectColor) 
+TEST_F(CardsTest_DRAW_2, CorrectColor) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::BLUE_7_B;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -265,7 +346,7 @@ TEST_F(DiscardPile_DRAW_2, CorrectColor)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_DRAW_2, Wild) 
+TEST_F(CardsTest_DRAW_2, Wild) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -273,7 +354,7 @@ TEST_F(DiscardPile_DRAW_2, Wild)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-TEST_F(DiscardPile_DRAW_2, Wild_Draw4) 
+TEST_F(CardsTest_DRAW_2, Wild_Draw4) 
 {
 	const ck_Cards::Cards& card = ck_Cards::Cards::WILD_DRAW4_A;
 	bool obtained_valid_move = Game_Controller::valid_move(card);
@@ -281,8 +362,11 @@ TEST_F(DiscardPile_DRAW_2, Wild_Draw4)
 	EXPECT_EQ(expected_valid_move, obtained_valid_move);
 }
 
-//--------------------------------------------------
-class DiscardPile_WILD : CardsTest {
+//----------------------------------------------------------------------------------
+
+
+/*
+class CardsTest_WILD : CardsTest {
 private:
 	virtual void topDiscardPile(){
 		// push_back a given card to the pile
@@ -294,9 +378,7 @@ private:
 	//ck_Cards::Color chosenColor = Game_State::get_color_to_be_matched();
 };
 
-
-//---------------------------------------------------
-class DiscardPile_WILD_DRAW4 : CardsTest {
+class CardsTest_WILD_DRAW4 : CardsTest {
 private:
 	virtual void topDiscardPile(){
 		// push_back a given card to the pile
@@ -308,6 +390,9 @@ private:
 	ck_Cards::Color chosenColor = Game_State::get_color_to_be_matched();
 
 };
+*/
+
+
 
 //---------------------------------------------------------------------------------
 //INSTANTIATE_TEST_SUITE(GetNextPlayer, Game_ControllerTest, testing::ValuesIn(GetNextPlayer_values));
