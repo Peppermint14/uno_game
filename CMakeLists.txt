@@ -143,7 +143,7 @@ set(SERVER_FILES_TEST
 add_executable(unit_tests_server ${SERVER_TEST} ${SERVER_FILES_TEST} ${COMMON_FILES})
 target_link_libraries(unit_tests_server "${SERVER_LIBS}")
 
-target_include_directories(unit_tests_server PRIVATE inc)
+define_property()
 target_link_libraries(unit_tests_server gtest gtest_main)
 
 #if(CK_BUILD_TESTS)
