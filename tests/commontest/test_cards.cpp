@@ -9,6 +9,7 @@ in command line :
 #include "./../../include/common/cards.hpp"
 #include "./../../include/client/player_state.hpp"
 #include "../../include/server/game_controller.hpp"
+#include "../../include/server/game_state.hpp"
 
 
 // test if the function Game_Controller::valid_move(); respects the UNO rules
@@ -23,10 +24,8 @@ protected:
 		{   
 			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
 			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
-			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
-		}
-		
-		virtual void topDiscardPile(){
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
+			
 			// push_back a given card to the pile
 			// top of discard pile : ck_Cards::Cards::RED_5_A
 			ck_Cards::Pile::push(ck_Cards::Cards::RED_5_A);
@@ -141,32 +140,20 @@ protected:
 			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
 			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
 			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
-		}
-		
-		virtual void topDiscardPile(){
+			
 			// push_back a given card to the pile
 			ck_Cards::Pile::push(ck_Cards::Cards::YELLOW_SKIP_A);
 		}
 		
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
-		~CardsTest{
+		~CardsTest_SKIP{
 			delete discard_pile;
 		}
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
 };
-
-/* 
-class DiscardPile_SKIP : CardsTest {
-private:
-	virtual void topDiscardPile(){
-		// push_back a given card to the pile
-		ck_Cards::Pile::push(ck_Cards::Cards::YELLOW_SKIP_A);
-	}
-};
-*/
 
 TEST_F(CardsTest_SKIP, CorrectAction) 
 {
@@ -217,33 +204,21 @@ protected:
 		{   
 			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
 			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
-			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
-		}
-		
-		virtual void topDiscardPile(){
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
+			
 			// push_back a given card to the pile
 			ck_Cards::Pile::push(ck_Cards::Cards::GREEN_REVERSE_A);
 		}
-		
+				
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
-		~CardsTest{
+		~CardsTest_REVERSE{
 			delete discard_pile;
 		}
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
 };
-
-/*
-class DiscardPile_REVERSE : CardsTest {
-private:
-	virtual void topDiscardPile(){
-		// push_back a given card to the pile
-		ck_Cards::Pile::push(ck_Cards::Cards::GREEN_REVERSE_A);
-	}
-};
-*/
 
 TEST_F(CardsTest_REVERSE, CorrectAction) 
 {
@@ -294,33 +269,21 @@ protected:
 		{   
 			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
 			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
-			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list); 
-		}
-		
-		virtual void topDiscardPile(){
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
+			
 			// push_back a given card to the pile
 			ck_Cards::Pile::push(ck_Cards::Cards::BLUE_DRAW2_A);
 		}
-		
+				
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
-		~CardsTest{
+		~CardsTest_DRAW_2{
 			delete discard_pile;
 		}
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
 };
-
-/*
-class DiscardPile_DRAW_2 : CardsTest {
-private:
-	virtual void topDiscardPile(){
-		// push_back a given card to the pile
-		ck_Cards::Pile::push(ck_Cards::Cards::BLUE_DRAW2_A);
-	}
-};
-*/
 
 TEST_F(CardsTest_DRAW_2, CorrectAction) 
 {
@@ -363,36 +326,88 @@ TEST_F(CardsTest_DRAW_2, Wild_Draw4)
 }
 
 //----------------------------------------------------------------------------------
+class CardsTest_WILD : public ::testing::test {
+// protected: only accessible by derived class
+	protected:
+		virtual void SetUp() 
+		{   			
+			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
+			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
+			
+			// push_back a given card to the pile
+			ck_Cards::Pile::push(ck_Cards::Cards::WILD_A);
+			
+			// after a wild card, if user would choose BLUE
+			ck_Cards::Color color_to_be_matched = Game_State::set_color_to_be_matched(BLUE);
+		}
+			
+		// ressource clean up
+		// dynamic memory allocation performed manually with new must be freed with delete
+		~CardsTest_WILD{
+			delete discard_pile;
+		}
 
-
-/*
-class CardsTest_WILD : CardsTest {
-private:
-	virtual void topDiscardPile(){
-		// push_back a given card to the pile
-		ck_Cards::Pile::push(ck_Cards::Cards::WILD_B);
-	}
-	
-	// TODO modify base class to add game state
-	// or do these tests in servertest/
-	//ck_Cards::Color chosenColor = Game_State::get_color_to_be_matched();
+		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
+		ck_Cards::Color color_to_be_matched;
+		ck_Cards::Discard_Pile discard_pile;
 };
 
-class CardsTest_WILD_DRAW4 : CardsTest {
-private:
-	virtual void topDiscardPile(){
-		// push_back a given card to the pile
-		ck_Cards::Pile::push(ck_Cards::Cards::WILD_DRAW4_B);
-	}
-	
-	// TODO modify base class to add game state
-	// or do these tests in servertest/
-	ck_Cards::Color chosenColor = Game_State::get_color_to_be_matched();
+TEST_F(CardsTest_WILD, CorrectColor) 
+{
+	ck_Cards::Color attempt_color = BLUE;
+	ck_Cards::Color correct_color = Game_State::get_color_to_be_matched();
+	EXPECT_EQ(attempt_color, correct_color);
+}
 
+TEST_F(CardsTest_WILD, WrongColor) 
+{
+	ck_Cards::Color attempt_color = GREEN;
+	ck_Cards::Color correct_color = Game_State::get_color_to_be_matched();
+	EXPECT_EQ(attempt_color, correct_color);
+}
+
+//----------------------------------------------------------------------------------
+class CardsTest_WILD_DRAW_4 : public ::testing::test {
+// protected: only accessible by derived class
+	protected:
+		virtual void SetUp() 
+		{   			
+			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
+			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
+			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
+			
+			// push_back a given card to the pile
+			ck_Cards::Pile::push(ck_Cards::Cards::WILD_A);
+			
+			// after a wild card, if user would choose BLUE
+			ck_Cards::Color color_to_be_matched = Game_State::set_color_to_be_matched(BLUE);
+		}
+			
+		// ressource clean up
+		// dynamic memory allocation performed manually with new must be freed with delete
+		~CardsTest_WILD_DRAW_4{
+			delete discard_pile;
+		}
+
+		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
+		ck_Cards::Color color_to_be_matched;
+		ck_Cards::Discard_Pile discard_pile;
 };
-*/
 
+TEST_F(CardsTest_WILD_DRAW_4, CorrectColor) 
+{
+	ck_Cards::Color attempt_color = BLUE;
+	ck_Cards::Color correct_color = Game_State::get_color_to_be_matched();
+	EXPECT_EQ(attempt_color, correct_color);
+}
 
+TEST_F(CardsTest_WILD_DRAW_4, WrongColor) 
+{
+	ck_Cards::Color attempt_color = GREEN;
+	ck_Cards::Color correct_color = Game_State::get_color_to_be_matched();
+	EXPECT_EQ(attempt_color, correct_color);
+}
 
 //---------------------------------------------------------------------------------
 //INSTANTIATE_TEST_SUITE(GetNextPlayer, Game_ControllerTest, testing::ValuesIn(GetNextPlayer_values));
