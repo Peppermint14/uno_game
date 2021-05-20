@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /DNDEBUG")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}") # removed -fno-rtti
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG" )
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -march=native -DNDEBUG -flto -fomit-frame-pointer")
 	set(CMAKE_CXX_FLAGS_TURBOSPEED "-Ofast -funroll-loops -s -DNDEBUG -flto -fomit-frame-pointer -march=native")
@@ -21,9 +21,18 @@ include(FetchContent)
 # ------------------ ADD SOURCE FILES HERE ------------------
 set(CLIENT_FILES
 	"src/client/main.cpp"
+	"src/client/digital_UNO.cpp"
 	"src/client/tcp_client.cpp"
-	#"src/client/player_state.cpp"
+	"src/client/player_state.cpp"
+	"src/client/player.cpp"
 	"src/client/player_controller.cpp"
+	#UI
+	"src/client/UI/ConnectionPanel.cpp"
+	"src/client/UI/GameWindow.cpp"
+	"src/client/UI/ImagePanel.cpp"
+	"src/client/UI/InputField.cpp"
+	"src/client/UI/MainGamePanel.cpp"
+
 )
 
 set(SERVER_FILES
