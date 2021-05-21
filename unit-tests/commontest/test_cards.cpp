@@ -32,10 +32,12 @@ protected:
 		
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest{
 			delete discard_pile;
 		}
-
+		*/
+	
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
 };
@@ -146,10 +148,12 @@ protected:
 		
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest_SKIP{
 			delete discard_pile;
 		}
-
+		*/
+	
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
 };
@@ -211,9 +215,11 @@ protected:
 				
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest_REVERSE{
 			delete discard_pile;
 		}
+		*/
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
@@ -276,9 +282,11 @@ protected:
 				
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest_DRAW_2{
 			delete discard_pile;
 		}
+		*/
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Discard_Pile discard_pile;
@@ -343,9 +351,11 @@ class CardsTest_WILD : public ::testing::Test {
 			
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest_WILD{
 			delete discard_pile;
 		}
+		*/
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Color color_to_be_matched;
@@ -385,9 +395,11 @@ class CardsTest_WILD_DRAW_4 : public ::testing::Test {
 			
 		// ressource clean up
 		// dynamic memory allocation performed manually with new must be freed with delete
+		/*
 		~CardsTest_WILD_DRAW_4{
 			delete discard_pile;
 		}
+		*/
 
 		/* Any object and subroutine declared here can be accessed with the macro TEST_F() */
 		ck_Cards::Color color_to_be_matched;
