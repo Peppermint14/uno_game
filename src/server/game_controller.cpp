@@ -408,15 +408,10 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
     }
     if(card_object.action == ck_Cards::Action::REVERSE)
     {
-        std::vector<std::pair<Player_id, Player*> > players = game_state->get_players();
-        //reverse order of vec players
-        auto copy = players;
-        auto reverse_it = copy.rbegin();
-        for(std::vector<std::pair<Player_id, Player*> >::iterator  it = players.begin(); it != players.end(); ++it)
-        {
-            *it = *reverse_it;
-            ++reverse_it;
-        }
+        
+        std::reverse(game_state->get_players().begin(), game_state->get_players().end());
+        
+        
         //change current_player
         switch_player(player_id);
 
