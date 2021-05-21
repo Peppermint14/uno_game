@@ -58,6 +58,7 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
     // connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {buttonClicked();});
     connectButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
         player_controller::connectToServer();});
+    
     verticalLayout->Add(connectButton, 0, wxALIGN_RIGHT | wxALL, 10);
 
     this->SetSizerAndFit(verticalLayout);

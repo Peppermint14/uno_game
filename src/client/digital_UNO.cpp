@@ -26,14 +26,14 @@ bool digital_UNO::OnInit()
     curr_controller->init(gameWindow);
     //player_controller* _player_controller;
     //_player_controller->init(gameWindow);
-    //player_controller::init(gameWindow);
+   // player_controller::init(gameWindow);
     //_player_controller = new player_controller(); 
     //_player_controller->init(gameWindow);
 
     return true;
 }
-
+/*
 int digital_UNO::OnExit(){
     delete curr_controller;
     return 0;
-}
+}*/

@@ -45,6 +45,22 @@ void player_controller::init(GameWindow* gameWindow) {
 
     // Only show connection panel at the start of the game
     player_controller::_gameWindow->showPanel(player_controller::_connectionPanel);
+    
+    //wxButton* player_controller::_connectionPanel->connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
+    //_connectionPanel->connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {player_controller::connectToServer();});
+    //delete
+    /*
+    std::mutex mutex;
+    std::unique_lock<std::mutex> lock(mutex);
+    std::condition_variable cv;
+    cv.wait(lock,[]{return _connectionPanel->connectButtonclicked;});
+    controller.connectToServer();
+    */
+    /* 
+    while(!_connectionPanel->connectButtonclicked){
+	wait(lock);
+    } 
+     */
 
     // Set status bar
     player_controller::showStatus("Not connected");
@@ -96,6 +112,7 @@ void player_controller::connectToServer() {
     std::string serveraddress = inputServerAddress.ToStdString();
 
     // //connect to network
+<<<<<<< Updated upstream
     std::cout << "t0\n";
     try{
         net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){curr_controller->eval_response(_msg);});
@@ -104,6 +121,11 @@ void player_controller::connectToServer() {
         logger->error("[exception] {}", _e.what());
         return;
     }
+=======
+    //ClientNetworkManager::init(host, port);
+    //net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){controller->eval_response(_msg);});
+    net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){eval_response(_msg);});
+>>>>>>> Stashed changes
     // //send request to join game
     std::cout << "t1\n";
     // TODO: Dynamic player id?
