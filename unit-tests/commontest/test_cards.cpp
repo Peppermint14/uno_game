@@ -5,7 +5,7 @@ in command line :
 --gtest_output="xml:<fileName>"  // generating an xml report
 */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "./../../include/common/cards.hpp"
 #include "./../../include/client/player_state.hpp"
 #include "../../include/server/game_controller.hpp"
@@ -16,12 +16,11 @@ in command line :
 // ----- a test fixture for every type of card on top of the discard pile.
 // ----- a unit test for every type of card played on top of the discard pile.
 //----------------------------------------------------------------------------------
-class CardsTest : public ::testing::test {
+class CardsTest : public ::testing::Test {
 
 // protected: only accessible by derived class
 protected:
-		virtual void SetUp() 
-		{   
+		virtual void SetUp(){   
 			// initialize a Discard_Pile Pile (typedef Discard_Pile Pile) with one card
 			std::list<ck_Cards::Cards> discard_card_list = {ck_Cards::Cards::GREEN_0};
 			ck_Cards::Discard_Pile* discard_pile = new ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> discard_card_list);
@@ -131,7 +130,7 @@ TEST_F(CardsTest, WrongColorSkip)
 }
 
 //----------------------------------------------------------------------------------
-class CardsTest_SKIP : public ::testing::test {
+class CardsTest_SKIP : public ::testing::Test {
 
 // protected: only accessible by derived class
 protected:
@@ -196,7 +195,7 @@ TEST_F(CardsTest_SKIP, Wild_Draw4)
 }
 
 //----------------------------------------------------------------------------------
-class CardsTest_REVERSE : public ::testing::test {
+class CardsTest_REVERSE : public ::testing::Test {
 
 // protected: only accessible by derived class
 protected:
@@ -261,7 +260,7 @@ TEST_F(CardsTest_REVERSE, Wild_Draw4)
 }
 
 //----------------------------------------------------------------------------------
-class CardsTest_DRAW_2 : public ::testing::test {
+class CardsTest_DRAW_2 : public ::testing::Test {
 
 // protected: only accessible by derived class
 protected:
@@ -326,7 +325,7 @@ TEST_F(CardsTest_DRAW_2, Wild_Draw4)
 }
 
 //----------------------------------------------------------------------------------
-class CardsTest_WILD : public ::testing::test {
+class CardsTest_WILD : public ::testing::Test {
 // protected: only accessible by derived class
 	protected:
 		virtual void SetUp() 
@@ -368,7 +367,7 @@ TEST_F(CardsTest_WILD, WrongColor)
 }
 
 //----------------------------------------------------------------------------------
-class CardsTest_WILD_DRAW_4 : public ::testing::test {
+class CardsTest_WILD_DRAW_4 : public ::testing::Test {
 // protected: only accessible by derived class
 	protected:
 		virtual void SetUp() 
