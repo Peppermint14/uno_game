@@ -24,6 +24,8 @@ set(CLIENT_TEST_FILES
 
 add_executable( server-tests ${SERVER_TEST_FILES} )
 add_executable( client-tests ${CLIENT_TEST_FILES} )
+add_executable( common-tests ${COMMON_TEST_FILES} )
 
 target_link_libraries(server-tests gtest gtest_main ck_lib)
 target_link_libraries(client-tests gtest gtest_main ck_lib)
+target_link_libraries(common-tests gtest gtest_main ck_lib)
