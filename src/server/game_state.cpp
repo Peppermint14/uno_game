@@ -1,5 +1,6 @@
 #include "../../include/server/game_state.hpp"
 
+
 //default constructor
 Game_State::Game_State()
 {
@@ -28,6 +29,8 @@ Game_State::Game_State()
     current_player = Player_id::PLAYER_ERROR;
     has_started = false;
 }
+
+
 
 void Game_State::add_Players(Player* player)
 {

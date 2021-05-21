@@ -1,4 +1,5 @@
 #include "../../include/server/game_controller.hpp"
+#include <iostream>
 
 //constructor, constructs game_state
 Game_Controller::Game_Controller()

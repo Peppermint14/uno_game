@@ -198,15 +198,15 @@ ck_Cards::Pile::Pile() {};
 const ck_Cards::Cards ck_Cards::Pile::get_top_card()
 {
     if(empty()) throw new ckException("Error: Pile is empty");
-    ck_Cards::Cards top_card = cards.front();
-    cards.pop_front();
+    ck_Cards::Cards top_card = cards.back();
+    cards.pop_back();
     return top_card;
 }
 
 const ck_Cards::Cards ck_Cards::Pile::front()
 {
 	if(empty()) throw new ckException("Error: Pile is empty");
-	return cards.front();
+	return cards.back();
 }
 
 void ck_Cards::Pile::push(Cards _card) noexcept {
