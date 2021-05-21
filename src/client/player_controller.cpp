@@ -10,6 +10,9 @@
 // #include "../common/network/requests/fold_request.h"
 // #include "../common/network/requests/play_card_request.h"
 // #include "network/ClientNetworkManager.h"
+#include <thread>
+#include <chrono>
+#include <condition_variable>
 
 
 // initialize static members
@@ -27,8 +30,6 @@ Player_State test_state = Player_State();
 
 void player_controller::init(GameWindow* gameWindow) {
 
-    player_controller::_gameWindow = gameWindow;
-
     // Set up main panels
     player_controller::_connectionPanel = new ConnectionPanel(gameWindow);
     player_controller::_mainGamePanel = new MainGamePanel(gameWindow);
@@ -39,6 +40,20 @@ void player_controller::init(GameWindow* gameWindow) {
 
     // Only show connection panel at the start of the game
     player_controller::_gameWindow->showPanel(player_controller::_connectionPanel);
+    
+    //wxButton* player_controller::_connectionPanel->connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
+    //_connectionPanel->connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {player_controller::connectToServer();});
+    //delete
+    std::mutex mutex;
+    std::unique_lock<std::mutex> lock(mutex);
+    std::condition_variable cv;
+    cv.wait(lock,[]{return _connectionPanel->connectButtonclicked;});
+    connectToServer();
+    /* 
+    while(!_connectionPanel->connectButtonclicked){
+	wait(lock);
+    } 
+     */
 
     // Set status bar
     player_controller::showStatus("Not connected");
@@ -91,9 +106,10 @@ void player_controller::connectToServer() {
     // //convert player name from wxString to std::string
     std::string playerName = inputPlayerName.ToStdString();	
     std::string serveraddress = inputServerAddress.ToStdString();
+    int serverport = wxAtoi(inputServerPort);
     // //connect to network
     //ClientNetworkManager::init(host, port);
-    net::TCP_Client::connect(serveraddress ,inputServerPort,[&](const std::string& _msg){eval_response(_msg);});
+    net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){eval_response(_msg);});
     // //send request to join game
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
     updatePlayerState(&test_state);    

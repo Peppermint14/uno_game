@@ -12,6 +12,9 @@ const unsigned int default_port = 50505;
 
 
 ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
+    
+    //delete
+    connectButtonclicked = false;
 
     wxColor white = wxColor(255, 255, 255);
     this->SetBackgroundColour(white);
@@ -47,10 +50,12 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
         240 // width of field
     );
     verticalLayout->Add(this->_playerNameField, 0, wxTOP | wxLEFT | wxRIGHT, 10);
+    //delete
+   // connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
     wxButton* connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
     //connectButton->Bind(wxEVT_BUTTON, &ConnectionPanel::buttonClicked(&event), this);
-    connectButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-       player_controller::connectToServer();});
+    //connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {player_controller::connectToServer();});
+    connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {buttonClicked();});
     verticalLayout->Add(connectButton, 0, wxALIGN_RIGHT | wxALL, 10);
 
     this->SetSizerAndFit(verticalLayout);
@@ -73,8 +78,9 @@ wxString ConnectionPanel::getPlayerName() {
 
 
 // TODO: On button click proceed to mainPanel and other stuff
-void ConnectionPanel::buttonClicked(wxCommandEvent &event){
+//void ConnectionPanel::buttonClicked(wxCommandEvent &event){
     
-    player_controller::connectToServer();
+void ConnectionPanel::buttonClicked(){
+    connectButtonclicked = true;
     return;
 }
