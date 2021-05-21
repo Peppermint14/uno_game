@@ -176,7 +176,7 @@ std::string ck_Cards::Card::get_value_as_string() const
 
 const ck_Cards::Card& ck_Cards::Deck::get(ck_Cards::Cards _card) noexcept {
     assert(instance->cards.count(_card) == 1);
-    return *instance->cards.find(_card)->second;
+    return *instance->cards.at(_card);
 }
 
 const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByColor(ck_Cards::Color _color) noexcept {
