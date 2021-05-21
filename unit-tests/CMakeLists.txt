@@ -20,6 +20,10 @@ set(SERVER_TEST_FILES
 set(CLIENT_TEST_FILES 
    "clienttest/main.cpp" 
 )
+
+set(COMMON_TEST_FILES 
+    "commontest/test_cards.cpp" 
+)
 # ------------------------------------------------------------
 
 add_executable( server-tests ${SERVER_TEST_FILES} )
