@@ -3,11 +3,35 @@
 #include "../../include/server/game_controller.hpp"
 
 
+using namespace ck_Cards;
+class ParametricValidCard : public ::testing::TestWithParam<std::pair<ck_Cards::Cards, bool> > {
+	
+protected:
+	virtual void SetUp()
+	{
+		game_controller.get_game_state()->get_discard_pile().push(ck_Cards::Cards::RED_5_A);
+		std::list<ck_Cards::Cards> cards = {Cards::BLUE_1_A, Cards::RED_4_A, Cards::GREEN_0};
+		cards.push_back(Cards::RED_0);
+		discard_pile.push( cards);
+	}
+	 
+	Game_Controller game_controller;
+	Discard_Pile discard_pile;
+	
+	
+};
 
-
-
-
-
+const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
+	{ck_Cards::Cards::GREEN_2_A,0},
+	{ck_Cards::Cards::GREEN_5_A,1},
+	{ck_Cards::Cards::RED_4_A,1},
+	{ck_Cards::Cards::WILD_A,1},
+	{ck_Cards::Cards::RED_DRAW2_A,1},
+	{ck_Cards::Cards::BLUE_DRAW2_A,0},
+	{ck_Cards::Cards::RED_REVERSE_A,1},
+	{ck_Cards::Cards::BLUE_REVERSE_A,0},
+	{ck_Cards::Cards::RED_SKIP_A,1},
+	{ck_Cards::Cards::BLUE_SKIP_A,0} };
 
 
 //What is testing for an object????
