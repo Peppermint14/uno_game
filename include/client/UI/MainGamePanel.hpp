@@ -23,8 +23,8 @@ public:
 private:
 
     
-    void buildThisPlayer(Player_State* playerState, Player* me);
-    void buildCardPiles(Player_State* playerState, Player *me);
+    void buildThisPlayer(Player_State* playerState);
+    void buildCardPiles(Player_State* playerState);
     void buildPlayerList(Player_State* playerState);
     void buildPlayDirectionIndicator(Player_State* playerState);
     
@@ -35,6 +35,8 @@ private:
     // Notification alerts
     void show_uno_notification(Player_State*);
     void show_colour_match_notification(Player_State*);
+    void show_won_notification(Player_State*);
+    void show_lost_notification(Player_State*);
 
     wxStaticText* buildStaticText(std::string content, wxPoint position, wxSize size, long textAlignment, bool bold = false);
 

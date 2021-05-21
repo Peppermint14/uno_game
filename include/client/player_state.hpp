@@ -11,17 +11,22 @@ class Player_State
 
 public:
 	Player_State();// = default; // default constructor
+	Player_State(bool test);// = testing state
+	Player_State(Player_id id,std::string player_name, size_t nof_players);// = testing state
 	~Player_State();
 
 	void set_top_discard(ck_Cards::Cards);
 	void set_to_be_matched(ck_Cards::Color);
+	void set_players_id(Player_id);
+	void set_current_player(Player_id);
 	void set_players_turn(bool); 
-	void set_player_won(bool); 
+	void set_player_won(bool);
+	void set_winner(Player_id); 
 	void set_number_of_cards(Player_id, size_t);
 	void set_hand(ck_Cards::Hand* /*hand_*/);
 	void update_hand(); //also update number of cards
 	void change_play_direction(); // for reverse
-	void set_all_player_names();
+	void set_all_player_names(std::vector<std::string>);
 	void set_is_waiting(bool);
 	void set_uno(bool);
 	void set_match_colour(bool);
@@ -35,6 +40,7 @@ public:
 	bool get_players_turn() const;
 	Player_id get_this_player() const;
 	Player_id get_current_player() const;
+	Player_id get_winner() const;
 	bool has_player_won() const;
 	bool is_waiting() const;
 	bool has_player_quit() const;
@@ -60,7 +66,8 @@ private:
 	bool play_direction;
 	Player_id this_player; // ID of player associated with this PlayerState.
 	Player_id current_Player; // ID of player whose turn it is.
-	bool player_won;
+	Player_id winner; // ID of player that won.
+	bool player_won; // has a player wone
 	//true if player is waiting for the game to start, 0 if the game is already ongoing
 	bool player_waiting;
 	bool waiting_for_start;

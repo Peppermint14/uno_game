@@ -7,18 +7,14 @@
 #include "UI/GameWindow.hpp"
 #include "player_controller.hpp"
 
-player_controller* controller;
+
 
 // Main app class
 class digital_UNO : public wxApp
 {
 public:
     virtual bool OnInit();
-
-//private: 
-   //player_controller* _player_controller;
-    
-   virtual int OnExit();
+    virtual int OnExit();
 };
 
 

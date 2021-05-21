@@ -83,16 +83,15 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     }
 */  
     
-    this->buildOtherPlayerLabels(playerState);
-
-    // show both card piles at the center
-    this->buildCardPiles(playerState, me);
-
+    //this->buildOtherPlayerLabels(playerState);
     // show turn indicator below card piles
     //this->buildTurnIndicator(playerState, me);
-    
+
+    // show both card piles at the center
+    this->buildCardPiles(playerState);
+
     // show our own player
-    this->buildThisPlayer(playerState, me);
+    this->buildThisPlayer(playerState);
 
     // show turn indicator below card piles
     this->buildPlayerList(playerState);
@@ -100,6 +99,12 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     // update layout
     this->Layout();
 
+    // Make player aware if someone has won
+    if(playerState->has_player_won()){
+        if(playerState->get_winner() == playerState->get_this_player())
+        this->show_won_notification(playerState);
+        else this->show_lost_notification(playerState);
+    }
     // Make player aware if the previous player has played his penultimate card
     if(playerState->get_uno())this->show_uno_notification(playerState);
 
@@ -255,7 +260,7 @@ void MainGamePanel::buildOtherPlayerLabels(Player_State* playerState/*, Player* 
 }
 
 
-void MainGamePanel::buildCardPiles(Player_State* playerState, Player *me) {
+void MainGamePanel::buildCardPiles(Player_State* playerState) {
 
     
     if(!playerState->is_waiting_for_start()) {
@@ -319,14 +324,14 @@ void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
 }
 
 
-void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
+void MainGamePanel::buildThisPlayer(Player_State* playerState) {
 
     // Setup two nested box sizers, in order to align our player's UI to the bottom center
     wxBoxSizer* outerLayout = new wxBoxSizer(wxHORIZONTAL);
     this->SetSizer(outerLayout);
     wxBoxSizer* innerLayout = new wxBoxSizer(wxVERTICAL);
     outerLayout->Add(innerLayout, 1, wxALIGN_BOTTOM);
-    
+    std::cout << "1\n";
     // Show the label with our player name
     wxStaticText* playerName = buildStaticText(
             playerState->get_player_name(),
@@ -356,7 +361,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
     } else {
-
         /*
         // show our player's minus points
         /*wxStaticText *playerPoints = buildStaticText(
@@ -381,7 +385,8 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
 
         }
         // if we haven't folded yet, and it's our turn, display Fold button
-        else if (playerState->get_players_turn()) {
+        else if (!playerState->get_players_turn()) {
+            
             wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
             ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
                 player_controller::exit();
@@ -399,7 +404,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
             );
             innerLayout->Add(playerStatus, 0, wxALIGN_CENTER | wxBOTTOM, 8);
         }
-        
         // display our player's hand, if we have cards
         int numberOfCards = playerState->get_number_of_cards(playerState->get_this_player());
         if (numberOfCards > 0) {
@@ -453,8 +457,19 @@ void MainGamePanel::show_uno_notification(Player_State* ps){
         // wxImage disabled = uno_notification->_image->convertToDisabled();
 
     }
-    
 }
+
+void MainGamePanel::show_won_notification(Player_State* ps){
+    wxString message("Congratulations!\n");
+    message += ps->get_player_name() + "You have successfully beaten all your opponents.";
+    wxMessageBox(message, "Winner", wxICON_NONE);
+}
+void MainGamePanel::show_lost_notification(Player_State* ps){
+    wxString message("Unlucky...\n");
+    message += ps->get_name_of_playerid(ps->get_winner()) + " has won the game.";
+    wxMessageBox(message, "Lost", wxICON_NONE);
+}
+
 void MainGamePanel::show_colour_match_notification(Player_State* ps){
 
     wxString message("A wild card has been played! You have to match the following colour: \n");

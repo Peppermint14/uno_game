@@ -3,7 +3,49 @@
 
 // TODO: THIS IS CURRENTLY A TESTING CONSTRUCTOR
 //default constructor
-Player_State::Player_State()
+Player_State::Player_State(){
+     this->top_discard = ck_Cards::Cards(0);
+     this->discard_empty = 1; //TODO: Check if necessary
+
+     std::list<ck_Cards::Cards> c = {};
+     this->hand = new ck_Cards::Hand(c);
+     //this->number_of_cards = c.size();
+     this->to_be_matched = ck_Cards::Color::NONE;
+     this->players_turn = 0;
+     this->play_direction = 1;
+     this->current_Player = Player_id::NONE;
+     this->this_player = Player_id::NONE;
+     this->winner = Player_id::NONE;
+     this->player_won = 0;
+     this->player_quit = 0;
+     this->waiting_for_start = 0;
+     this->uno = 0;
+     this->match_colour = 0;
+
+     // this->number_of_cards.reserve(4);
+
+     // this->all_Player_Names.reserve(4);
+
+     // this->player_ids.reserve(4);
+}
+
+Player_State::Player_State(Player_id id, std::string player_name, size_t nof_players):Player_State(){
+     
+     size_t id_t = static_cast<size_t>(id);
+     assert(id_t <= nof_players && id_t > 0);
+
+     this->this_player = id;
+     this->number_of_cards.resize(nof_players);
+     this->all_Player_Names.resize(nof_players);
+     this->player_ids.resize(nof_players);
+
+     this->all_Player_Names[id_t-1] = player_name;
+     this->player_ids[id_t-1] = id;
+
+}
+
+// TODO: THIS IS CURRENTLY A TESTING CONSTRUCTOR remove
+Player_State::Player_State(bool test)
 {
      this->top_discard = ck_Cards::Cards::RED_5_A; // Would be nullptr if discard empty
      this->discard_empty = 0; //TODO: Check if necessary
@@ -14,19 +56,20 @@ Player_State::Player_State()
      this->to_be_matched = ck_Cards::Color::NONE;
      this->players_turn = 0;
      this->play_direction = 1;
-     this->current_Player = Player_id::NONE;// Player_id::PLAYER_1;
+     this->current_Player = Player_id::PLAYER_4;// Player_id::PLAYER_1;
      this->this_player = Player_id::PLAYER_1;
-     this->player_won = 0;
+     this->winner = Player_id::PLAYER_3;
+     this->player_won = 1;
      this->player_quit = 0;
      this->waiting_for_start = 1;
      this->uno = 0;
      this->match_colour = 0;
 
      this->number_of_cards.reserve(4);
-     this->number_of_cards.push_back(7);
-     this->number_of_cards.push_back(7);
-     this->number_of_cards.push_back(7);
-     this->number_of_cards.push_back(7);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
 
 
      this->all_Player_Names.reserve(4);
@@ -69,6 +112,12 @@ void Player_State::set_number_of_cards(Player_id p_id, size_t number_of_cards_)
 {
      number_of_cards[u_int32_t(p_id)-1] = number_of_cards_;
 }
+void Player_State::set_current_player(Player_id id){
+     current_Player = id;
+}
+void Player_State::set_winner(Player_id id){
+     winner = id;
+}
 
 // void Player_State::update_hand(const std::vector<ck_Cards::Cards cards)
 // {
@@ -78,9 +127,8 @@ void Player_State::set_number_of_cards(Player_id p_id, size_t number_of_cards_)
 // }
 //
 
-// TODO: Handle player names
-void Player_State::set_all_player_names(){
-
+void Player_State::set_all_player_names(std::vector<std::string> name_vec){
+     all_Player_Names = name_vec;
 }
 void Player_State::set_is_waiting(bool waiting){
      player_waiting = waiting;
@@ -101,10 +149,8 @@ void Player_State::set_to_be_matched(ck_Cards::Color c){
      to_be_matched = c;
 }
 
-
-
-
 ck_Cards::Cards* Player_State::get_top_discard(){
+     if(discard_empty)return nullptr;
      return &top_discard;
 }
 
@@ -128,6 +174,10 @@ Player_id Player_State::get_current_player() const {
 }
 Player_id Player_State::get_this_player() const {
      return this_player;
+}
+
+Player_id Player_State::get_winner() const {
+     return winner;
 }
 bool Player_State::has_player_won() const {
      return player_won;

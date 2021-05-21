@@ -13,7 +13,8 @@
 class player_controller {
 
 public:
-    static void init(GameWindow* gameWindow);
+    // player_controller* get_ctrl(){return this;};
+    void init(GameWindow* gameWindow);
     static void connectToServer();
     static void eval_response(const std::string& msg);
     static void updatePlayerState(Player_State* newPlayerState);
@@ -37,8 +38,8 @@ public:
     //out: integer telling how many cards the corresponding player has
     std::list<std::pair<Player_id, int>> get_number_cards_player();
     
-    void set_current_player(Player_id);
-    Player_id get_current_player();
+    // void set_current_player(Player_id);
+    // Player_id get_current_player();
 
     void set_color(ck_Cards::Color);
     ck_Cards::Color get_color();
@@ -54,6 +55,7 @@ private:
     static GameWindow* _gameWindow;
     static ConnectionPanel* _connectionPanel;
     static MainGamePanel* _mainGamePanel;
+    // static player_controller* _this_ctrl;
     //at position i is the number of cards that player i has stored (position 0 is zero (player zero is error)
     std::list<std::pair<Player_id, int>> players_number_of_cards;
     static Player* _me;

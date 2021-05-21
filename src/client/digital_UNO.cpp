@@ -3,6 +3,7 @@
 #include "../../include/client/digital_UNO.hpp"
 #include "../../include/client/player_controller.hpp"
 
+player_controller* curr_controller;
 
 // Application entry point
 bool digital_UNO::OnInit()
@@ -21,8 +22,8 @@ bool digital_UNO::OnInit()
 
     // Initialize player controller
 
-    controller = new player_controller();
-    controller->init(gameWindow);
+    curr_controller = new player_controller();
+    curr_controller->init(gameWindow);
     //player_controller* _player_controller;
     //_player_controller->init(gameWindow);
     //player_controller::init(gameWindow);
@@ -33,6 +34,6 @@ bool digital_UNO::OnInit()
 }
 
 int digital_UNO::OnExit(){
-    delete controller;
+    delete curr_controller;
     return 0;
 }
