@@ -15,7 +15,7 @@ class player_controller {
 public:
     static void init(GameWindow* gameWindow);
     static void connectToServer();
-    void eval_response(const std::string& msg);
+    static void eval_response(const std::string& msg);
     static void updatePlayerState(Player_State* newPlayerState);
     static void startGame();
     static void drawCard();
@@ -61,7 +61,7 @@ private:
     static Player_State* _currentPlayerState;
     ck_Cards::Color color_to_be_played; 
     ck_Cards::Cards top_card_on_discard;
-    
+     
     //ev gibt es bessere Möglichkeit errors zu handeln??
     bool error_occured;
     std::string error_message;

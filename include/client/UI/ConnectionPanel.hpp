@@ -6,7 +6,6 @@
 #include <wx/wx.h>
 #include "InputField.hpp"
 
-
 class ConnectionPanel : public wxPanel {
 
 public:
@@ -15,13 +14,14 @@ public:
     wxString getServerAddress();
     wxString getServerPort();
     wxString getPlayerName();
-    void buttonClicked(wxCommandEvent &event);
-
+    //void buttonClicked(wxCommandEvent &event);
+    void buttonClicked();
+    //delete
+    bool connectButtonclicked;
 private:
     InputField* _serverAddressField;
     InputField* _serverPortField;
     InputField* _playerNameField;
-
 };
 
 
