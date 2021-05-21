@@ -3,7 +3,7 @@
 
 //What is testing for an object????
 //Thats our Test Fixture
-class Game_StateTest : public ::testing::Test {
+class Game_StateTest : public ::testing::TestWithParam<std::pair<ck_Cards::Cards, bool>> {
 
 //why protected????
 protected:
@@ -21,7 +21,8 @@ protected:
         game_controller.get_game_state()->add_Players(player1);
 	game_controller.get_game_state()->add_Players(player2);	
        		
-	game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);    
+	game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1); 
+	game_controller.get_game_state()->get_discard_pile().push(ck_Cards::Cards::RED_5_A);   
     }
 
     /* Any object and subroutine declared here can be accessed in the tests */
@@ -29,6 +30,29 @@ protected:
 };
 
 //const std::pair<Player_id, Player_id> GetNextPlayer_values = {{PLAYER_0, PLAYER_1}, {PLAYER_1, PLAYER_0}};
+
+const std::vector<std::pair<ck_Cards::Cards, bool>> tested_cards =  {
+	{ck_Cards::Cards::GREEN_2_A,0},
+	{ck_Cards::Cards::GREEN_5_A,1}
+};
+
+
+TEST_P(Game_StateTest, ValidMove)
+{
+	auto card_bool_pair = GetParam();
+	bool obtained_valid_move = game_controller.valid_move(card_bool_pair.first);
+	bool actual_valid_move = card_bool_pair.second;
+	EXPECT_EQ(obtained_valid_move, actual_valid_move);
+};
+
+
+INSTANTIATE_TEST_SUITE_P(
+  ValidMove,
+  Game_StateTest,
+  testing::ValuesIn(tested_cards));
+
+
+/*
 
 TEST_F(Game_StateTest, GetNextPlayer1) 
 {
@@ -54,4 +78,4 @@ int main(int argc, char **argv)
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
-
+*/
