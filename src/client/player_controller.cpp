@@ -112,7 +112,6 @@ void player_controller::connectToServer() {
     std::string serveraddress = inputServerAddress.ToStdString();
 
     // //connect to network
-<<<<<<< Updated upstream
     std::cout << "t0\n";
     try{
         net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){curr_controller->eval_response(_msg);});
@@ -121,11 +120,8 @@ void player_controller::connectToServer() {
         logger->error("[exception] {}", _e.what());
         return;
     }
-=======
     //ClientNetworkManager::init(host, port);
     //net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){controller->eval_response(_msg);});
-    net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){eval_response(_msg);});
->>>>>>> Stashed changes
     // //send request to join game
     std::cout << "t1\n";
     // TODO: Dynamic player id?
