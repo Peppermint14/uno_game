@@ -20,7 +20,13 @@ bool digital_UNO::OnInit()
     gameWindow->Show(true);
 
     // Initialize player controller
-    player_controller::init(gameWindow);
+    controller = new player_controller();
+    controller->init(gameWindow);
 
     return true;
+}
+
+int digital_UNO::OnExit(){
+    delete controller;
+    return 0;
 }
