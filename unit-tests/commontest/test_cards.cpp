@@ -7,7 +7,7 @@ in command line :
 
 #include <gtest/gtest.h>
 #include "./../../include/common/cards.hpp"
-#include "./../../include/client/player_state.hpp"
+//#include "./../../include/client/player_state.hpp"
 #include "../../include/server/game_controller.hpp"
 #include "../../include/server/game_state.hpp"
 
