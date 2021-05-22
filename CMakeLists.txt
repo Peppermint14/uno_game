@@ -134,11 +134,19 @@ endif()
 # ------------------ TESTS ------------------
 
 #if(CK_BUILD_TESTS)
-	add_library(ck_lib "${SERVER_FILES}" "${COMMON_FILES}")
+	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
 	if (MSVC)
-		target_link_libraries(ck_lib "${SERVER_LIBS}" wsock32 ws2_32)
+		target_link_libraries(ck_lib_s "${SERVER_LIBS}" wsock32 ws2_32)
 	else()
-		target_link_libraries(ck_lib "${SERVER_LIBS}")
+		target_link_libraries(ck_lib_s "${SERVER_LIBS}")
 	endif()
+
+	add_library(ck_lib_c "${CLIENT_FILES}" "${COMMON_FILES}")
+	if (MSVC)
+		target_link_libraries(ck_lib_c "${CLIENT_LIBS}" wsock32 ws2_32)
+	else()
+		target_link_libraries(ck_lib_c "${CLIENT_LIBS}")
+	endif()
+
 	add_subdirectory(unit-tests)
 #endif()

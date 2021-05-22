@@ -12,24 +12,14 @@ FetchContent_Declare(
 FetchContent_GetProperties(googletest)
 FetchContent_MakeAvailable(googletest)
 
-# ------------------ ADD SOURCE FILES HERE ------------------
-set(SERVER_TEST_FILES 
-    "servertest/test_game_controller.cpp"
-)
+#client libs: ck_libs_c
+#server libs: ck_libs_s
 
-set(CLIENT_TEST_FILES 
-   "clienttest/main.cpp" 
-)
+# ------------------ CLIENT TESTS ------------------
 
-set(COMMON_TEST_FILES 
-    "commontest/test_cards.cpp" 
-)
-# ------------------------------------------------------------
+# ------------------ SERVER TESTS ------------------
+add_executable( tcp_server_client_connection_tests "servertest/tcp_server_client_connection_test.cpp" )
+target_link_libraries(tcp_server_client_connection_tests gtest gtest_main ck_lib_s ck_lib_c)
 
-add_executable( server-tests ${SERVER_TEST_FILES} )
-add_executable( client-tests ${CLIENT_TEST_FILES} )
-add_executable( common-tests ${COMMON_TEST_FILES} )
-
-target_link_libraries(server-tests gtest gtest_main ck_lib)
-target_link_libraries(client-tests gtest gtest_main ck_lib)
-target_link_libraries(common-tests gtest gtest_main ck_lib)
+add_executable( test_game_controller_tests "servertest/test_game_controller.cpp" )
+target_link_libraries(test_game_controller_tests gtest gtest_main ck_lib_s)
