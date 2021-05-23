@@ -26,21 +26,10 @@ wxString MainGamePanel::colourPicker(){
     wxString msg("Choose the colour");
     wxString caption("Wildcard");
 
-    //int x,y,width,height,initialSelection;
-    //bool centre;
-
-    // wxSize size(400, 500);
-
-    // wxDialog dialog(NULL, -1, "test", wxDefaultPosition, size);
-    
-    // dialog.Show();
-
     wxString  res = wxGetSingleChoice(msg, caption, choices, this, 25, 25, true, 400, 200, 1);
     
     while(res.IsEmpty())
         res = wxGetSingleChoice(msg, caption, choices);
-    // test.SetSelection(initialSelection);
-    // return test.ShowModal() == wxID_OK ? test.GetStringSelection() : wxString();
 
     return res;
 }

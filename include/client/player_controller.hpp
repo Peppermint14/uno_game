@@ -15,6 +15,7 @@ class player_controller {
 
 public:
     // player_controller* get_ctrl(){return this;};
+    player_controller();
     void init(GameWindow* gameWindow);
     static void connectToServer();
     static void eval_response(const std::string& msg);

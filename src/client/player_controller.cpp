@@ -25,9 +25,14 @@ MainGamePanel* player_controller::_mainGamePanel = nullptr;
 
 Player* player_controller::_me = nullptr;
 Player_State* player_controller::_currentPlayerState = &initial_state;
-net::TCP_Client* _current_Client = nullptr;
 
-extern player_controller* curr_controller;
+extern player_controller curr_controller;
+
+player_controller::player_controller(){
+    _currentPlayerState = new Player_State(1);
+}
+
+
 
 void player_controller::init(GameWindow* gameWindow) {
 
@@ -37,8 +42,6 @@ void player_controller::init(GameWindow* gameWindow) {
     player_controller::_connectionPanel = new ConnectionPanel(gameWindow);
     player_controller::_mainGamePanel = new MainGamePanel(gameWindow);
 
-    // player_controller::_currentPlayerState = new Player_State();
-    // _current_ctrl = this;
     // Hide all panels
     player_controller::_connectionPanel->Show(false);
     player_controller::_mainGamePanel->Show(false);
@@ -112,9 +115,10 @@ void player_controller::connectToServer() {
     std::string serveraddress = inputServerAddress.ToStdString();
 
     // //connect to network
-    std::cout << "t0\n";
     try{
-        net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){curr_controller->eval_response(_msg);});
+        net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){
+            curr_controller.eval_response(_msg);
+    });
     } catch(const ckException& _e){
         auto logger = Logger::get("server_main");
         logger->error("[exception] {}", _e.what());
@@ -123,7 +127,6 @@ void player_controller::connectToServer() {
     //ClientNetworkManager::init(host, port);
     //net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){controller->eval_response(_msg);});
     // //send request to join game
-    std::cout << "t1\n";
     // TODO: Dynamic player id?
     player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
     
@@ -168,15 +171,15 @@ void player_controller::eval_response(const std::string& msg)
 	
 				//update number of cards of all players
 				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
-				curr_controller->set_number_cards_player(player_cards_list);
+				curr_controller.set_number_cards_player(player_cards_list);
 			
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
-				curr_controller->set_color(color);
+				curr_controller.set_color(color);
 				
 				//update, which card is on top of the discard Pile
 				ck_Cards::Cards top_card = response["top_card"];
-				curr_controller->set_top_card_discardp(top_card);
+				curr_controller.set_top_card_discardp(top_card);
 
 				break;
 			}
@@ -325,7 +328,7 @@ void player_controller::join(std::string name){
 }
 
 wxEvtHandler* player_controller::getMainThreadEventHandler() {
-    // return player_controller::_gameWindow->GetEventHandler();
+    return player_controller::_gameWindow->GetEventHandler();
 }
 
 

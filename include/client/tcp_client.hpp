@@ -13,12 +13,13 @@
 namespace net {
 
     class TCP_Client {
+        std::future<void> listener;
 	std::unique_ptr<util::BlockQueue<std::string>> toSend;
 	util::BlockQueue<std::string> cbQueue;
         std::mutex mutex;
         std::future<void> connection;
         bool connected;
-	std::atomic<bool> shutdown = false;
+	    std::atomic<bool> shutdown = false;
         bool isInit = false;
 
         static TCP_Client* instance;

@@ -4,10 +4,10 @@
 net::TCP_Client* net::TCP_Client::instance = new net::TCP_Client();
 
 
-// net::TCP_Client::TCP_Client() noexcept {
-// 	toSend = std::make_unique<util::BlockQueue<std::string>>();   
-// 	shutdown = false;
-// }
+net::TCP_Client::TCP_Client() noexcept {
+	toSend = std::make_unique<util::BlockQueue<std::string>>();   
+	shutdown = false;
+}
 /*
 net::TCP_Client::~TCP_Client() noexcept{
         shutdown = true; 

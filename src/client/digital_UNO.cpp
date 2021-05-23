@@ -3,11 +3,12 @@
 #include "../../include/client/digital_UNO.hpp"
 #include "../../include/client/player_controller.hpp"
 
-player_controller* curr_controller;
+player_controller curr_controller;
 
 // Application entry point
 bool digital_UNO::OnInit()
 {
+    Logger::init();
     // Allow loading of JPEG  and PNG image files
     wxImage::AddHandler(new wxJPEGHandler());
     wxImage::AddHandler(new wxPNGHandler());
@@ -22,8 +23,7 @@ bool digital_UNO::OnInit()
 
     // Initialize player controller
 
-    curr_controller = new player_controller();
-    curr_controller->init(gameWindow);
+    curr_controller.init(gameWindow);
     //player_controller* _player_controller;
     //_player_controller->init(gameWindow);
    // player_controller::init(gameWindow);
@@ -32,8 +32,7 @@ bool digital_UNO::OnInit()
 
     return true;
 }
-/*
-int digital_UNO::OnExit(){
-    delete curr_controller;
-    return 0;
-}*/
+
+// int digital_UNO::OnExit(){
+//     return 0;
+// }
