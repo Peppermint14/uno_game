@@ -50,20 +50,22 @@ else()
 endif()
 
 # ------------------ wxWidgets ------------------
-set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
-set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
-set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
 
-message(STATUS "Fetching wxWidgets ...")
-FetchContent_Declare(
-	wxWidgets 
-	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
-	GIT_TAG			v3.1.4
-	GIT_SHALLOW		TRUE
-)
-
-FetchContent_GetProperties(wxWidgets)
-FetchContent_MakeAvailable(wxWidgets)
+find_package(wxWidgets COMPONENTS net core base)
+if(NOT wxWidgets_FOUND)
+	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
+	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
+	set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
+	message(STATUS "Fetching wxWidgets ...")
+	FetchContent_Declare(
+		wxWidgets 
+		GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
+		GIT_TAG			v3.1.4
+		GIT_SHALLOW		TRUE
+	)
+	FetchContent_GetProperties(wxWidgets)
+	FetchContent_MakeAvailable(wxWidgets)
+endif()
 
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
@@ -105,14 +107,23 @@ FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
 # ------------------ ADD LIBRARIES HERE -----------------------
-set(CLIENT_LIBS
-	"wxnet"
-	"wxcore"
-	"wxbase"
-	"nlohmann_json::nlohmann_json"
-	"sockpp-static"
-	"spdlog::spdlog"
-)
+if (wxWidgets_FOUND)
+	set(CLIENT_LIBS
+		"${wxWidgets_LIBRARIES}"
+		"nlohmann_json::nlohmann_json"
+		"sockpp-static"
+		"spdlog::spdlog"
+	)
+else()
+	set(CLIENT_LIBS
+		"wxnet"
+		"wxcore"
+		"wxbase"
+		"nlohmann_json::nlohmann_json"
+		"sockpp-static"
+		"spdlog::spdlog"
+	)
+endif()
 
 set(SERVER_LIBS
 	"nlohmann_json::nlohmann_json"
