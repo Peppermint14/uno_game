@@ -177,7 +177,7 @@ void MainGamePanel::buildPlayerList(Player_State* playerState){
     
     wxPoint posInd = pos + playDirectionOffset;
     double arrow_direction = -1 + 2*playerState->get_play_direction(); // maps bool to -1 or 1
-    ImagePanel* DirectionIndicator = new ImagePanel(this, "../../assets/arrow.png", wxBITMAP_TYPE_ANY, posInd, playDirectionSize, arrow_direction*twoPi/4);
+    ImagePanel* DirectionIndicator = new ImagePanel(this, "../assets/arrow.png", wxBITMAP_TYPE_ANY, posInd, playDirectionSize, arrow_direction*twoPi/4);
     
 }
 
@@ -268,7 +268,7 @@ void MainGamePanel::buildCardPiles(Player_State* playerState) {
         // Show discard pile
         const ck_Cards::Cards* topCard = playerState->get_top_discard();
         if(topCard != nullptr) {
-            std::string cardImage = "../../assets/uno_cards/" + std::to_string(uint32_t(*topCard)) + ".png";
+            std::string cardImage = "../assets/uno_cards/" + std::to_string(uint32_t(*topCard)) + ".png";
 
             wxPoint discardPilePosition = MainGamePanel::tableCenter + MainGamePanel::discardPileOffset;
 
@@ -279,7 +279,7 @@ void MainGamePanel::buildCardPiles(Player_State* playerState) {
         // Show draw pile
         wxPoint drawPilePosition = MainGamePanel::tableCenter + MainGamePanel::drawPileOffset;
 
-        ImagePanel* drawPile = new ImagePanel(this, "../../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, drawPilePosition, MainGamePanel::cardSize);
+        ImagePanel* drawPile = new ImagePanel(this, "../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, drawPilePosition, MainGamePanel::cardSize);
 
         if(playerState->get_players_turn() && !playerState->has_player_quit()) {
             drawPile->SetToolTip("Draw card");
@@ -294,7 +294,7 @@ void MainGamePanel::buildCardPiles(Player_State* playerState) {
     } else {
         // if the game did not start yet, show a back side of a card in the center (only for the mood)
         wxPoint cardPosition = MainGamePanel::tableCenter - (MainGamePanel::cardSize / 2);
-        new ImagePanel(this, "../../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, cardPosition, MainGamePanel::cardSize);
+        new ImagePanel(this, "../assets/uno_cards/back.png", wxBITMAP_TYPE_ANY, cardPosition, MainGamePanel::cardSize);
     }
     
 
@@ -429,7 +429,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState) {
             std::list<ck_Cards::Cards>  cards = hand->get_cards();
             for ( auto i : cards) {
                 uint32_t number = uint32_t(i);
-                std::string cardFile = "../../assets/uno_cards/" + std::to_string(number) + ".png";
+                std::string cardFile = "../assets/uno_cards/" + std::to_string(number) + ".png";
 
                 ImagePanel *cardButton = new ImagePanel(this, cardFile, wxBITMAP_TYPE_ANY, wxDefaultPosition, scaledCardSize);
 

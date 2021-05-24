@@ -13,6 +13,8 @@
 // #include "network/ClientNetworkManager.h"
 
 
+//address: 127.0.0.1
+
 Player_State test_state = Player_State(1);
 Player_State initial_state = Player_State();
 // net::TCP_Client* client = new net::TCP_Client();
