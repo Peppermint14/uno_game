@@ -102,6 +102,7 @@ void player_controller::connectToServer() {
     // convert host from wxString to std::string
     std::string serveraddress = inputServerAddress.ToStdString();
 
+    player_controller::_me = new Player(Player_id::NONE, playerName, true);
     // //connect to network
     std::cout << "t0\n";
     try{
@@ -119,7 +120,6 @@ void player_controller::connectToServer() {
     // //send request to join game
     std::cout << "t1\n";
     // TODO: Dynamic player id?
-    player_controller::_me = new Player(Player_id::PLAYER_1, playerName, true);
     
     
     updatePlayerState(&test_state);
@@ -138,8 +138,11 @@ void player_controller::eval_response(const std::string& msg)
 	
     //id without type
     if(response.count("type") == 0){
-        //TODO
+	Player_id id = response["id"];    
+        player_controller::_me->set_player_id(id);
+	return;
     }
+    
     const size_t type = response["type"];
 	Respond_Type response_type = Respond_Type(type);
 	switch(response_type)

@@ -20,6 +20,10 @@ Player_id Player::get_player_id() const
 {
 	return player_id;
 }
+void Player::set_player_id(Player_id _id){
+	player_id = _id;	
+}
+
 
 std::string Player::get_player_name() const{
 	return player_name;
