@@ -203,7 +203,7 @@ const ck_Cards::Cards ck_Cards::Pile::get_top_card()
     return top_card;
 }
 
-const ck_Cards::Cards ck_Cards::Pile::front()
+const ck_Cards::Cards ck_Cards::Pile::back()
 {
 	if(empty()) throw new ckException("Error: Pile is empty");
 	return cards.back();

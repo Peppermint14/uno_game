@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../../include/server/game_controller.hpp"
+#include <vector>
 
 
 using namespace ck_Cards;
@@ -10,9 +11,9 @@ protected:
 	virtual void SetUp()
 	{
 		game_controller.get_game_state()->get_discard_pile().push(ck_Cards::Cards::RED_5_A);
-		std::list<ck_Cards::Cards> cards = {Cards::BLUE_1_A, Cards::RED_4_A, Cards::GREEN_0};
-		cards.push_back(Cards::RED_0);
-		discard_pile.push( cards);
+		//std::list<ck_Cards::Cards> cards = {Cards::BLUE_1_A, Cards::RED_4_A, Cards::GREEN_0};
+		//cards.push_back(Cards::RED_0);
+		//discard_pile.push( cards);
 	}
 	 
 	Game_Controller game_controller;
@@ -34,7 +35,7 @@ const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
 	{ck_Cards::Cards::BLUE_SKIP_A,0} };
 
 
-/*
+
 TEST_P(ParametricValidCard, Validmove)
 {
     std::pair<ck_Cards::Cards, bool> cards = GetParam();
@@ -44,7 +45,7 @@ TEST_P(ParametricValidCard, Validmove)
 }
 
 INSTANTIATE_TEST_SUITE_P(Validmove, ParametricValidCard, testing::ValuesIn(played_cards));
-*/
+
 
 
 //What is testing for an object????
@@ -60,7 +61,7 @@ protected:
       Player* player2 = new Player(Player_id::PLAYER_3, "player_3");
           
       //assumed to be correct
-      player2->set_has_won(true);
+      //player2->set_has_won(true);
     
       //assumed to be correct
       game_controller.get_game_state()->add_Players(player0);
@@ -72,11 +73,15 @@ protected:
 
     /* Any object and subroutine declared here can be accessed in the tests */
     Game_Controller game_controller;
-    Player* player3 = new Player(Player_id::PLAYER_4, "player_4");
+    Player* player0 = new Player(Player_id::PLAYER_1, "player_0");
+    Player* player1 = new Player(Player_id::PLAYER_2, "player_1");
+    Player* player2 = new Player(Player_id::PLAYER_3, "player_2");
+    std::vector<std::pair<Player_id, Player*> > player_reversed = {
+            {Player_id::PLAYER_3,player2},{Player_id::PLAYER_2,player1}, {Player_id::PLAYER_1,player0}};
 
 };
 
-/*
+
 TEST_F(Game_StateTest, GetNextPlayer1) 
 {
     //uses has_won maybe test first
@@ -89,12 +94,12 @@ TEST_F(Game_StateTest, GetNextPlayer1)
 TEST_F(Game_StateTest, GetNextPlayer2)
 {
   Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_2);
-  Player_id expected_next_player = Player_id::PLAYER_1;
+  Player_id expected_next_player = Player_id::PLAYER_3;
   EXPECT_EQ(expected_next_player, next_player);
   
 }
 
-
+/*
 TEST_F(Game_StateTest, PlayerId)
 {
   Player_id player3_Id = player3->get_player_id();
@@ -102,6 +107,7 @@ TEST_F(Game_StateTest, PlayerId)
   EXPECT_EQ(expected_player3_Id, player3_Id);
   
 }
+ */
 
 
 TEST_F(Game_StateTest, CurrentPlayer)
@@ -131,7 +137,7 @@ TEST_F(Game_StateTest, SwitchPlayerExtended)
   Player_id expected_next_player = Player_id::PLAYER_3;
   EXPECT_EQ(expected_next_player, next_player);
 }
- */
+
 
 // testing action REVERSE
 TEST_F(Game_StateTest, Reverse)
@@ -145,10 +151,9 @@ TEST_F(Game_StateTest, Reverse)
   Player_id player_id = game_controller.get_game_state()->get_current_player();
   game_controller.switch_player(player_id);
 
-  
   Player_id next_player = game_controller.get_game_state()->get_current_player();
-  Player_id expected_next_player = Player_id::PLAYER_2; // start in SetUp() at 1 and reverse should be 3
-  EXPECT_EQ(expected_next_player, player_id);
+  Player_id expected_next_player = Player_id::PLAYER_3; // start in SetUp() at 1 and reverse should be 3
+  EXPECT_EQ(expected_next_player, next_player);
 }
 
 

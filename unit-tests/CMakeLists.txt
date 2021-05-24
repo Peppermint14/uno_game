@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16.3)
+SET(CMAKE_CXX_FLAGS "-std=c++14")
 project(Cerealkillers-unit-tests)
 
 # ------------------ GOOGLETEST ------------------

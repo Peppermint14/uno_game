@@ -177,9 +177,9 @@ namespace ck_Cards {
         std::list<Cards> cards;
     public:
         [[nodiscard]] const Cards get_top_card();
-        const Cards front();
+        const Cards back();
         void push(Cards /*_card*/) noexcept;
-        void put_at_end(Cards /*_card*/) noexcpet;
+        void put_at_end(Cards /*_card*/) noexcept;
         void push(const std::list<Cards> /*cards*/) noexcept;
         void remove(const ck_Cards::Cards /*card*/);
         void shuffle() noexcept;

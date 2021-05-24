@@ -262,7 +262,7 @@ void Game_Controller::broadcast_game_state() const
     }
     respond["current_player"] = game_state->get_current_player();
     respond["color_to_be_matched"] = game_state->get_color_to_be_matched();
-    respond["top_card"] = game_state->get_discard_pile().front();
+    respond["top_card"] = game_state->get_discard_pile().back();
     net::TCP_Server::broadcast(respond);
 }
 ///////////////////////////////////send_hand/////////////////////////////////////////////////
@@ -334,7 +334,7 @@ void Game_Controller::draw_card(const Player_id& player_id)
 //checks if card is allowed to be played
 bool Game_Controller::valid_move(const ck_Cards::Cards& card)
 {
-    ck_Cards::Cards top_card = game_state->get_discard_pile().front();
+    ck_Cards::Cards top_card = game_state->get_discard_pile().back();
     ck_Cards::Card top_card_object = ck_Cards::Deck::get(top_card);
     ck_Cards::Card card_object = ck_Cards::Deck::get(card);
     if(card_object.action == ck_Cards::Action::WILD || card_object.action == ck_Cards::Action::WILD_DRAW4)
@@ -417,8 +417,7 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
     {
         
         std::reverse(game_state->get_players().begin(), game_state->get_players().end());
-        
-        
+
         //change current_player
         switch_player(player_id);
 
