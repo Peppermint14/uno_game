@@ -26,6 +26,7 @@ set(CLIENT_FILES
 	"src/client/player_state.cpp"
 	"src/client/player.cpp"
 	"src/client/player_controller.cpp"
+	
 	#UI
 	"src/client/UI/ConnectionPanel.cpp"
 	"src/client/UI/GameWindow.cpp"
