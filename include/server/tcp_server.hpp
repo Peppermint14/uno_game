@@ -37,7 +37,7 @@ namespace net {
 
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
-            if(instance->isInit) throw new ckException("TCP_Server already initialised");
+            if(instance->isInit) throw ckException("TCP_Server already initialised");
             instance->isInit = true;
             instance->cb = _callback;
             auto logger = Logger::create("server_main");
@@ -48,7 +48,7 @@ namespace net {
                 sockpp::tcp_acceptor acc(port);
                 if (!acc) {
                     logger->error("Error opening acceptor: {}", acc.last_error_str());
-                    throw new ckException(acc.last_error_str());
+                    throw ckException(acc.last_error_str());
                 }
 
                 logger->info("Socket open and listening on port {}", port);
