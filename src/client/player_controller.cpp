@@ -22,12 +22,18 @@ Player_State initial_state = Player_State();
 GameWindow* player_controller::_gameWindow = nullptr;
 ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
-
+std::list<std::pair<Player_id, int>> player_controller::players_number_of_cards = {{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0}};
 Player* player_controller::_me = nullptr;
+Player_id player_controller::current_player = Player_id::NONE;
+//Player_State* player_controller::_currentPlayerState = nullptr;
+ck_Cards::Color player_controller::color_to_be_played = ck_Cards::Color::NONE;
+ck_Cards::Cards player_controller::top_card_on_discard = ck_Cards::Cards::BLUE_0;
+
+
+//Player* player_controller::_me = nullptr;
 Player_State* player_controller::_currentPlayerState = &initial_state;
 net::TCP_Client* _current_Client = nullptr;
-
-extern player_controller* curr_controller;
+//extern player_controller* curr_controller;
 
 void player_controller::init(GameWindow* gameWindow) {
 
@@ -37,8 +43,6 @@ void player_controller::init(GameWindow* gameWindow) {
     player_controller::_connectionPanel = new ConnectionPanel(gameWindow);
     player_controller::_mainGamePanel = new MainGamePanel(gameWindow);
 
-    // player_controller::_currentPlayerState = new Player_State();
-    // _current_ctrl = this;
     // Hide all panels
     player_controller::_connectionPanel->Show(false);
     player_controller::_mainGamePanel->Show(false);
@@ -46,22 +50,7 @@ void player_controller::init(GameWindow* gameWindow) {
     // Only show connection panel at the start of the game
     player_controller::_gameWindow->showPanel(player_controller::_connectionPanel);
     
-    //wxButton* player_controller::_connectionPanel->connectButton = new wxButton(this, wxID_ANY, "Connect", wxDefaultPosition, wxSize(100, 40));
-    //_connectionPanel->connectButton->Bind(wxEVT_BUTTON, [&](wxCommandEvent& event) {player_controller::connectToServer();});
-    //delete
-    /*
-    std::mutex mutex;
-    std::unique_lock<std::mutex> lock(mutex);
-    std::condition_variable cv;
-    cv.wait(lock,[]{return _connectionPanel->connectButtonclicked;});
-    controller.connectToServer();
-    */
-    /* 
-    while(!_connectionPanel->connectButtonclicked){
-	wait(lock);
-    } 
-     */
-
+    
     // Set status bar
     player_controller::showStatus("Not connected");
     
@@ -114,7 +103,8 @@ void player_controller::connectToServer() {
     // //connect to network
     std::cout << "t0\n";
     try{
-        net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){curr_controller->eval_response(_msg);});
+        //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
+	    net::TCP_Client::init(serveraddress, port);
     } catch(const ckException& _e){
         auto logger = Logger::get("server_main");
         logger->error("[exception] {}", _e.what());
@@ -139,8 +129,11 @@ void player_controller::connectToServer() {
 
 void player_controller::eval_response(const std::string& msg)
 {
-    std::cout << "In\n";
+    std::cout << "Incoming response \n";
 	nlohmann::json response = nlohmann::json::parse(msg);
+	//if(){
+
+	//}
 	Respond_Type response_type = response["type"];
 	switch(response_type)
 	{
@@ -168,15 +161,18 @@ void player_controller::eval_response(const std::string& msg)
 	
 				//update number of cards of all players
 				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
-				curr_controller->set_number_cards_player(player_cards_list);
+				player_controller::set_number_cards_player(player_cards_list);
+				//curr_controller->set_number_cards_player(player_cards_list);
 			
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
-				curr_controller->set_color(color);
+				player_controller::set_color(color);
+				//curr_controller->set_color(color);
 				
 				//update, which card is on top of the discard Pile
 				ck_Cards::Cards top_card = response["top_card"];
-				curr_controller->set_top_card_discardp(top_card);
+				player_controller::set_top_card_discardp(top_card);
+				//curr_controller->set_top_card_discardp(top_card);
 
 				break;
 			}
@@ -325,7 +321,7 @@ void player_controller::join(std::string name){
 }
 
 wxEvtHandler* player_controller::getMainThreadEventHandler() {
-    // return player_controller::_gameWindow->GetEventHandler();
+     return player_controller::_gameWindow->GetEventHandler();
 }
 
 
@@ -418,41 +414,31 @@ void player_controller::showGameOverMessage() {
 
 
 void player_controller::set_number_cards_player(std::list<std::pair<Player_id, int>> player_list){
-	players_number_of_cards  = player_list;
+	player_controller::players_number_of_cards  = player_list;
 }
 std::list<std::pair<Player_id, int>> player_controller::get_number_cards_player(){
-	return players_number_of_cards;
+	return player_controller::players_number_of_cards;
 }
-
-// void player_controller::set_current_player(Player_id id){
-// 	current_player = id;
-// }
-// Player_id player_controller::get_current_player(){
-// 	return current_player;
-// }
-
+/*
+ void player_controller::set_current_player(Player_id id){
+ 	current_player = id;
+ }
+ Player_id player_controller::get_current_player(){
+ 	return current_player;
+ }
+*/
 void player_controller::set_color(ck_Cards::Color color){
-	color_to_be_played = color;
+	player_controller::color_to_be_played = color;
 }
 ck_Cards::Color player_controller::get_color(){
-	return color_to_be_played;
+	return player_controller::color_to_be_played;
 }
 
 
 void player_controller::set_top_card_discardp(ck_Cards::Cards top){
-	top_card_on_discard = top;
+	player_controller::top_card_on_discard = top;
 }
 ck_Cards::Cards player_controller::get_top_card_discardp(){
-	return top_card_on_discard;
+	return player_controller::top_card_on_discard;
 }
 
-void player_controller::set_error_message(std::string message){
-	error_occured = true;
-	error_message = message;
-}
-void player_controller::error_read(){
-	error_occured = false;
-}
-std::string player_controller::get_error_message(){
-	return error_message;
-}

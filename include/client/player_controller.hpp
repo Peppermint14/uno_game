@@ -15,7 +15,7 @@ class player_controller {
 
 public:
     // player_controller* get_ctrl(){return this;};
-    void init(GameWindow* gameWindow);
+    static void init(GameWindow* gameWindow);
     static void connectToServer();
     static void eval_response(const std::string& msg);
     static void updatePlayerState(Player_State* newPlayerState);
@@ -34,41 +34,38 @@ public:
     static void showNewRoundMessage(Player_State* oldPlayerState, Player_State* newPlayerState);
     static void showGameOverMessage();
 
-    void set_number_cards_player(std::list<std::pair<Player_id, int>>);
+    static void set_number_cards_player(std::list<std::pair<Player_id, int>>);
     //in: Id of the player, of which you want to know the number of cards
     //out: integer telling how many cards the corresponding player has
-    std::list<std::pair<Player_id, int>> get_number_cards_player();
+    static std::list<std::pair<Player_id, int>> get_number_cards_player();
     
     // void set_current_player(Player_id);
     // Player_id get_current_player();
 
-    void set_color(ck_Cards::Color);
-    ck_Cards::Color get_color();
+    static void set_color(ck_Cards::Color);
+    static ck_Cards::Color get_color();
 
-    void set_top_card_discardp(ck_Cards::Cards);
-    ck_Cards::Cards get_top_card_discardp();
+    static void set_top_card_discardp(ck_Cards::Cards);
+    static ck_Cards::Cards get_top_card_discardp();
 
-    void set_error_message(std::string);
-    void error_read(); //-> error_message is not accurate anymore
-    std::string get_error_message();
+    //static void set_error_message(std::string);
+    //static void error_read(); //-> error_message is not accurate anymore
+    //std::string get_error_message();
 
 private:
-    static GameWindow* _gameWindow;
+    static GameWindow* _gameWindow ;
     static ConnectionPanel* _connectionPanel;
     static MainGamePanel* _mainGamePanel;
     // static player_controller* _this_ctrl;
     //at position i is the number of cards that player i has stored (position 0 is zero (player zero is error)
-    std::list<std::pair<Player_id, int>> players_number_of_cards;
+    static std::list<std::pair<Player_id, int>> players_number_of_cards;
     static Player* _me;
-    Player_id current_player;
+    static Player_id current_player;
     static Player_State* _currentPlayerState;
-    ck_Cards::Color color_to_be_played; 
-    ck_Cards::Cards top_card_on_discard;
+    static ck_Cards::Color color_to_be_played; 
+    static ck_Cards::Cards top_card_on_discard;
      
-    //ev gibt es bessere Möglichkeit errors zu handeln??
-    bool error_occured;
-    std::string error_message;
-
+    
 };
 
 #endif /* PLAYER_CONTROLLER_HPP */

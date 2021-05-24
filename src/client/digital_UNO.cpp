@@ -2,8 +2,9 @@
 
 #include "../../include/client/digital_UNO.hpp"
 #include "../../include/client/player_controller.hpp"
+#include "../../include/client/UI/GameWindow.hpp"
 
-player_controller* curr_controller;
+//player_controller* curr_controller;
 
 // Application entry point
 bool digital_UNO::OnInit()
@@ -13,6 +14,7 @@ bool digital_UNO::OnInit()
     wxImage::AddHandler(new wxPNGHandler());
 
     // Open main game window
+    //GameWindow* gameWindow = new GameWindow(
     GameWindow* gameWindow = new GameWindow(
             "digital_UNO", // title of window,
             wxDefaultPosition, // position of the window
@@ -22,11 +24,11 @@ bool digital_UNO::OnInit()
 
     // Initialize player controller
 
-    curr_controller = new player_controller();
-    curr_controller->init(gameWindow);
+   // controller = new player_controller();
+    //controller->init(gameWindow);
     //player_controller* _player_controller;
     //_player_controller->init(gameWindow);
-   // player_controller::init(gameWindow);
+    player_controller::init(gameWindow);
     //_player_controller = new player_controller(); 
     //_player_controller->init(gameWindow);
 

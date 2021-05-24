@@ -9,6 +9,7 @@ Game_Controller::Game_Controller()
 //TODO: maybe check if player_id is the same as in nlohmann file
 void Game_Controller::eval_request(const Player_id& player_id, const std::string& msg)
 {
+    std::cout<<"evaluating request"<<std::endl;	
     nlohmann::json request = nlohmann::json::parse(msg);
     Request_Type request_type = request["type"];
     switch (request_type)
