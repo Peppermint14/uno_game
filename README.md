@@ -10,5 +10,5 @@
 4. make server-tests
 
 ### Run test
-Run with ```./unit-tests/server-tests```
+Run with ```./unit-tests/test_game_controller_tests```
 
