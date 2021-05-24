@@ -9,6 +9,7 @@
 // Application entry point
 bool digital_UNO::OnInit()
 {
+    Logger::init();
     // Allow loading of JPEG  and PNG image files
     wxImage::AddHandler(new wxJPEGHandler());
     wxImage::AddHandler(new wxPNGHandler());
