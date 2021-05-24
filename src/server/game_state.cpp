@@ -91,7 +91,7 @@ Player* Game_State::get_player(const Player_id& player_id) const
             return iter->second;
     }
     //TODO: write better error message
-    throw new ckException("Error: no player with such player_id");
+    throw ckException("Error: no player with such player_id");
     return 0;
 }
 
