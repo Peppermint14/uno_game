@@ -205,7 +205,8 @@ namespace ck_Cards {
         [[nodiscard]] const Cards get_top_card();
 	const Cards front();
         void pop();
-        void push_back(Cards /*_card*/);
+        //void push_back(Cards /*_card*/);
+        void push_front(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
         void push(const std::list<Cards> /*cards*/) noexcept;
         void remove(const ck_Cards::Cards /*card*/);

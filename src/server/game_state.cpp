@@ -19,7 +19,7 @@ Game_State::Game_State()
 
     while(ck_Cards::Deck::get(top_card).action != ck_Cards::Action::NONE)
     {
-        draw_pile.push(top_card);
+        draw_pile.push_front(top_card);
         top_card = draw_pile.get_top_card();
     }
 
