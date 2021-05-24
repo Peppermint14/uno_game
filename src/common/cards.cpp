@@ -213,6 +213,10 @@ void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
 }
 
+void ck_Cards::Pile::put_at_end(Cards _card) noexcept {
+    cards.push_front(_card);
+}
+
 
 void ck_Cards::Pile::push(const std::list<Cards> _cards) noexcept {
     for(const auto& c : _cards)
