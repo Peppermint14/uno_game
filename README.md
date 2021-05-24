@@ -7,7 +7,7 @@
 1. Create a `build` folder
 2. `cd` into `build`
 3. cmake .. 
-4. make server-tests
+4. make test_game_controller_tests
 
 ### Run test
 Run with ```./unit-tests/test_game_controller_tests```
