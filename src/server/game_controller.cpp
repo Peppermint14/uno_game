@@ -32,6 +32,13 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 error_respond["msg"] = "ERROR: game is already ongoing";
                 net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
             }
+            else if(game_state->get_players().size() <= 1)
+            {
+                nlohmann::json error_respond;
+                error_respond["type"] = Respond_Type::ERROR_;
+                error_respond["msg"] = "ERROR: only one player playing";
+                net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
+            }
 	        else
             {
                 //set has_started to 1

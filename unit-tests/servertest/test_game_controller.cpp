@@ -34,6 +34,18 @@ const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
 	{ck_Cards::Cards::BLUE_SKIP_A,0} };
 
 
+TEST_P(ParametricValidCard, Validmove)
+{
+    std::pair<ck_Cards::Cards, bool> cards = GetParam();
+    bool actual_output = game_controller.valid_move(cards.first);
+    bool expected_output = cards.second;
+    EXPECT_EQ(actual_output, expected_output);
+}
+
+INSTANTIATE_TEST_SUITE_P(Validmove, ParametricValidCard, testing::ValuesIn(played_cards));
+
+
+
 //What is testing for an object????
 //Thats our Test Fixture
 class Game_StateTest : public ::testing::Test {
@@ -63,7 +75,6 @@ protected:
 
 };
 
-//const std::pair<Player_id, Player_id> GetNextPlayer_values = {{PLAYER_0, PLAYER_1}, {PLAYER_1, PLAYER_0}};
 
 TEST_F(Game_StateTest, GetNextPlayer1) 
 {
@@ -74,7 +85,6 @@ TEST_F(Game_StateTest, GetNextPlayer1)
 }
 
 
-
 TEST_F(Game_StateTest, GetNextPlayer2)
 {
   Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_2);
@@ -83,6 +93,7 @@ TEST_F(Game_StateTest, GetNextPlayer2)
   
 }
 
+
 TEST_F(Game_StateTest, PlayerId)
 {
   Player_id player3_Id = player3->get_player_id();
@@ -90,6 +101,7 @@ TEST_F(Game_StateTest, PlayerId)
   EXPECT_EQ(expected_player3_Id, player3_Id);
   
 }
+
 
 TEST_F(Game_StateTest, CurrentPlayer)
 {
@@ -139,11 +151,11 @@ TEST_F(Game_StateTest, Reverse)
 
 
 
-//INSTANTIATE_TEST_SUITE(GetNextPlayer, Game_ControllerTest, testing::ValuesIn(GetNextPlayer_values));
-
+/*
 int main(int argc, char **argv) 
 {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
+ */
 
