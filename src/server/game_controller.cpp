@@ -17,8 +17,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
         case Request_Type::NEW_PLAYER:
 	    {
             Player_id player_id = request["id"]; //retrieve player id
-            std::string player_name = request["name"];
-            add_new_player(player_id, player_name);
+            //std::string player_name = request["name"];
+            add_new_player(player_id, "Hogersepp");
             break;
 	    }
         case Request_Type::START_GAME:
@@ -263,7 +263,7 @@ void Game_Controller::broadcast_game_state() const
     respond["current_player"] = game_state->get_current_player();
     respond["color_to_be_matched"] = game_state->get_color_to_be_matched();
     respond["top_card"] = game_state->get_discard_pile().back();
-    net::TCP_Server::broadcast(respond);
+    net::TCP_Server::broadcast(respond.dump());
 }
 ///////////////////////////////////send_hand/////////////////////////////////////////////////
 

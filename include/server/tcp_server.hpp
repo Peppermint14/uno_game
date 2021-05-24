@@ -6,6 +6,7 @@
 
 #include <sockpp/tcp_socket.h>
 #include <sockpp/tcp_acceptor.h>
+#include <thread>
 
 namespace net {
 
@@ -37,7 +38,7 @@ namespace net {
 
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
-            if(instance->isInit) throw new ckException("TCP_Server already initialised");
+            if(instance->isInit) throw ckException("TCP_Server already initialised");
             instance->isInit = true;
             instance->cb = _callback;
             auto logger = Logger::create("server_main");
@@ -48,7 +49,7 @@ namespace net {
                 sockpp::tcp_acceptor acc(port);
                 if (!acc) {
                     logger->error("Error opening acceptor: {}", acc.last_error_str());
-                    throw new ckException(acc.last_error_str());
+                    throw ckException(acc.last_error_str());
                 }
 
                 logger->info("Socket open and listening on port {}", port);
@@ -77,12 +78,12 @@ namespace net {
                                 auto logger = Logger::create(ss.str());
 
                                 //notify the connection of a new player
-                                /*
+                                
                                 nlohmann::json cmsg;
-                                cmsg["type"] = "new_player";
+                                cmsg["type"] = size_t(Request_Type::NEW_PLAYER);
                                 cmsg["id"] = id + 1;
                                 instance->cbQueue.push({static_cast<Player_id>(id+1), cmsg.dump()});
-                                */
+                                
                                 
                                 while (!instance->shutdown[id]._a) {
                                     auto now = clock::now();
