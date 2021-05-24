@@ -110,7 +110,7 @@ void Player_State::set_hand(ck_Cards::Hand* hand_)
 
 void Player_State::set_number_of_cards(Player_id p_id, size_t number_of_cards_)
 {
-     number_of_cards[u_int32_t(p_id)-1] = number_of_cards_;
+     number_of_cards[uint32_t(p_id)-1] = number_of_cards_;
 }
 void Player_State::set_current_player(Player_id id){
      current_Player = id;
@@ -162,7 +162,7 @@ ck_Cards::Color Player_State::get_to_be_matched() const{
      return to_be_matched;
 }
 size_t Player_State::get_number_of_cards(Player_id p_id) const{
-     return number_of_cards[u_int32_t(p_id)-1];
+     return number_of_cards[uint32_t(p_id)-1];
 }
 
 bool Player_State::get_players_turn() const {

@@ -104,10 +104,12 @@ void player_controller::connectToServer() {
     std::cout << "t0\n";
     try{
         //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
-	    net::TCP_Client::init(serveraddress, port);
+	    net::TCP_Client::connect(serveraddress, port, [](const std::string _msg){
+            eval_response(_msg);
+        }); //playercontroller eval_response
     } catch(const ckException& _e){
-        auto logger = Logger::get("server_main");
-        logger->error("[exception] {}", _e.what());
+        auto logger = Logger::get("client_main");
+        logger->error(_e.what());
         return;
     }
     //ClientNetworkManager::init(host, port);
@@ -131,10 +133,13 @@ void player_controller::eval_response(const std::string& msg)
 {
     std::cout << "Incoming response \n";
 	nlohmann::json response = nlohmann::json::parse(msg);
-	//if(){
-
-	//}
-	Respond_Type response_type = response["type"];
+	
+    //id without type
+    if(response.count("type") == 0){
+        //TODO
+    }
+    const size_t type = response["type"];
+	Respond_Type response_type = Respond_Type(type);
 	switch(response_type)
 	{
 		case Respond_Type::SUCCESFUL_CONNECTION:
@@ -206,7 +211,7 @@ void player_controller::eval_response(const std::string& msg)
 				}
 				else{
 					std::string player_name = _me->get_player_state()->get_name_of_playerid(winner_id);
-					std::string message = "Looser!!! you lost the game :(" + player_name +" won the game";
+					std::string message = "Loser!!! you lost the game :(" + player_name +" won the game";
 					player_controller::showStatus("message");
 				}
 							

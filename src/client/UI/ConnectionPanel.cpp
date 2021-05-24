@@ -21,14 +21,14 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
 
     wxBoxSizer* verticalLayout = new wxBoxSizer(wxVERTICAL);
 
-    ImagePanel* logo = new ImagePanel(this, "../assets/uno_logo.png", wxBITMAP_TYPE_ANY, wxDefaultPosition, wxSize(200, 250));
+    ImagePanel* logo = new ImagePanel(this, "../../assets/uno_logo.png", wxBITMAP_TYPE_ANY, wxDefaultPosition, wxSize(200, 250));
     verticalLayout->Add(logo, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 10);
 
     this->_serverAddressField = new InputField(
         this, // parent element
         "Server address:", // label
         100, // width of label
-        default_server_host, // default value (variable from "default.conf")
+        "46.14.54.6", // default value (variable from "default.conf")
         240 // width of field
     );
     verticalLayout->Add(this->_serverAddressField, 0, wxTOP | wxLEFT | wxRIGHT, 10);
@@ -46,7 +46,7 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
         this, // parent element
         "Player name:", // label
         100, // width of label
-        "", // default value
+        "123", // default value
         240 // width of field
     );
     verticalLayout->Add(this->_playerNameField, 0, wxTOP | wxLEFT | wxRIGHT, 10);
