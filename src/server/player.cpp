@@ -1,3 +1,4 @@
+
 #include "../../include/server/player.hpp"
 
 //constructor
@@ -42,4 +43,3 @@ void Player::set_players_turn(bool players_turn_)
 {
     players_turn = players_turn_;
 }
-
