@@ -24,3 +24,6 @@ target_link_libraries(tcp_server_client_connection_tests gtest gtest_main ck_lib
 
 add_executable( test_game_controller_tests "servertest/test_game_controller.cpp" )
 target_link_libraries(test_game_controller_tests gtest gtest_main ck_lib_s)
+
+add_executable( test_serialization "servertest/test_serialization.cpp" )
+target_link_libraries(test_serialization gtest gtest_main ck_lib_s)

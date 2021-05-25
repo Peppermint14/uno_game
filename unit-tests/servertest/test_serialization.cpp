@@ -7,16 +7,17 @@
 //void player_controller::eval_response(const std::string& msg)
 //   nlohmann::json response = nlohmann::json::parse(msg);
 
-using namespace ck_Cards;
 class Serialization : public ::testing::Test {
 
   /* Any object and subroutine declared here can be accessed in the tests */
-  const std::string& msg = {"type": "PLAY_REQUEST"};
+  //const std::string& msg = "PLAY_REQUEST";
 };
 
 
 TEST_F(Serialization, SerializeDeserialize) 
 {
+    // message to be parsed
+    const std::string& msg = "PLAY_REQUEST";
     //serialize from msg to json
     nlohmann::json msg_json = nlohmann::json::parse(msg);
     //deserialize from json to msg

@@ -47,12 +47,9 @@ TEST_P(ParametricValidCard, Validmove)
 INSTANTIATE_TEST_SUITE_P(Validmove, ParametricValidCard, testing::ValuesIn(played_cards));
 
 
-
-//What is testing for an object????
 //Thats our Test Fixture
 class Game_StateTest : public ::testing::Test {
 
-//why protected????
 protected:
     virtual void SetUp() 
     {   
@@ -81,35 +78,16 @@ protected:
 
 };
 
-
-TEST_F(Game_StateTest, GetNextPlayer1) 
-{
-    //uses has_won maybe test first
-    Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_1);
-    Player_id expected_next_player = Player_id::PLAYER_2;
-    EXPECT_EQ(expected_next_player, next_player);
-}
-
-
-TEST_F(Game_StateTest, GetNextPlayer2)
-{
-  Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_2);
-  Player_id expected_next_player = Player_id::PLAYER_3;
-  EXPECT_EQ(expected_next_player, next_player);
-  
-}
-
-/*
+// testing function get_player_id()
 TEST_F(Game_StateTest, PlayerId)
 {
-  Player_id player3_Id = player3->get_player_id();
-  Player_id expected_player3_Id = Player_id::PLAYER_4;
-  EXPECT_EQ(expected_player3_Id, player3_Id);
+  Player_id player2_Id = player2->get_player_id();
+  Player_id expected_player2_Id = Player_id::PLAYER_3;
+  EXPECT_EQ(expected_player2_Id, player2_Id);
   
 }
- */
 
-
+// testing function get_current_player()
 TEST_F(Game_StateTest, CurrentPlayer)
 {
   Player_id current_player = game_controller.get_game_state()->get_current_player();
@@ -118,17 +96,24 @@ TEST_F(Game_StateTest, CurrentPlayer)
   
 }
 
-// testing action SKIP
-// works 
-TEST_F(Game_StateTest, SwitchPlayer)
+// testing iteration to the next player
+TEST_F(Game_StateTest, GetNextPlayer1) 
 {
-  game_controller.switch_player(Player_id::PLAYER_1);
-  Player_id next_player = game_controller.get_game_state()->get_current_player();
-  Player_id expected_next_player = Player_id::PLAYER_2;
+    //uses has_won maybe test first
+    Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_1);
+    Player_id expected_next_player = Player_id::PLAYER_2;
+    EXPECT_EQ(expected_next_player, next_player);
+}
+
+// testing iteration to the next player loop back to PLAYER_1
+TEST_F(Game_StateTest, GetNextPlayerLoop)
+{
+  Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_3);
+  Player_id expected_next_player = Player_id::PLAYER_1;
   EXPECT_EQ(expected_next_player, next_player);
 }
 
-// TODO does NOT work
+// testing action SKIP
 TEST_F(Game_StateTest, SwitchPlayerExtended)
 {
   Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
@@ -137,7 +122,6 @@ TEST_F(Game_StateTest, SwitchPlayerExtended)
   Player_id expected_next_player = Player_id::PLAYER_3;
   EXPECT_EQ(expected_next_player, next_player);
 }
-
 
 // testing action REVERSE
 TEST_F(Game_StateTest, Reverse)
@@ -156,12 +140,33 @@ TEST_F(Game_StateTest, Reverse)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
+// testing deck reshuffle (scenario SCN-1 from SRS)
 
-/*
+
+// testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
+
+
+// testing one player exits but more than one player are still in the game (scenario SCN-3 from SRS)
+
+
+// testing player wins game in a game in which more than 2 players are participating (scenario SCN-4 from SRS)
+
+
+// testing timeout : player doesn’t play in a given time slot, a card will automatically be handed out to the player
+//          and the player misses this turn. (FREQ-17 from SRS)
+
+
+// testing The system should not allow any additional user to join a game once the game has started. (FREQ-13)
+
+
+// testing The system should allow a user to exit the game at any given moment. (FREQ-9)
+
+
+
 int main(int argc, char **argv) 
 {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
- */
+
 
