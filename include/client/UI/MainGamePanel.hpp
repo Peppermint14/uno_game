@@ -15,7 +15,7 @@ public:
     MainGamePanel(wxWindow* parent);
 
     void buildPlayerState(Player_State* playerState, Player* me);
-    wxString colourPicker();
+    ck_Cards::Color colourPicker();
     // Notification alerts
     void show_colour_match_notification();
 

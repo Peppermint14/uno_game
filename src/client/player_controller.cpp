@@ -24,16 +24,19 @@ Player_State initial_state = Player_State();
 GameWindow* player_controller::_gameWindow = nullptr;
 ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
+
+// TODO: Do we need this?
 std::list<std::pair<Player_id, int>> player_controller::players_number_of_cards = {{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0}};
 Player* player_controller::_me = nullptr;
 Player_id player_controller::current_player = Player_id::NONE;
+std::string placeholder_name;
 //Player_State* player_controller::_currentPlayerState = nullptr;
 ck_Cards::Color player_controller::color_to_be_played = ck_Cards::Color::NONE;
 ck_Cards::Cards player_controller::top_card_on_discard = ck_Cards::Cards::BLUE_0;
 
 
 //Player* player_controller::_me = nullptr;
-Player_State* player_controller::_currentPlayerState = &initial_state;
+Player_State* player_controller::_currentPlayerState = new Player_State(1);
 net::TCP_Client* _current_Client = nullptr;
 //extern player_controller* curr_controller;
 
@@ -52,17 +55,10 @@ void player_controller::init(GameWindow* gameWindow) {
     // Only show connection panel at the start of the game
     player_controller::_gameWindow->showPanel(player_controller::_connectionPanel);
     
-    
+    auto logger = Logger::create("client_controller");
     // Set status bar
     player_controller::showStatus("Not connected");
     
-}
-
-
-void player_controller::PickColour(){
-
-    wxString colour = _mainGamePanel->colourPicker();
-    //TODO: send_request that 'colour' was picked
 }
 
 void player_controller::connectToServer() {
@@ -86,7 +82,6 @@ void player_controller::connectToServer() {
          player_controller::showError("Input error", "Please enter your desired player name");
          return;
      }
-     
 
     //convert port from wxString to uint16_t
     unsigned long portAsLong;
@@ -98,17 +93,20 @@ void player_controller::connectToServer() {
 
     // //convert player name from wxString to std::string
     std::string playerName = inputPlayerName.ToStdString();
+    placeholder_name = playerName;
     
     // convert host from wxString to std::string
     std::string serveraddress = inputServerAddress.ToStdString();
 
     player_controller::_me = new Player(Player_id::NONE, playerName, true);
+
     // //connect to network
-    std::cout << "t0\n";
     try{
         //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
 	    net::TCP_Client::connect(serveraddress, port, [](const std::string _msg){
+            getMainThreadEventHandler()->CallAfter([_msg]{
             eval_response(_msg);
+            });
         }); //playercontroller eval_response
     } catch(const ckException& _e){
         auto logger = Logger::get("client_main");
@@ -118,14 +116,15 @@ void player_controller::connectToServer() {
     //ClientNetworkManager::init(host, port);
     //net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){controller->eval_response(_msg);});
     // //send request to join game
-    std::cout << "t1\n";
+    // std::cout << "t1\n";
     // TODO: Dynamic player id?
     
     
-    updatePlayerState(&test_state);
+    updatePlayerState();
+    showStatus("Connected: " + serveraddress);
     _gameWindow->showPanel(_mainGamePanel);
 	
-    // join(playerName);
+    join(playerName);
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
 
@@ -133,18 +132,31 @@ void player_controller::connectToServer() {
 
 void player_controller::eval_response(const std::string& msg)
 {
-    std::cout << "Incoming response \n";
+    auto logger = Logger::create("client_eval");
+
 	nlohmann::json response = nlohmann::json::parse(msg);
-	
-    //id without type
-    if(response.count("type") == 0){
-	Player_id id = response["id"];    
-        player_controller::_me->set_player_id(id);
-	return;
-    }
-    
+
+    Player_id response_id = Player_id(response["id"]);
+
+    // id without type
+    // if(response.count("type") == 0){
+    //     logger->debug("You have been assigned id: {}", response_id);
+    //     _currentPlayerState->set_this_players_id(response_id);
+    //     _currentPlayerState->set_name_by_id(placeholder_name, response_id);
+    //     updatePlayerState();
+	//     return;
+    // }
+
     const size_t type = response["type"];
 	Respond_Type response_type = Respond_Type(type);
+
+    logger->debug("Evaluating incoming response of type: {}", response_type);	
+    
+
+
+    if(response_id != _currentPlayerState->get_this_player() && _currentPlayerState->get_this_player() != Player_id::NONE)
+        logger->error("IDs don't match, Response id: {}, this player id: {}", response_id, _currentPlayerState->get_this_player() );
+    
 	switch(response_type)
 	{
 		case Respond_Type::SUCCESFUL_CONNECTION:
@@ -161,26 +173,41 @@ void player_controller::eval_response(const std::string& msg)
 			}
 		case Respond_Type::GAME_UPDATE:
 			{
-				//update is waiting (is the game allready ongoing or do the players have to wait)
-				Player_id current_id= response["current_player"];
-				_me->get_player_state()->set_is_waiting(current_id == Player_id::NONE);
+				//update is waiting (is the game already ongoing or do the players have to wait)
+
+                // Extract information
+                Player_id current_id = Player_id(response["current_player"]);
+                ck_Cards::Color color = ck_Cards::Color(response["color_to_be_matched"]);
+                ck_Cards::Cards top_card = ck_Cards::Cards(response["top_card"]);
+				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
+
+
+				// update current player
+                _currentPlayerState->set_current_player(current_id);
+                _currentPlayerState->set_players_turn();
+                _currentPlayerState->set_is_waiting(false);
+
+                
+                _me->get_player_state()->set_is_waiting(response_id == Player_id::NONE);
 
 				//update whos turn it is
-				_currentPlayerState->set_current_player(current_id);
-				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
+				_currentPlayerState->set_current_player(response_id);
+				_currentPlayerState->set_players_turn(response_id == _me->get_player_id()); // Could coalesce into set_current_player function.
 	
 				//update number of cards of all players
-				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
+                for(auto entry : player_cards_list){
+                    _currentPlayerState->set_number_of_cards(entry.first, entry.second);
+                }
 				player_controller::set_number_cards_player(player_cards_list);
 				//curr_controller->set_number_cards_player(player_cards_list);
 			
 				//update, which color has to be played
-				ck_Cards::Color color = response["color_to_be_matched"];
+                _currentPlayerState->set_to_be_matched(color);
 				player_controller::set_color(color);
 				//curr_controller->set_color(color);
 				
 				//update, which card is on top of the discard Pile
-				ck_Cards::Cards top_card = response["top_card"];
+                _currentPlayerState->set_top_discard(top_card);
 				player_controller::set_top_card_discardp(top_card);
 				//curr_controller->set_top_card_discardp(top_card);
 
@@ -190,7 +217,8 @@ void player_controller::eval_response(const std::string& msg)
 			{
 
 				std::string message = response["msg"];
-				player_controller::showError("error", message);
+                logger->error("ERROR: The folowing error occurred: {}", message);
+				// player_controller::showError("error", message);
 				//set_error_message(message);
 
 				break;
@@ -198,7 +226,8 @@ void player_controller::eval_response(const std::string& msg)
 		
 		case Respond_Type::UNO:
 			{
-				player_controller::showStatus("UNO");
+				logger->info("UNO! The previous player played his second to last card");
+                _currentPlayerState->set_uno(true);
 				break;
 			}
 		case Respond_Type::GAME_OVER:
@@ -207,9 +236,10 @@ void player_controller::eval_response(const std::string& msg)
 				//create pop up game over
 				break;
 			}
-		
+		// TODO: Accurately set ids
 		case Respond_Type::WINS:
 			{
+
 				Player_id winner_id = response["Player_id"];
 			        if(winner_id == _me->get_player_id()){	
 					player_controller::showStatus("Wueeeeehhhhhh!!!!!!!!!!!!!! You won !!!!! :D");
@@ -223,23 +253,36 @@ void player_controller::eval_response(const std::string& msg)
 				//create pop up id wins
 				break;
 			}
+        case Respond_Type::ID_ASSIGN:
+            {
+                logger->info("You have been assigned id: {}, with name {}", response_id, placeholder_name);
+                _currentPlayerState->set_this_players_id(response_id);
+                _currentPlayerState->set_name_by_id(placeholder_name,response_id);
+                break;                
+            }
+        case Respond_Type::SELECT_COLOR:
+            {
+                send_selected_color(_mainGamePanel->colourPicker());
+                break;
+            }
         default:
-            std::cout << "Unexpected RESULT \n";
+            logger->error("Unexpected Respond_Type: {}", response_type);
 	}
+    updatePlayerState();
 
 }
 
-void player_controller::updatePlayerState(Player_State* newPlayerState) {
+void player_controller::updatePlayerState() {
 
     
     // the existing game state is now old
-    Player_State* oldPlayerState = player_controller::_currentPlayerState;
+    // Player_State* oldPlayerState = player_controller::_currentPlayerState;
 
     // save the new game state as our current game state
-    player_controller::_currentPlayerState = newPlayerState;
+    // player_controller::_currentPlayerState = newPlayerState;
 
     //TODO: Remove line
-    std::cout << "Player_names: cap: " << _currentPlayerState->get_id_vec()->capacity() << ", Size: " << _currentPlayerState->get_id_vec()->capacity() << ", is empty = " << _currentPlayerState->get_id_vec()->empty() <<  std::endl;
+    // std::cout << "Player_names: cap: " << _currentPlayerState->get_id_vec()->capacity() << ", Size: " << _currentPlayerState->get_id_vec()->capacity() << ", is empty = " << _currentPlayerState->get_id_vec()->empty() <<  std::endl;
 /*
     if(oldPlayerState != nullptr) {
 
@@ -280,17 +323,6 @@ void player_controller::drawCard() {
 	request["id"]= id;
 	request["type"] = Request_Type::DRAW_REQUEST;
 	net::TCP_Client::send(request.dump());
-
-    // Send request
-    //TCP_client::requestDrawCard();
-
-    // Update Cards
-    //MainGamePanel::redrawCards();
-
-
-
-    // draw_card_request request = draw_card_request(player_controller::_currentPlayerState->get_id(), player_controller::_me->get_id());
-    // ClientNetworkManager::sendRequest(request);
 }
 
 
@@ -302,13 +334,13 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
 	request["card"] = *cardToPlay;
 	net::TCP_Client::send(request.dump());
 	// TODO: remove
-     	std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
-        test_state.set_top_discard(*cardToPlay);
-        std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
-        ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
-        test_state.set_hand(new_hand);
-        test_state.set_uno(!test_state.get_uno());
-        updatePlayerState(&test_state);
+     	// std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
+        // test_state.set_top_discard(*cardToPlay);
+        // std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
+        // ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
+        // test_state.set_hand(new_hand);
+        // test_state.set_uno(!test_state.get_uno());
+        // updatePlayerState(&test_state);
 
 }
 
@@ -319,17 +351,26 @@ void player_controller::exit(){
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
 	net::TCP_Client::send(request.dump());
+
 }
 
 void player_controller::join(std::string name){
+    Player_id state_id = _currentPlayerState->get_this_player();
 	Player_id id = _me->get_player_id();
 	nlohmann::json request;
-	request["id"]= id;
+	request["id"]= state_id;
 	request["name"] = name;
 	request["type"] = Request_Type::NEW_PLAYER;
 	net::TCP_Client::send(request.dump());
 }
 
+void player_controller::send_selected_color(ck_Cards::Color c){
+	Player_id id = _me->get_player_id();
+	nlohmann::json request;
+	request["id"]= id;
+	request["type"] = Request_Type::SELECTED_COLOR;
+	net::TCP_Client::send(request.dump());
+}
 wxEvtHandler* player_controller::getMainThreadEventHandler() {
      return player_controller::_gameWindow->GetEventHandler();
 }

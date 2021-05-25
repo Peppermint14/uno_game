@@ -15,34 +15,25 @@
 MainGamePanel::MainGamePanel(wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(960, 680)) {
 }
 
-wxString MainGamePanel::colourPicker(){
+ck_Cards::Color MainGamePanel::colourPicker(){
     
     // TODO: Adjust size of Window
     wxArrayString choices;
-    choices.Add("Red");
     choices.Add("Green");
-    choices.Add("Blue");
+    choices.Add("Red");
     choices.Add("Yellow");
-    wxString msg("Choose the colour");
+    choices.Add("BLue");
+    wxString msg("Choose the colour to be matched");
     wxString caption("Wildcard");
 
-    //int x,y,width,height,initialSelection;
-    //bool centre;
+    // auto logger = Logger::create("colour_selection");
+    int  res = wxGetSingleChoiceIndex(msg, caption, choices, this, 25, 25, true, 400, 200, 1);
+    // logger->debug("{}", res);
+    while(res == -1)
+        res = wxGetSingleChoiceIndex(msg, caption, choices);
+        // logger->debug("{}", res);
 
-    // wxSize size(400, 500);
-
-    // wxDialog dialog(NULL, -1, "test", wxDefaultPosition, size);
-    
-    // dialog.Show();
-
-    wxString  res = wxGetSingleChoice(msg, caption, choices, this, 25, 25, true, 400, 200, 1);
-    
-    while(res.IsEmpty())
-        res = wxGetSingleChoice(msg, caption, choices);
-    // test.SetSelection(initialSelection);
-    // return test.ShowModal() == wxID_OK ? test.GetStringSelection() : wxString();
-
-    return res;
+    return ck_Cards::Color(res);
 }
 
 void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
@@ -87,6 +78,14 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     // show turn indicator below card piles
     //this->buildTurnIndicator(playerState, me);
 
+    // Make player aware if someone has won
+    if(playerState->has_player_won()){
+        if(playerState->get_winner() == playerState->get_this_player())
+            this->show_won_notification(playerState);
+        else 
+            this->show_lost_notification(playerState);
+    }
+
     // show both card piles at the center
     this->buildCardPiles(playerState);
 
@@ -97,19 +96,17 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     this->buildPlayerList(playerState);
 
     // update layout
-    this->Layout();
+    // this->Layout();
 
-    // Make player aware if someone has won
-    if(playerState->has_player_won()){
-        if(playerState->get_winner() == playerState->get_this_player())
-        this->show_won_notification(playerState);
-        else this->show_lost_notification(playerState);
-    }
+
     // Make player aware if the previous player has played his penultimate card
-    if(playerState->get_uno())this->show_uno_notification(playerState);
+    if(playerState->get_uno()) this->show_uno_notification(playerState);
 
     // Make player aware if a wild card is played and he has to match a chosen colour
-    if(playerState->get_match_colour()) this->show_colour_match_notification(playerState);
+    if(playerState->get_to_be_matched() != ck_Cards::Color::NONE) this->show_colour_match_notification(playerState);
+
+    // update layout
+    this->Layout();
 }
 
 
@@ -331,7 +328,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState) {
     this->SetSizer(outerLayout);
     wxBoxSizer* innerLayout = new wxBoxSizer(wxVERTICAL);
     outerLayout->Add(innerLayout, 1, wxALIGN_BOTTOM);
-    std::cout << "1\n";
     // Show the label with our player name
     wxStaticText* playerName = buildStaticText(
             playerState->get_player_name(),
@@ -357,6 +353,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState) {
         wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
         startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
              player_controller::startGame();
+             player_controller::updatePlayerState();
          });
         innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
@@ -450,13 +447,8 @@ void MainGamePanel::show_uno_notification(Player_State* ps){
 
     wxPoint popupPosition = MainGamePanel::tableCenter + MainGamePanel::unoPopupOffset;
     ImagePanel* uno_notification = new ImagePanel(this, "../assets/uno_popup.png", wxBITMAP_TYPE_ANY, popupPosition, MainGamePanel::popupSize);
-    uno_notification->Show(false);
-    if(ps->get_uno()){
-        uno_notification->Show();
-        std::cout << "sleep start" << std::endl;
-        // wxImage disabled = uno_notification->_image->convertToDisabled();
-
-    }
+    uno_notification->Show();
+    ps->set_uno(false);
 }
 
 void MainGamePanel::show_won_notification(Player_State* ps){

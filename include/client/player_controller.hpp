@@ -18,13 +18,13 @@ public:
     static void init(GameWindow* gameWindow);
     static void connectToServer();
     static void eval_response(const std::string& msg);
-    static void updatePlayerState(Player_State* newPlayerState);
+    static void updatePlayerState();
     static void startGame();
     static void drawCard();
     static void fold();
-    static void PickColour();
     static void playCard(const ck_Cards::Cards* cardToPlay);
     static void join(std::string);
+    static void send_selected_color(ck_Cards::Color);
     static void exit();
 
 
@@ -52,6 +52,7 @@ public:
     //static void error_read(); //-> error_message is not accurate anymore
     //std::string get_error_message();
 
+
 private:
     static GameWindow* _gameWindow ;
     static ConnectionPanel* _connectionPanel;
@@ -59,6 +60,7 @@ private:
     // static player_controller* _this_ctrl;
     //at position i is the number of cards that player i has stored (position 0 is zero (player zero is error)
     static std::list<std::pair<Player_id, int>> players_number_of_cards;
+    static bool game_over;
     static Player* _me;
     static Player_id current_player;
     static Player_State* _currentPlayerState;
