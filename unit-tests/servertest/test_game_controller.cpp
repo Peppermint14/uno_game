@@ -76,6 +76,7 @@ protected:
       ck_Cards::Draw_Pile draw_pile; //empty draw_pile
       ck_Cards::Discard_Pile discard_pile;
       discard_pile.push(discard_pile_list);
+      discard_pile.push(ck_Cards::Cards::BLUE_0);
     }
 
     /* Any object and subroutine declared here can be accessed in the tests */
@@ -122,10 +123,9 @@ TEST_F(Game_State_Test, GetNextPlayerLoop)
 // testing action SKIP
 TEST_F(Game_State_Test, SwitchPlayer)
 {
-  //Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
   game_controller.switch_player(Player_id::PLAYER_1);
   Player_id next_player = game_controller.get_game_state()->get_current_player();
-  Player_id expected_next_player = Player_id::PLAYER_3;
+  Player_id expected_next_player = Player_id::PLAYER_2;
   EXPECT_EQ(expected_next_player, next_player);
 }
 
@@ -147,7 +147,11 @@ TEST_F(Game_State_Test, Reverse)
 
 TEST_F(Game_State_Test, Reshuffle)
 {
+    size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size()-2;
+    game_controller.draw_card(Player_id::PLAYER_1);
+    size_t actual_size_draw_pile = game_controller.get_game_state()->get_draw_pile().size();
 
+    EXPECT_EQ(expected_size_draw_pile, actual_size_draw_pile);
 }
 // testing deck reshuffle (scenario SCN-1 from SRS)
 
@@ -174,8 +178,8 @@ TEST_F(Game_State_Test, Update_discard_pile)
 
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=1;
   msg_json["card"]=Cards::BLUE_SKIP_A;
+  msg_json["id"]=1;
 
   game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   

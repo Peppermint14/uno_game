@@ -26,6 +26,10 @@ public:
 	Player* get_player(const Player_id& /*player_id*/) const;
 	//removes player from vector of players
 	void remove_player(const Player_id& /*player_id*/);
+	//merely used for testing purposes
+	void set_discard_pile(const ck_Cards::Discard_Pile& /*discard_pile_*/);
+	void set_draw_pile(const ck_Cards::Draw_Pile& /*draw_pile_*/);
+
 private:
 	ck_Cards::Draw_Pile draw_pile;
 	ck_Cards::Discard_Pile discard_pile;
