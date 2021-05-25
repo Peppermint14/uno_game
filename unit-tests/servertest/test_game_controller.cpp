@@ -193,20 +193,17 @@ TEST_F(Game_State_Test, Draw2)
 {
   game_controller.get_game_state()->get_discard_pile().push(Cards::RED_5_B);
   
-  // before player2 plays, number of card of player3
-  const size_t previous_nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
-  
-  // player2 plays a red draw2 card on top of the red discard pile
+  // player1 plays a red draw2 card on top of the red discard pile
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=2;
+  msg_json["id"]=1;
   msg_json["card"]=Cards::RED_DRAW2_A;
   
-  game_controller.eval_request(Player_id::PLAYER_2, msg_json.dump());
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   
-  // player3 will get 2 extra cards
-  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
-  const size_t expected_nbCards = previous_nbCards - 2;
+  // player2 will get 2 extra cards, going from 3 to 5
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 5;
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
