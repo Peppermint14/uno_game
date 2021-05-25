@@ -207,6 +207,24 @@ TEST_F(Game_State_Test, Draw2)
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
+//check if color was updated
+TEST_F(Game_State_Test, UpdateColor)
+{
+  game_controller.get_game_state()->get_discard_pile().push(Cards::GREEN_5_B);
+  
+  // player1 plays a red draw2 card on top of the red discard pile
+  nlohmann::json msg_json;
+  msg_json["type"]= Request_Type::PLAY_REQUEST;
+  msg_json["id"]=1;
+  msg_json["card"]=Cards::GREEN_2_A;
+  
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
+  
+  Color color = game_controller.get_game_state()->get_color_to_be_matched();
+  Color expected_color = Color::GREEN;
+  EXPECT_EQ(expected_color, color);
+}
+
 
 //check if card was removed after hand was played
 /*
@@ -228,7 +246,6 @@ TEST_F(Game_State_Test, Update_hand)
 
 //check reshuffling of draw_pile
 
-//check if color was updated
 
 //check if hand can be sended
 
