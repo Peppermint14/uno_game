@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../../include/server/game_controller.hpp"
+#include "../../include/common/common.hpp"
 #include <vector>
 
 
@@ -112,11 +113,9 @@ TEST_F(Game_State_Test, SwitchPlayer)
   Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
   game_controller.switch_player(next_player_id);
   Player_id next_player = game_controller.get_game_state()->get_current_player();
-  Player_id expected_next_player = Player_id::PLAYER_2;
+  Player_id expected_next_player = Player_id::PLAYER_3;
   EXPECT_EQ(expected_next_player, next_player);
 }
-
-
 
 // testing action REVERSE
 TEST_F(Game_State_Test, Reverse)
@@ -133,28 +132,40 @@ TEST_F(Game_State_Test, Reverse)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
-// testing deck reshuffle (scenario SCN-1 from SRS)
-
-
-// testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
-
-
-// testing one player exits but more than one player are still in the game (scenario SCN-3 from SRS)
-
-
-// testing player wins game in a game in which more than 2 players are participating (scenario SCN-4 from SRS)
-
-
-// testing timeout : player doesn’t play in a given time slot, a card will automatically be handed out to the player
-//          and the player misses this turn. (FREQ-17 from SRS)
-
-
-// testing The system should not allow any additional user to join a game once the game has started. (FREQ-13)
-
-
-// testing The system should allow a user to exit the game at any given moment. (FREQ-9)
 
 //test if card has been played and is now top_card of discard_pile
+TEST_F(Game_State_Test, Update_discard_pile)
+{
+  
+  nlohmann::json msg_json;
+  msg_json["type"]= Request_Type::PLAY_REQUEST;
+  msg_json["unique_player_id"]=3;
+  msg_json["card"]=Cards::BLUE_SKIP_A;
+
+  game_controller.eval_request(Player_id::PLAYER_3, msg_json.dump());
+  
+  const Cards topCard = game_controller.get_game_state()->get_discard_pile().get_top_card();
+  const Cards expected_topCard = Cards::BLUE_SKIP_A;
+  EXPECT_EQ(expected_topCard, topCard);
+}
+
+//check if card was removed after hand was played
+/*
+TEST_F(Game_State_Test, Update_hand)
+{
+  
+  nlohmann::json msg_json;
+  msg_json["type"]= Request_Type::PLAY_REQUEST;
+  msg_json["unique_player_id"]=3;
+  msg_json["card"]=Cards::BLUE_SKIP_A;
+  
+  game_controller.eval_request(Player_id::PLAYER_3, msg_json.dump());
+  
+  const Cards topCard = game_controller.get_game_state()->get_players().get_hand();
+  const Cards expected_topCard = Cards::BLUE_SKIP_A;
+  EXPECT_EQ(expected_topCard, topCard);
+}
+*/
 
 //check reshuffling of draw_pile
 
@@ -164,13 +175,26 @@ TEST_F(Game_State_Test, Reverse)
 
 //check if draw_2 cards adds cards to next player
 
-//check if card was removed after hand was played
-
-
 int main(int argc, char **argv) 
 {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
 
+
+// ----------some other test ideas------------------
+// testing deck reshuffle (scenario SCN-1 from SRS)
+
+// testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
+
+// testing one player exits but more than one player are still in the game (scenario SCN-3 from SRS)
+
+// testing player wins game in a game in which more than 2 players are participating (scenario SCN-4 from SRS)
+
+// testing timeout : player doesn’t play in a given time slot, a card will automatically be handed out to the player
+//          and the player misses this turn. (FREQ-17 from SRS)
+
+// testing The system should not allow any additional user to join a game once the game has started. (FREQ-13)
+
+// testing The system should allow a user to exit the game at any given moment. (FREQ-9)
 
