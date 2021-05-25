@@ -231,16 +231,6 @@ TEST_F(Game_State_Test, UpdateColor)
 TEST_F(Game_State_Test, Update_hand)
 {
   
-  nlohmann::json msg_json;
-  msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=0;
-  msg_json["card"]=Cards::RED_DRAW2_A;
-  
-  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
-  
-  const Cards topCard = game_controller.get_game_state()->get_players()[0].get_hand();
-  const Cards expected_topCard = Cards::BLUE_SKIP_A;
-  EXPECT_EQ(expected_topCard, topCard);
 }
 */
 
