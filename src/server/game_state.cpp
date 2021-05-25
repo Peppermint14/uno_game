@@ -30,6 +30,16 @@ Game_State::Game_State()
     has_started = false;
 }
 
+void Game_State::set_draw_pile(const ck_Cards::Draw_Pile& draw_pile_)
+{
+    draw_pile = draw_pile_;
+}
+
+void Game_State::set_discard_pile(const ck_Cards::Discard_Pile& discard_pile_)
+{
+    discard_pile = discard_pile_;
+}
+
 
 
 void Game_State::add_Players(Player* player)

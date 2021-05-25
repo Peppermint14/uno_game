@@ -7,7 +7,6 @@ Game_Controller::Game_Controller()
     game_state = new Game_State();
 }
 
-//TODO: maybe check if player_id is the same as in nlohmann file
 void Game_Controller::eval_request(const Player_id& player_id, const std::string& msg)
 {
     nlohmann::json request = nlohmann::json::parse(msg);
@@ -76,6 +75,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     //delete from player hand
                     Player* player = game_state->get_player(player_id);
                     player->get_hand().remove(card);
+                    send_hand(player_id);
                     //UNO
                     if(player->number_of_cards()==1)
                     {
@@ -107,11 +107,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            reset_game();
                        }
                     }
-                    else
-                    {
-                        //send hand to player
-                        send_hand(player_id);
-                    }
+
                     //evaluate effect of card
                     effect_of_card(player_id, card);
                 }
@@ -221,6 +217,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
         }
     }
 }
+
 
 /////////////////////add_new_player//////////////////////////////////////////////////
 
@@ -364,19 +361,19 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
     }
     if(card_object.action == ck_Cards::Action::DRAW2)
     {
-        //set current_player to next player
-        switch_player(player_id);
-
         //set color_to_be_matched
         game_state->set_color_to_be_matched(card_object.color);
 
-        Player_id next_player_id = game_state->get_current_player();
+        Player_id next_player_id = get_next_player(player_id);
         //add two cards to other players hand
         draw_card(next_player_id);
         draw_card(next_player_id);
 
         //send hand to player
         send_hand(next_player_id);
+        //set current_player to next player
+        switch_player(player_id);
+
         broadcast_game_state();
     }
     if(card_object.action == ck_Cards::Action::WILD_DRAW4)
@@ -412,6 +409,7 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
 
         //set color_to_be_matched
         game_state->set_color_to_be_matched(card_object.color);
+        broadcast_game_state();
     }
     if(card_object.action == ck_Cards::Action::REVERSE)
     {
@@ -423,6 +421,7 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
 
         //set color_to_be_matched
         game_state->set_color_to_be_matched(card_object.color);
+        broadcast_game_state();
     }
 }
 
