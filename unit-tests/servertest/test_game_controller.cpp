@@ -184,7 +184,7 @@ TEST_F(Game_State_Test, Update_discard_pile)
 }
 
 //check if card was removed after hand was played
-/*
+
 TEST_F(Game_State_Test, Update_hand)
 {
   
@@ -199,7 +199,7 @@ TEST_F(Game_State_Test, Update_hand)
   const Cards expected_topCard = Cards::BLUE_SKIP_A;
   EXPECT_EQ(expected_topCard, topCard);
 }
-*/
+
 
 //check reshuffling of draw_pile
 
