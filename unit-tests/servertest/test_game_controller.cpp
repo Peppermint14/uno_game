@@ -62,7 +62,14 @@ protected:
       game_controller.get_game_state()->add_Players(player1);
       game_controller.get_game_state()->add_Players(player2);	
               
-      game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);    
+      game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);
+
+      //std::list<ck_Cards::Cards> draw_pile_list =
+      std::list<ck_Cards::Cards> discard_pile_list = {
+              ck_Cards::Cards::GREEN_1_A,ck_Cards::Cards::BLUE_SKIP_A, ck_Cards::Cards::RED_0};
+      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
+      ck_Cards::Discard_Pile discard_pile;
+      discard_pile.push(discard_pile_list);
     }
 
     /* Any object and subroutine declared here can be accessed in the tests */
@@ -109,8 +116,8 @@ TEST_F(Game_State_Test, GetNextPlayerLoop)
 // testing action SKIP
 TEST_F(Game_State_Test, SwitchPlayer)
 {
-  Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
-  game_controller.switch_player(next_player_id);
+  //Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
+  game_controller.switch_player(Player_id::PLAYER_1);
   Player_id next_player = game_controller.get_game_state()->get_current_player();
   Player_id expected_next_player = Player_id::PLAYER_2;
   EXPECT_EQ(expected_next_player, next_player);
@@ -133,6 +140,10 @@ TEST_F(Game_State_Test, Reverse)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
+TEST_F(Game_State_Test, Reshuffle)
+{
+
+}
 // testing deck reshuffle (scenario SCN-1 from SRS)
 
 
