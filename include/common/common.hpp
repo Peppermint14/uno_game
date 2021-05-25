@@ -61,7 +61,8 @@ enum class Respond_Type: uint32_t {
     SELECT_COLOR = 4,
     UNO = 5,
     GAME_OVER = 6,
-    WINS = 7
+    WINS = 7,
+    ID_ASSIGN = 8
 };
 
 class ckException : public std::exception {
