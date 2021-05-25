@@ -48,7 +48,6 @@ TEST_P(ParametricValidCard, Validmove)
 INSTANTIATE_TEST_SUITE_P(Validmove, ParametricValidCard, testing::ValuesIn(played_cards));
 
 
-//Thats our Test Fixture
 class Game_State_Test : public ::testing::Test {
 
 protected:
@@ -62,7 +61,13 @@ protected:
       game_controller.get_game_state()->add_Players(player0);
       game_controller.get_game_state()->add_Players(player1);
       game_controller.get_game_state()->add_Players(player2);	
-              
+        
+      game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push({Cards::RED_DRAW2_A, Cards::BLUE_SKIP_A, Cards::GREEN_2_A});
+      
+      game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->get_hand().push({Cards::RED_4_B, Cards::RED_REVERSE_B, Cards::RED_SKIP_B});
+      
+      game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->get_hand().push({Cards::RED_4_A, Cards::RED_REVERSE_A, Cards::RED_SKIP_A});      
+      
       game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);    
     }
 
@@ -136,18 +141,42 @@ TEST_F(Game_State_Test, Reverse)
 //test if card has been played and is now top_card of discard_pile
 TEST_F(Game_State_Test, Update_discard_pile)
 {
-  
+  game_controller.get_game_state()->get_discard_pile().push(Cards::BLUE_5_A);
+
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=3;
+  msg_json["unique_player_id"]=1;
   msg_json["card"]=Cards::BLUE_SKIP_A;
 
-  game_controller.eval_request(Player_id::PLAYER_3, msg_json.dump());
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   
   const Cards topCard = game_controller.get_game_state()->get_discard_pile().get_top_card();
   const Cards expected_topCard = Cards::BLUE_SKIP_A;
   EXPECT_EQ(expected_topCard, topCard);
 }
+
+//check if draw_2 cards adds cards to next player
+TEST_F(Game_State_Test, Draw2)
+{
+  game_controller.get_game_state()->get_discard_pile().push(Cards::RED_5_B);
+  
+  // before player2 plays, number of card of player3
+  const size_t previous_nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
+  
+  // player2 plays a red draw2 card on top of the red discard pile
+  nlohmann::json msg_json;
+  msg_json["type"]= Request_Type::PLAY_REQUEST;
+  msg_json["unique_player_id"]=2;
+  msg_json["card"]=Cards::RED_DRAW2_A;
+  
+  game_controller.eval_request(Player_id::PLAYER_2, msg_json.dump());
+  
+  // player3 will get 2 extra cards
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
+  const size_t expected_nbCards = previous_nbCards - 2;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
 
 //check if card was removed after hand was played
 /*
@@ -156,12 +185,12 @@ TEST_F(Game_State_Test, Update_hand)
   
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=3;
-  msg_json["card"]=Cards::BLUE_SKIP_A;
+  msg_json["unique_player_id"]=0;
+  msg_json["card"]=Cards::RED_DRAW2_A;
   
-  game_controller.eval_request(Player_id::PLAYER_3, msg_json.dump());
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   
-  const Cards topCard = game_controller.get_game_state()->get_players().get_hand();
+  const Cards topCard = game_controller.get_game_state()->get_players()[0].get_hand();
   const Cards expected_topCard = Cards::BLUE_SKIP_A;
   EXPECT_EQ(expected_topCard, topCard);
 }
@@ -173,7 +202,6 @@ TEST_F(Game_State_Test, Update_hand)
 
 //check if hand can be sended
 
-//check if draw_2 cards adds cards to next player
 
 int main(int argc, char **argv) 
 {
