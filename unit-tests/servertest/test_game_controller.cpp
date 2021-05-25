@@ -48,7 +48,7 @@ INSTANTIATE_TEST_SUITE_P(Validmove, ParametricValidCard, testing::ValuesIn(playe
 
 
 //Thats our Test Fixture
-class Game_StateTest : public ::testing::Test {
+class Game_State_Test : public ::testing::Test {
 
 protected:
     virtual void SetUp() 
@@ -56,9 +56,6 @@ protected:
       Player* player0 = new Player(Player_id::PLAYER_1, "player_1");
       Player* player1 = new Player(Player_id::PLAYER_2, "player_2");
       Player* player2 = new Player(Player_id::PLAYER_3, "player_3");
-          
-      //assumed to be correct
-      //player2->set_has_won(true);
     
       //assumed to be correct
       game_controller.get_game_state()->add_Players(player0);
@@ -70,25 +67,20 @@ protected:
 
     /* Any object and subroutine declared here can be accessed in the tests */
     Game_Controller game_controller;
-    Player* player0 = new Player(Player_id::PLAYER_1, "player_0");
-    Player* player1 = new Player(Player_id::PLAYER_2, "player_1");
-    Player* player2 = new Player(Player_id::PLAYER_3, "player_2");
-    std::vector<std::pair<Player_id, Player*> > player_reversed = {
-            {Player_id::PLAYER_3,player2},{Player_id::PLAYER_2,player1}, {Player_id::PLAYER_1,player0}};
 
 };
 
 // testing function get_player_id()
-TEST_F(Game_StateTest, PlayerId)
+TEST_F(Game_State_Test, PlayerId)
 {
-  Player_id player2_Id = player2->get_player_id();
+  Player_id player2_Id = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->get_player_id();
   Player_id expected_player2_Id = Player_id::PLAYER_3;
   EXPECT_EQ(expected_player2_Id, player2_Id);
   
 }
 
 // testing function get_current_player()
-TEST_F(Game_StateTest, CurrentPlayer)
+TEST_F(Game_State_Test, CurrentPlayer)
 {
   Player_id current_player = game_controller.get_game_state()->get_current_player();
   Player_id expected_current_player = Player_id::PLAYER_1;
@@ -97,16 +89,17 @@ TEST_F(Game_StateTest, CurrentPlayer)
 }
 
 // testing iteration to the next player
-TEST_F(Game_StateTest, GetNextPlayer1) 
+TEST_F(Game_State_Test, SkipWinningPlayer)
 {
     //uses has_won maybe test first
+    game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->set_has_won(true);
     Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_1);
-    Player_id expected_next_player = Player_id::PLAYER_2;
+    Player_id expected_next_player = Player_id::PLAYER_3;
     EXPECT_EQ(expected_next_player, next_player);
 }
 
 // testing iteration to the next player loop back to PLAYER_1
-TEST_F(Game_StateTest, GetNextPlayerLoop)
+TEST_F(Game_State_Test, GetNextPlayerLoop)
 {
   Player_id next_player = game_controller.get_next_player(Player_id::PLAYER_3);
   Player_id expected_next_player = Player_id::PLAYER_1;
@@ -114,20 +107,20 @@ TEST_F(Game_StateTest, GetNextPlayerLoop)
 }
 
 // testing action SKIP
-TEST_F(Game_StateTest, SwitchPlayerExtended)
+TEST_F(Game_State_Test, SwitchPlayer)
 {
   Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
   game_controller.switch_player(next_player_id);
   Player_id next_player = game_controller.get_game_state()->get_current_player();
-  Player_id expected_next_player = Player_id::PLAYER_3;
+  Player_id expected_next_player = Player_id::PLAYER_2;
   EXPECT_EQ(expected_next_player, next_player);
 }
 
+
+
 // testing action REVERSE
-TEST_F(Game_StateTest, Reverse)
+TEST_F(Game_State_Test, Reverse)
 {
-  
-  //std::vector<std::pair<Player_id, Player*> >& players = game_controller.get_game_state()->get_players();
   //reverse order of vec players
   std::reverse(game_controller.get_game_state()->get_players().begin(), game_controller.get_game_state()->get_players().end());
   
@@ -161,6 +154,17 @@ TEST_F(Game_StateTest, Reverse)
 
 // testing The system should allow a user to exit the game at any given moment. (FREQ-9)
 
+//test if card has been played and is now top_card of discard_pile
+
+//check reshuffling of draw_pile
+
+//check if color was updated
+
+//check if hand can be sended
+
+//check if draw_2 cards adds cards to next player
+
+//check if card was removed after hand was played
 
 
 int main(int argc, char **argv) 
