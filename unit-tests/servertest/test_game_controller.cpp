@@ -68,7 +68,14 @@ protected:
       
       game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->get_hand().push({Cards::RED_4_A, Cards::RED_REVERSE_A, Cards::RED_SKIP_A});      
       
-      game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);    
+      game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);
+
+      //std::list<ck_Cards::Cards> draw_pile_list =
+      std::list<ck_Cards::Cards> discard_pile_list = {
+              ck_Cards::Cards::GREEN_1_A,ck_Cards::Cards::BLUE_SKIP_A, ck_Cards::Cards::RED_0};
+      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
+      ck_Cards::Discard_Pile discard_pile;
+      discard_pile.push(discard_pile_list);
     }
 
     /* Any object and subroutine declared here can be accessed in the tests */
@@ -115,8 +122,8 @@ TEST_F(Game_State_Test, GetNextPlayerLoop)
 // testing action SKIP
 TEST_F(Game_State_Test, SwitchPlayer)
 {
-  Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
-  game_controller.switch_player(next_player_id);
+  //Player_id next_player_id = game_controller.get_next_player(Player_id::PLAYER_1);
+  game_controller.switch_player(Player_id::PLAYER_1);
   Player_id next_player = game_controller.get_game_state()->get_current_player();
   Player_id expected_next_player = Player_id::PLAYER_3;
   EXPECT_EQ(expected_next_player, next_player);
@@ -137,6 +144,28 @@ TEST_F(Game_State_Test, Reverse)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
+
+TEST_F(Game_State_Test, Reshuffle)
+{
+
+}
+// testing deck reshuffle (scenario SCN-1 from SRS)
+
+
+// testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
+
+
+// testing one player exits but more than one player are still in the game (scenario SCN-3 from SRS)
+
+
+// testing player wins game in a game in which more than 2 players are participating (scenario SCN-4 from SRS)
+
+
+// testing timeout : player doesn’t play in a given time slot, a card will automatically be handed out to the player
+//          and the player misses this turn. (FREQ-17 from SRS)
+
+
+// testing The system should not allow any additional user to join a game once the game has started. (FREQ-13)
 
 //test if card has been played and is now top_card of discard_pile
 TEST_F(Game_State_Test, Update_discard_pile)
