@@ -179,7 +179,8 @@ namespace net {
                             })};
                             
                             nlohmann::json msg;
-                            msg["id"] = i+1;
+                            msg["id"] = i;
+                            msg["type"] = Respond_Type::ID_ASSIGN;
                             TCP_Server::sendToPlayer(static_cast<Player_id>(i+1), msg.dump());
                             break;
                         }

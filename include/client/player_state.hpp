@@ -17,9 +17,10 @@ public:
 
 	void set_top_discard(ck_Cards::Cards);
 	void set_to_be_matched(ck_Cards::Color);
-	void set_players_id(Player_id);
+	void set_this_players_id(Player_id);
 	void set_current_player(Player_id);
 	void set_players_turn(bool); 
+	void set_players_turn(); 
 	void set_player_won(bool);
 	void set_winner(Player_id); 
 	void set_number_of_cards(Player_id, size_t);
@@ -27,9 +28,9 @@ public:
 	void update_hand(); //also update number of cards
 	void change_play_direction(); // for reverse
 	void set_all_player_names(std::vector<std::string>);
+	void set_name_by_id(std::string, Player_id);
 	void set_is_waiting(bool);
 	void set_uno(bool);
-	void set_match_colour(bool);
 	 
 
 
@@ -50,7 +51,6 @@ public:
 	bool is_waiting_for_start() const;
 	size_t get_number_of_cards(Player_id) const;
 	bool get_uno() const;
-	bool get_match_colour() const;
 	std::vector<Player_id>* get_id_vec();
 
 
@@ -69,7 +69,7 @@ private:
 	Player_id winner; // ID of player that won.
 	bool player_won; // has a player wone
 	//true if player is waiting for the game to start, 0 if the game is already ongoing
-	bool player_waiting;
+	// bool player_waiting;
 	bool waiting_for_start;
 	bool player_quit; // Exited the game without winning
 	bool uno;

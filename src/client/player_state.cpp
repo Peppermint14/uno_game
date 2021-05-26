@@ -18,15 +18,13 @@ Player_State::Player_State(){
      this->winner = Player_id::NONE;
      this->player_won = 0;
      this->player_quit = 0;
-     this->waiting_for_start = 0;
+     this->waiting_for_start = 1;
      this->uno = 0;
      this->match_colour = 0;
-
-     // this->number_of_cards.reserve(4);
-
-     // this->all_Player_Names.reserve(4);
-
-     // this->player_ids.reserve(4);
+     
+     this->player_ids.resize(4);
+     this->all_Player_Names.resize(4);
+     this->number_of_cards.resize(4);
 }
 
 Player_State::Player_State(Player_id id, std::string player_name, size_t nof_players):Player_State(){
@@ -59,7 +57,7 @@ Player_State::Player_State(bool test)
      this->current_Player = Player_id::PLAYER_4;// Player_id::PLAYER_1;
      this->this_player = Player_id::PLAYER_1;
      this->winner = Player_id::PLAYER_3;
-     this->player_won = 1;
+     this->player_won = 0;
      this->player_quit = 0;
      this->waiting_for_start = 1;
      this->uno = 0;
@@ -96,7 +94,9 @@ void Player_State::set_top_discard(ck_Cards::Cards new_top){
      top_discard = new_top;
      discard_empty = 0;
 }
-
+void Player_State::set_players_turn(){
+	set_players_turn(current_Player == this_player);
+}
 void Player_State::set_players_turn(bool p_turn){
 	players_turn = p_turn;
 }
@@ -118,6 +118,9 @@ void Player_State::set_current_player(Player_id id){
 void Player_State::set_winner(Player_id id){
      winner = id;
 }
+void Player_State::set_this_players_id(Player_id id){
+     this_player = id;
+}
 
 // void Player_State::update_hand(const std::vector<ck_Cards::Cards cards)
 // {
@@ -127,17 +130,17 @@ void Player_State::set_winner(Player_id id){
 // }
 //
 
+void Player_State::set_name_by_id(std::string name, Player_id id){
+     all_Player_Names[uint32_t(id)] = name;
+}
 void Player_State::set_all_player_names(std::vector<std::string> name_vec){
      all_Player_Names = name_vec;
 }
 void Player_State::set_is_waiting(bool waiting){
-     player_waiting = waiting;
+     waiting_for_start = waiting;
 }
 void Player_State::set_uno(bool u){
      uno = u;
-}
-void Player_State::set_match_colour(bool b){
-     b = match_colour;
 }
 void Player_State::change_play_direction(){
      play_direction = !play_direction;
@@ -190,9 +193,6 @@ bool Player_State::has_player_quit() const {
 }
 bool Player_State::get_uno() const {
      return uno;
-}
-bool Player_State::get_match_colour() const {
-     return match_colour;
 }
 std::string Player_State::get_player_name() const { 
      return all_Player_Names[uint32_t(current_Player)-1]; // Since our player ids start with 1 (0 <=> error)
