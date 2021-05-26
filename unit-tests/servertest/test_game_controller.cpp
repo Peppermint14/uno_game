@@ -21,7 +21,7 @@ protected:
 const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
   {ck_Cards::Cards::YELLOW_1_A,0},
   {ck_Cards::Cards::YELLOW_5_B,1},
-  {ck_Cards::Cards::BLUE_7_A,0},
+  {ck_Cards::Cards::BLUE_6_A,0},
   {ck_Cards::Cards::BLUE_5_B,1},
   {ck_Cards::Cards::GREEN_2_B,0},
 	{ck_Cards::Cards::GREEN_5_A,1},
@@ -76,10 +76,23 @@ protected:
       // setting up the discard pile
       std::list<ck_Cards::Cards> discard_pile_list = {
               ck_Cards::Cards::GREEN_1_A,ck_Cards::Cards::BLUE_SKIP_A, ck_Cards::Cards::RED_0};
-      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
       ck_Cards::Discard_Pile discard_pile;
       discard_pile.push(discard_pile_list);
       discard_pile.push(ck_Cards::Cards::BLUE_0);
+      
+      // setting up the draw pile with 24 cards
+      std::list<ck_Cards::Cards> draw_pile_list = {
+        ck_Cards::Cards::GREEN_8_A,ck_Cards::Cards::BLUE_8_A, ck_Cards::Cards::RED_8_A, ck_Cards::Cards::YELLOW_8_A,
+        ck_Cards::Cards::GREEN_8_B,ck_Cards::Cards::BLUE_8_B, ck_Cards::Cards::RED_8_B, ck_Cards::Cards::YELLOW_8_B,
+        ck_Cards::Cards::GREEN_9_A,ck_Cards::Cards::BLUE_9_A, ck_Cards::Cards::RED_9_A, ck_Cards::Cards::YELLOW_9_A,
+        ck_Cards::Cards::GREEN_9_B,ck_Cards::Cards::BLUE_9_B, ck_Cards::Cards::RED_9_B, ck_Cards::Cards::YELLOW_9_B,
+        ck_Cards::Cards::GREEN_7_A,ck_Cards::Cards::BLUE_7_A, ck_Cards::Cards::RED_7_A, ck_Cards::Cards::YELLOW_7_A,
+        ck_Cards::Cards::GREEN_7_B,ck_Cards::Cards::BLUE_7_B, ck_Cards::Cards::RED_7_B, ck_Cards::Cards::YELLOW_7_B,
+      };
+      
+      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
+      draw_pile.push(draw_pile_list);
+
     }
 
     /* Any object and subroutine declared here can be accessed in the following tests */
@@ -193,7 +206,6 @@ TEST_F(Game_State_Test, Update_hand)
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
-
 //check if draw_2 cards adds two cards to the hand of the next player
 TEST_F(Game_State_Test, Draw2)
 {
@@ -229,6 +241,54 @@ TEST_F(Game_State_Test, UpdateColor)
   Color color = game_controller.get_game_state()->get_color_to_be_matched();
   Color expected_color = Color::GREEN;
   EXPECT_EQ(expected_color, color);
+}
+
+// testing implementation of function number_of_cards()
+TEST_F(Game_State_Test, NumberOfCards)
+{
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
+  const size_t expected_nbCards = 3;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+// testing if function clear() empties the players hand
+TEST_F(Game_State_Test, ClearHand) 
+{
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->get_hand().clear();
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 0;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+// check implementation of function reset_game() correctly reset hand of the players TODO DOES NOT WORK
+TEST_F(Game_State_Test, ResetGame_functionCall)
+{
+  game_controller.reset_game();
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 7; 
+  //const size_t expected_nbCards = 3;  // also DOES NOT WORK
+  //const size_t expected_nbCards = 0;  // also DOES NOT WORK
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+// reset_game() inside implementation with manually adding the 7 cards to player_1 TODO DOES NOT WORK
+TEST_F(Game_State_Test, ResetGame_implementation)
+{
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().clear();
+  std::list<ck_Cards::Cards> hand_list(7);
+  for (unsigned int i = 0; i < 7; ++i)
+    {
+      ck_Cards::Cards card = game_controller.get_game_state()->get_draw_pile().get_top_card(); //get cards from draw_pile
+      hand_list.push_back(card);
+    }
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push(hand_list);
+
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
+  const size_t expected_nbCards = 7;
+  // const size_t expected_nbCards = 3;  // also DOES NOT WORK
+  //const size_t expected_nbCards = 0;   // also DOES NOT WORK
+  
+  EXPECT_EQ(expected_nbCards, nbCards);
 }
 
 
