@@ -77,6 +77,7 @@ protected:
       std::list<ck_Cards::Cards> discard_pile_list = {
               ck_Cards::Cards::GREEN_1_A,ck_Cards::Cards::BLUE_SKIP_A, ck_Cards::Cards::RED_0};
       ck_Cards::Discard_Pile discard_pile;
+      ck_Cards::Draw_Pile draw_pile;
       discard_pile.push(discard_pile_list);
       discard_pile.push(ck_Cards::Cards::BLUE_0);
       game_controller.get_game_state()->set_discard_pile(discard_pile);
@@ -91,8 +92,7 @@ protected:
         ck_Cards::Cards::GREEN_7_A,ck_Cards::Cards::BLUE_7_A, ck_Cards::Cards::RED_7_A, ck_Cards::Cards::YELLOW_7_A,
         ck_Cards::Cards::GREEN_7_B,ck_Cards::Cards::BLUE_7_B, ck_Cards::Cards::RED_7_B, ck_Cards::Cards::YELLOW_7_B,
       };
-      
-      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
+
       draw_pile.push(draw_pile_list);
 }
 
@@ -164,7 +164,7 @@ TEST_F(Game_State_Test, Reverse)
 }
 
 // TODO check reshuffling of draw_pile TODO
-TEST_F(Game_State_Test, Reshuffle)
+TEST_F(Game_State_Test, Reshuffle_DrawPile)
 {
     size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size(); //-2;
     //game_controller.draw_card(Player_id::PLAYER_1);
@@ -229,9 +229,6 @@ TEST_F(Game_State_Test, Draw2)
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
-
-//check if card was removed after hand was played
-TEST_F(Game_State_Test, Update_hand)
 
 //check if color_to_be_matched in the game state is correctly updated
 TEST_F(Game_State_Test, UpdateColor)
