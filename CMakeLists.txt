@@ -59,6 +59,7 @@ else()
 endif()
 
 # ------------------ wxWidgets ------------------
+
 set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
 set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
 set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
