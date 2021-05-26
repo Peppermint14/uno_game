@@ -183,7 +183,7 @@ namespace ck_Cards {
         void push(const std::list<Cards> /*cards*/) noexcept;
         void remove(const ck_Cards::Cards /*card*/);
         void shuffle() noexcept;
-        [[nodiscard]] bool size() const noexcept;
+        [[nodiscard]] size_t size() const noexcept;
         [[nodiscard]] bool empty() const noexcept;
         void clear() noexcept;
         //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;

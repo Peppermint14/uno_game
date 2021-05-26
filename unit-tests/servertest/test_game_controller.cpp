@@ -93,7 +93,7 @@ protected:
         ck_Cards::Cards::GREEN_7_B,ck_Cards::Cards::BLUE_7_B, ck_Cards::Cards::RED_7_B, ck_Cards::Cards::YELLOW_7_B,
       };
 
-      draw_pile.push(draw_pile_list);
+      //draw_pile.push(draw_pile_list);
       //game_controller.get_game_state()->set_draw_pile(draw_pile);
 }
 
@@ -168,11 +168,10 @@ TEST_F(Game_State_Test, Reverse)
 // TODO check reshuffling of draw_pile TODO
 TEST_F(Game_State_Test, Reshuffle_DrawPile)
 {
-    size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size(); //-2;
-    //game_controller.draw_card(Player_id::PLAYER_1);
-    //size_t actual_size_draw_pile = game_controller.get_game_state()->get_draw_pile().size();
-
-    EXPECT_EQ(expected_size_draw_pile, 4);
+    size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size() -2;
+    game_controller.draw_card(Player_id::PLAYER_1);
+    size_t actual_size_draw_pile = game_controller.get_game_state()->get_draw_pile().size();
+    EXPECT_EQ(expected_size_draw_pile, actual_size_draw_pile);
 }
 
 
@@ -212,29 +211,28 @@ TEST_F(Game_State_Test, Update_hand)
   const size_t expected_nbCards = 4;
   EXPECT_EQ(expected_nbCards, nbCards);
 }
+ */
 
 //check if draw_2 cards adds two cards to the hand of the next player
 TEST_F(Game_State_Test, Draw2)
 {
-  //game_controller.get_game_state()->get_discard_pile().push(Cards::RED_5_B);
-  
   // player1 plays a red draw2 card on top of the red discard pile
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
   msg_json["id"]=1;
-  msg_json["card"]=Cards::RED_DRAW2_A;
+  msg_json["card"]=Cards::BLUE_DRAW2_A;
   
-  //game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
 
-  game_controller.draw_card(Player_id::PLAYER_2);
+  //game_controller.draw_card(Player_id::PLAYER_2);
   
   // player2 will get 2 extra cards, going from 3 to 5
   const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
-  const size_t expected_nbCards = 4;
+  const size_t expected_nbCards = 5;
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
-
+/*
 //check if color_to_be_matched in the game state is correctly updated
 TEST_F(Game_State_Test, UpdateColor)
 {

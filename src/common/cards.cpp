@@ -238,7 +238,7 @@ void ck_Cards::Pile::shuffle() noexcept {
     std::copy(tmp.begin(), tmp.end(), std::front_inserter(cards));
 }
 
-bool ck_Cards::Pile::size() const noexcept{
+size_t ck_Cards::Pile::size() const noexcept{
     return cards.size();
 }
 
