@@ -93,6 +93,16 @@ void Game_State::set_has_started(bool has_started_)
    has_started = has_started_;
 }
 
+bool Game_State::check_if_player_exists(const Player_id& player_id) const
+{
+    for(auto iter = players.begin(); iter != players.end(); ++iter)
+    {
+        if(iter->first == player_id)
+            return true;
+    }
+    return false;
+}
+
 Player* Game_State::get_player(const Player_id& player_id) const
 {
     for(auto iter = players.begin(); iter != players.end(); ++iter)

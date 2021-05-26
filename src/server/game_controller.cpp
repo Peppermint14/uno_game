@@ -16,8 +16,9 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
         case Request_Type::NEW_PLAYER:
 	    {
             Player_id player_id = request["id"]; //retrieve player id
-            //std::string player_name = request["name"];
-            add_new_player(player_id, "Hogersepp");
+            std::string player_name = "dummy"; //request["name"];
+            if(!game_state->check_if_player_exists(player_id))
+                add_new_player(player_id, "Hogersepp");
             break;
 	    }
         case Request_Type::START_GAME:
