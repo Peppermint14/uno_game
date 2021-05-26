@@ -12,31 +12,32 @@ protected:
 	virtual void SetUp()
 	{
 		game_controller.get_game_state()->get_discard_pile().push(ck_Cards::Cards::RED_5_A);
-		//std::list<ck_Cards::Cards> cards = {Cards::BLUE_1_A, Cards::RED_4_A, Cards::GREEN_0};
-		//cards.push_back(Cards::RED_0);
-		//discard_pile.push( cards);
 	}
 	 
 	Game_Controller game_controller;
 	Discard_Pile discard_pile;
-	
-	
 };
 
 const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
-	{ck_Cards::Cards::GREEN_2_A,0},
+  {ck_Cards::Cards::YELLOW_1_A,0},
+  {ck_Cards::Cards::YELLOW_5_B,1},
+  {ck_Cards::Cards::BLUE_6_A,0},
+  {ck_Cards::Cards::BLUE_5_B,1},
+  {ck_Cards::Cards::GREEN_2_B,0},
 	{ck_Cards::Cards::GREEN_5_A,1},
-	{ck_Cards::Cards::RED_4_A,1},
+	{ck_Cards::Cards::RED_4_B,1},
 	{ck_Cards::Cards::WILD_A,1},
-	{ck_Cards::Cards::RED_DRAW2_A,1},
+	{ck_Cards::Cards::RED_DRAW2_B,1},
 	{ck_Cards::Cards::BLUE_DRAW2_A,0},
-	{ck_Cards::Cards::RED_REVERSE_A,1},
+	{ck_Cards::Cards::RED_REVERSE_B,1},
 	{ck_Cards::Cards::BLUE_REVERSE_A,0},
 	{ck_Cards::Cards::RED_SKIP_A,1},
 	{ck_Cards::Cards::BLUE_SKIP_A,0} };
 
 
-
+// Testing the function valid_move() with all colors, all actions, 
+// and with or without the same value (5) as the top card of the discard pile.
+// valid_move() returns a boolean telling if a certain card can be played on the top card of the discard pile.
 TEST_P(ParametricValidCard, Validmove)
 {
     std::pair<ck_Cards::Cards, bool> cards = GetParam();
@@ -52,36 +53,50 @@ class Game_State_Test : public ::testing::Test {
 
 protected:
     virtual void SetUp() 
-    {   
+    { 
       Player* player0 = new Player(Player_id::PLAYER_1, "player_1");
       Player* player1 = new Player(Player_id::PLAYER_2, "player_2");
       Player* player2 = new Player(Player_id::PLAYER_3, "player_3");
     
-      //assumed to be correct
+      // initializing the game_state with the three above players
       game_controller.get_game_state()->add_Players(player0);
       game_controller.get_game_state()->add_Players(player1);
       game_controller.get_game_state()->add_Players(player2);	
-        
+      
+      // assigning a specific hand to every three players
       game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push({Cards::RED_DRAW2_A, Cards::BLUE_SKIP_A, Cards::GREEN_2_A});
       
       game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->get_hand().push({Cards::RED_4_B, Cards::RED_REVERSE_B, Cards::RED_SKIP_B});
       
       game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->get_hand().push({Cards::RED_4_A, Cards::RED_REVERSE_A, Cards::RED_SKIP_A});      
       
+      // setting the game state such that it is player_1 's turn
       game_controller.get_game_state()->set_current_player(Player_id::PLAYER_1);
 
-      //std::list<ck_Cards::Cards> draw_pile_list =
+      // setting up the discard pile
       std::list<ck_Cards::Cards> discard_pile_list = {
               ck_Cards::Cards::GREEN_1_A,ck_Cards::Cards::BLUE_SKIP_A, ck_Cards::Cards::RED_0};
-      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
       ck_Cards::Discard_Pile discard_pile;
       discard_pile.push(discard_pile_list);
       discard_pile.push(ck_Cards::Cards::BLUE_0);
       game_controller.get_game_state()->set_discard_pile(discard_pile);
       game_controller.get_game_state()->set_draw_pile(draw_pile);
-    }
+      
+      // setting up the draw pile with 24 cards
+      std::list<ck_Cards::Cards> draw_pile_list = {
+        ck_Cards::Cards::GREEN_8_A,ck_Cards::Cards::BLUE_8_A, ck_Cards::Cards::RED_8_A, ck_Cards::Cards::YELLOW_8_A,
+        ck_Cards::Cards::GREEN_8_B,ck_Cards::Cards::BLUE_8_B, ck_Cards::Cards::RED_8_B, ck_Cards::Cards::YELLOW_8_B,
+        ck_Cards::Cards::GREEN_9_A,ck_Cards::Cards::BLUE_9_A, ck_Cards::Cards::RED_9_A, ck_Cards::Cards::YELLOW_9_A,
+        ck_Cards::Cards::GREEN_9_B,ck_Cards::Cards::BLUE_9_B, ck_Cards::Cards::RED_9_B, ck_Cards::Cards::YELLOW_9_B,
+        ck_Cards::Cards::GREEN_7_A,ck_Cards::Cards::BLUE_7_A, ck_Cards::Cards::RED_7_A, ck_Cards::Cards::YELLOW_7_A,
+        ck_Cards::Cards::GREEN_7_B,ck_Cards::Cards::BLUE_7_B, ck_Cards::Cards::RED_7_B, ck_Cards::Cards::YELLOW_7_B,
+      };
+      
+      ck_Cards::Draw_Pile draw_pile; //empty draw_pile
+      draw_pile.push(draw_pile_list);
+}
 
-    /* Any object and subroutine declared here can be accessed in the tests */
+    /* Any object and subroutine declared here can be accessed in the following tests */
     Game_Controller game_controller;
 
 };
@@ -122,7 +137,8 @@ TEST_F(Game_State_Test, GetNextPlayerLoop)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
-// testing action SKIP
+// testing action SKIP with function switch_player()
+// should iterate the current_player to the next
 TEST_F(Game_State_Test, SwitchPlayer)
 {
   game_controller.switch_player(Player_id::PLAYER_1);
@@ -131,7 +147,8 @@ TEST_F(Game_State_Test, SwitchPlayer)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
-// testing action REVERSE
+// testing implementation of action REVERSE 
+// as implemented in Game_Controller::effect_of_card()
 TEST_F(Game_State_Test, Reverse)
 {
   //reverse order of vec players
@@ -146,7 +163,7 @@ TEST_F(Game_State_Test, Reverse)
   EXPECT_EQ(expected_next_player, next_player);
 }
 
-
+// TODO check reshuffling of draw_pile TODO
 TEST_F(Game_State_Test, Reshuffle)
 {
     size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size(); //-2;
@@ -155,25 +172,9 @@ TEST_F(Game_State_Test, Reshuffle)
 
     EXPECT_EQ(expected_size_draw_pile, 4);
 }
-// testing deck reshuffle (scenario SCN-1 from SRS)
 
-
-// testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
-
-
-// testing one player exits but more than one player are still in the game (scenario SCN-3 from SRS)
-
-
-// testing player wins game in a game in which more than 2 players are participating (scenario SCN-4 from SRS)
-
-
-// testing timeout : player doesn’t play in a given time slot, a card will automatically be handed out to the player
-//          and the player misses this turn. (FREQ-17 from SRS)
-
-
-// testing The system should not allow any additional user to join a game once the game has started. (FREQ-13)
-
-//test if card has been played and is now top_card of discard_pile
+// testing if the played card transmitted with msg_json to the function eval_request()
+// is arrived on top of the discard pile
 TEST_F(Game_State_Test, Update_discard_pile)
 {
   game_controller.get_game_state()->get_discard_pile().push(Cards::BLUE_5_A);
@@ -190,54 +191,117 @@ TEST_F(Game_State_Test, Update_discard_pile)
   EXPECT_EQ(expected_topCard, topCard);
 }
 
-/*
+
+
 //check if draw_2 cards adds cards to next player
+// testing if the implementation of the function draw_card() correctly update the number of cards of the players hand
+TEST_F(Game_State_Test, Update_hand)
+{
+  //game_controller.draw_card(Player_id::PLAYER_1);
+  // or following snippet TODO
+  // --
+  game_controller.get_game_state()->get_draw_pile().push(ck_Cards::Cards::YELLOW_0);
+  Cards card = game_controller.get_game_state()->get_draw_pile().get_top_card();
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push(card); 
+  // --
+  
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
+  const size_t expected_nbCards = 4;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+//check if draw_2 cards adds two cards to the hand of the next player
 TEST_F(Game_State_Test, Draw2)
 {
   game_controller.get_game_state()->get_discard_pile().push(Cards::RED_5_B);
   
-  // before player2 plays, number of card of player3
-  const size_t previous_nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
-  
-  // player2 plays a red draw2 card on top of the red discard pile
+  // player1 plays a red draw2 card on top of the red discard pile
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=2;
+  msg_json["id"]=1;
   msg_json["card"]=Cards::RED_DRAW2_A;
   
-  game_controller.eval_request(Player_id::PLAYER_2, msg_json.dump());
+  game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   
-  // player3 will get 2 extra cards
-  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->number_of_cards();
-  const size_t expected_nbCards = previous_nbCards - 2;
+  // player2 will get 2 extra cards, going from 3 to 5
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 5;
   EXPECT_EQ(expected_nbCards, nbCards);
 }
 
 
 //check if card was removed after hand was played
-
 TEST_F(Game_State_Test, Update_hand)
+
+//check if color_to_be_matched in the game state is correctly updated
+TEST_F(Game_State_Test, UpdateColor)
 {
+  game_controller.get_game_state()->get_discard_pile().push(Cards::GREEN_5_B);
   
+  // player1 plays a red draw2 card on top of the red discard pile
   nlohmann::json msg_json;
   msg_json["type"]= Request_Type::PLAY_REQUEST;
-  msg_json["unique_player_id"]=0;
-  msg_json["card"]=Cards::RED_DRAW2_A;
+  msg_json["id"]=1;
+  msg_json["card"]=Cards::GREEN_2_A;
   
   game_controller.eval_request(Player_id::PLAYER_1, msg_json.dump());
   
-  const Cards topCard = game_controller.get_game_state()->get_players()[0].get_hand();
-  const Cards expected_topCard = Cards::BLUE_SKIP_A;
-  EXPECT_EQ(expected_topCard, topCard);
+  Color color = game_controller.get_game_state()->get_color_to_be_matched();
+  Color expected_color = Color::GREEN;
+  EXPECT_EQ(expected_color, color);
 }
-*/
+
 
 
 //check reshuffling of draw_pile
+// testing implementation of function number_of_cards()
+TEST_F(Game_State_Test, NumberOfCards)
+{
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
+  const size_t expected_nbCards = 3;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
 
-//check if color was updated
 
-//check if hand can be sended
+// testing if function clear() empties the players hand
+TEST_F(Game_State_Test, ClearHand) 
+{
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->get_hand().clear();
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 0;
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+// check implementation of function reset_game() correctly reset hand of the players TODO DOES NOT WORK
+TEST_F(Game_State_Test, ResetGame_functionCall)
+{
+  game_controller.reset_game();
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
+  const size_t expected_nbCards = 7; 
+  //const size_t expected_nbCards = 3;  // also DOES NOT WORK
+  //const size_t expected_nbCards = 0;  // also DOES NOT WORK
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
+
+// reset_game() inside implementation with manually adding the 7 cards to player_1 TODO DOES NOT WORK
+TEST_F(Game_State_Test, ResetGame_implementation)
+{
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().clear();
+  std::list<ck_Cards::Cards> hand_list(7);
+  for (unsigned int i = 0; i < 7; ++i)
+    {
+      ck_Cards::Cards card = game_controller.get_game_state()->get_draw_pile().get_top_card(); //get cards from draw_pile
+      hand_list.push_back(card);
+    }
+  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push(hand_list);
+
+  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
+  const size_t expected_nbCards = 7;
+  // const size_t expected_nbCards = 3;  // also DOES NOT WORK
+  //const size_t expected_nbCards = 0;   // also DOES NOT WORK
+  
+  EXPECT_EQ(expected_nbCards, nbCards);
+}
 
 
 int main(int argc, char **argv) 
@@ -248,6 +312,13 @@ int main(int argc, char **argv)
 
 
 // ----------some other test ideas------------------
+
+
+// check if hand can be sended
+
+// testing if the hand of the player has one card less after he put a card on the discard pile
+
+
 // testing deck reshuffle (scenario SCN-1 from SRS)
 
 // testing only two Players are in the game and one leaves (scenario SCN-2 from SRS)
