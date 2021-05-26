@@ -279,7 +279,7 @@ void Game_Controller::send_hand(const Player_id& player_id)
 void Game_Controller::reset_game()
 {
     //get list of players
-    auto players = game_state->get_players();
+    auto& players = game_state->get_players();
     delete game_state;
     game_state = new Game_State();
     //reset the hands of the players
@@ -288,7 +288,7 @@ void Game_Controller::reset_game()
         //reset hand
         //clear and create hand
         player.second->get_hand().clear();
-        std::list<ck_Cards::Cards> hand_list(7);
+        std::list<ck_Cards::Cards> hand_list;
         for (unsigned int i = 0; i < 7; ++i)
         {
             ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile

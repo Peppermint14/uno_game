@@ -52,6 +52,7 @@ endif()
 # ------------------ wxWidgets ------------------
 
 find_package(wxWidgets COMPONENTS net core base)
+if(TRUE)
 if(NOT wxWidgets_FOUND)
 	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
 	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
@@ -66,6 +67,8 @@ if(NOT wxWidgets_FOUND)
 	FetchContent_GetProperties(wxWidgets)
 	FetchContent_MakeAvailable(wxWidgets)
 endif()
+endif()
+
 
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
