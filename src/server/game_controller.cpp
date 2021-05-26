@@ -307,9 +307,9 @@ void Game_Controller::reset_game()
 void Game_Controller::draw_card(const Player_id& player_id)
 {
     //check if one has to reshuffle
-    ck_Cards::Draw_Pile draw_pile = game_state->get_draw_pile();
+    ck_Cards::Draw_Pile& draw_pile = game_state->get_draw_pile();
 
-    if(draw_pile.empty())
+    if(game_state->get_draw_pile().empty())
     {
         ck_Cards::Discard_Pile& discard_pile = game_state->get_discard_pile();
 
@@ -322,8 +322,7 @@ void Game_Controller::draw_card(const Player_id& player_id)
     ck_Cards::Cards card = draw_pile.get_top_card();
 
     //add to hand
-    Player* player = game_state->get_player(player_id);
-    player->get_hand().push(card); //maybe call this method add
+    game_state->get_player(player_id)->get_hand().push(card); //maybe call this method add
 }
 
 //////////////////////////////valid_move//////////////////////////////////////////////////
