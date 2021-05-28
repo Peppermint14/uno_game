@@ -10,6 +10,7 @@ public:
 	Player(Player_id /*player_id_*/, std::string name_, bool /*is_active_*/); //constructor
 	void set_is_active(bool);
 	Player_id get_player_id() const;
+	void set_player_id(Player_id);
 	std::string get_player_name() const;
 	Player_State* get_player_state() const;
 	bool get_is_active() const;

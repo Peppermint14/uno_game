@@ -33,7 +33,7 @@ ck_Cards::Cards player_controller::top_card_on_discard = ck_Cards::Cards::BLUE_0
 
 
 //Player* player_controller::_me = nullptr;
-Player_State* player_controller::_currentPlayerState = &initial_state;
+Player_State* player_controller::_currentPlayerState = new Player_State() ;
 net::TCP_Client* _current_Client = nullptr;
 //extern player_controller* curr_controller;
 
@@ -170,10 +170,31 @@ void player_controller::eval_response(const std::string& msg)
 				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
 	
 				//update number of cards of all players
-				std::list<std::pair<Player_id, int>> player_cards_list = response["players"];
-				player_controller::set_number_cards_player(player_cards_list);
-				//curr_controller->set_number_cards_player(player_cards_list);
-			
+				//std::vector<std::string> all_names(4);
+                                for(auto it = response["players"].begin();it<response["players"].end();it++){
+                                	Player_id p_id = Player_id::NONE;
+                                        std::string name = "empty";
+                                        int n_cards = 0;
+                                        //iterates through the triplets
+                                        for(int i=0;i<3;i++){
+                                        	auto player_info = it->at(i);
+                                              	if(player_info.front()=="number_of_cards"){
+                                             		n_cards = player_info.back();
+                                          	}
+                                            	else if(player_info.front()=="Player_name"){
+                                            		name= player_info.back();
+                                          	}
+                                              	else if(player_info.front()=="Player_id"){
+                                              		p_id = player_info.back();
+                                              	}
+                                              	else{
+                                           		//should not happen -> errror
+                                            	}
+                             		}
+                                        //all_names[(int)p_id]=name;
+                                        player_controller::_currentPlayerState->set_number_of_cards(p_id,n_cards);
+                                }
+                                //_currentPlayerState->set_all_player_names(all_names);		
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				player_controller::set_color(color);
@@ -183,7 +204,6 @@ void player_controller::eval_response(const std::string& msg)
 				ck_Cards::Cards top_card = response["top_card"];
 				player_controller::set_top_card_discardp(top_card);
 				//curr_controller->set_top_card_discardp(top_card);
-
 				break;
 			}
 		case Respond_Type::ERROR_:
@@ -226,7 +246,7 @@ void player_controller::eval_response(const std::string& msg)
         default:
             std::cout << "Unexpected RESULT \n";
 	}
-
+ 	std::cout<<"arrived at end of function"<<std::endl;
 }
 
 void player_controller::updatePlayerState(Player_State* newPlayerState) {
@@ -266,7 +286,7 @@ void player_controller::updatePlayerState(Player_State* newPlayerState) {
 
 
 void player_controller::startGame() {
-	Player_id id = _me->get_player_id();
+	Player_id id = player_controller::_me->get_player_id();
 	nlohmann::json request;
 	request["id"]= id;
 	request["type"] = Request_Type::START_GAME;

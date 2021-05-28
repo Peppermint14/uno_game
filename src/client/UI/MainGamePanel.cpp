@@ -355,9 +355,8 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState) {
 
         // // show button that allows our player to start the game
         wxButton* startGameButton = new wxButton(this, wxID_ANY, "Start Game!", wxDefaultPosition, wxSize(160, 64));
-        startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-             player_controller::startGame();
-         });
+        startGameButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) { player_controller::startGame();});
+
         innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
     } else {
