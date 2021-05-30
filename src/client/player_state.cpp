@@ -4,7 +4,46 @@
 // TODO: THIS IS CURRENTLY A TESTING CONSTRUCTOR
 //default constructor
 Player_State::Player_State(){
-     this->top_discard = ck_Cards::Cards(0);
+     this->top_discard = ck_Cards::Cards(0); // Would be nullptr if discard empty
+     this->discard_empty = 0; //TODO: Check if necessary
+
+     std::list<ck_Cards::Cards> c = {ck_Cards::Cards::BLUE_0, ck_Cards::Cards::BLUE_1_A, ck_Cards::Cards::BLUE_2_A, ck_Cards::Cards::BLUE_3_A};
+     this->hand = new ck_Cards::Hand(c);
+     //this->number_of_cards = c.size();
+     this->to_be_matched = ck_Cards::Color::NONE;
+     this->players_turn = 0;
+     this->play_direction = 1;
+     this->current_Player = Player_id::PLAYER_4;// Player_id::PLAYER_1;
+     this->this_player = Player_id::PLAYER_1;
+     this->winner = Player_id::PLAYER_3;
+     this->player_won = 0;
+     this->player_quit = 0;
+     this->waiting_for_start = 1;
+     this->uno = 0;
+     this->match_colour = 0;
+
+     this->number_of_cards.reserve(4);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
+     this->number_of_cards.push_back(0);
+
+
+     this->all_Player_Names.reserve(4);
+     // TODO: Initialize with player list received from server
+     this->all_Player_Names.push_back("test_name 1");
+     this->all_Player_Names.push_back("test_name 2");
+     this->all_Player_Names.push_back("test_name 3");
+     this->all_Player_Names.push_back("test_name 4");
+
+     this->player_ids.reserve(4);
+     this->player_ids.push_back(Player_id::PLAYER_1);
+     this->player_ids.push_back(Player_id::PLAYER_2);
+     this->player_ids.push_back(Player_id::PLAYER_3);
+     this->player_ids.push_back(Player_id::PLAYER_4);
+    
+//:::::::::::::::::::   
+/*	this->top_discard = ck_Cards::Cards(0);
      this->discard_empty = 1; //TODO: Check if necessary
 
      std::list<ck_Cards::Cards> c = {};
@@ -27,6 +66,7 @@ Player_State::Player_State(){
      // this->all_Player_Names.reserve(4);
 
      // this->player_ids.reserve(4);
+     */
 }
 
 Player_State::Player_State(Player_id id, std::string player_name, size_t nof_players):Player_State(){

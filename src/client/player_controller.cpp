@@ -122,7 +122,7 @@ void player_controller::connectToServer() {
     // TODO: Dynamic player id?
     
     
-    updatePlayerState(&test_state);
+    updatePlayerState();
     _gameWindow->showPanel(_mainGamePanel);
 	
     // join(playerName);
@@ -249,9 +249,9 @@ void player_controller::eval_response(const std::string& msg)
  	std::cout<<"arrived at end of function"<<std::endl;
 }
 
-void player_controller::updatePlayerState(Player_State* newPlayerState) {
+void player_controller::updatePlayerState(){//Player_State* newPlayerState) {
 
-    
+    /*
     // the existing game state is now old
     Player_State* oldPlayerState = player_controller::_currentPlayerState;
 
@@ -260,7 +260,7 @@ void player_controller::updatePlayerState(Player_State* newPlayerState) {
 
     //TODO: Remove line
     std::cout << "Player_names: cap: " << _currentPlayerState->get_id_vec()->capacity() << ", Size: " << _currentPlayerState->get_id_vec()->capacity() << ", is empty = " << _currentPlayerState->get_id_vec()->empty() <<  std::endl;
-/*
+*/ /*
     if(oldPlayerState != nullptr) {
 
         // check if a new round started, and display message accordingly
@@ -280,7 +280,7 @@ void player_controller::updatePlayerState(Player_State* newPlayerState) {
     player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
 
     // command the main game panel to rebuild itself, based on the new game state
-    player_controller::_mainGamePanel->buildPlayerState(_currentPlayerState, player_controller::_me);
+    player_controller::_mainGamePanel->buildPlayerState(player_controller::_currentPlayerState, player_controller::_me);
     
 }
 
@@ -328,7 +328,7 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
         ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
         test_state.set_hand(new_hand);
         test_state.set_uno(!test_state.get_uno());
-        updatePlayerState(&test_state);
+        //updatePlayerState(&test_state);
 
 }
 

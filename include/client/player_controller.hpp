@@ -18,7 +18,8 @@ public:
     static void init(GameWindow* gameWindow);
     static void connectToServer();
     static void eval_response(const std::string& msg);
-    static void updatePlayerState(Player_State* newPlayerState);
+    //static void updatePlayerState(Player_State* newPlayerState);
+    static void updatePlayerState();
     static void startGame();
     static void drawCard();
     static void fold();
@@ -52,7 +53,7 @@ public:
     //static void error_read(); //-> error_message is not accurate anymore
     //std::string get_error_message();
 
-private:
+//private:
     static GameWindow* _gameWindow ;
     static ConnectionPanel* _connectionPanel;
     static MainGamePanel* _mainGamePanel;
