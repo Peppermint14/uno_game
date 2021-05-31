@@ -13,7 +13,7 @@ Player_State::Player_State(){
      this->to_be_matched = ck_Cards::Color::NONE;
      this->players_turn = 0;
      this->play_direction = 1;
-     this->current_Player = Player_id::PLAYER_4;// Player_id::PLAYER_1;
+     this->current_Player = Player_id::NONE;// Player_id::PLAYER_1;
      this->this_player = Player_id::PLAYER_1;
      this->winner = Player_id::PLAYER_3;
      this->player_won = 0;
@@ -225,6 +225,10 @@ bool Player_State::has_player_won() const {
 bool Player_State::is_waiting_for_start() const {
      return waiting_for_start;
 }
+void Player_State::set_is_waiting_for_start(bool waiting){
+	waiting_for_start = waiting;
+}
+
 bool Player_State::has_player_quit() const {
      return player_quit;
 }

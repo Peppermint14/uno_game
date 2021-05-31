@@ -30,12 +30,14 @@ template<class T>
 };
 
 enum class Player_id : uint32_t {
-    PLAYER_ERROR    =   0,
+    //PLAYER_ERROR    =   0,
+    NONE	    =	0,     
     PLAYER_1        =   1,
     PLAYER_2        =   2,
     PLAYER_3        =   3,
     PLAYER_4        =   4,
-    NONE	    =	5     
+    //NONE	    =	5     
+    PLAYER_ERROR    =   5
 };
 
 enum class State {

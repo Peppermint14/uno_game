@@ -1,7 +1,7 @@
 #include "../../include/client/player.hpp"
 #include "../../include/client/player_state.hpp"
 
-
+/*
 Player::Player(Player_id player_id_, std::string name_, bool is_active_)
 {
 	player_id = player_id_;
@@ -9,6 +9,11 @@ Player::Player(Player_id player_id_, std::string name_, bool is_active_)
 	is_active = is_active_;
 	
 	player_state = new Player_State();
+}
+*/
+Player::Player(Player_State* playerState)
+{
+	player_state = playerState;
 }
 
 void Player::set_is_active(bool active)
@@ -27,6 +32,10 @@ void Player::set_player_id(Player_id _id){
 
 std::string Player::get_player_name() const{
 	return player_name;
+}
+
+void Player::set_player_name(std::string Name){
+	player_name = Name;
 }
 
 Player_State* Player::get_player_state() const

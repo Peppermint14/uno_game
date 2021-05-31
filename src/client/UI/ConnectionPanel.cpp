@@ -28,7 +28,8 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
         this, // parent element
         "Server address:", // label
         100, // width of label
-        "46.14.54.6", // default value (variable from "default.conf")
+        /*"46.14.54.6",*/ // default value (variable from "default.conf")
+	"127.0.0.1",
         240 // width of field
     );
     verticalLayout->Add(this->_serverAddressField, 0, wxTOP | wxLEFT | wxRIGHT, 10);
@@ -46,7 +47,7 @@ ConnectionPanel::ConnectionPanel(wxWindow* parent) : wxPanel(parent, wxID_ANY) {
         this, // parent element
         "Player name:", // label
         100, // width of label
-        "123", // default value
+        "name", // default value
         240 // width of field
     );
     verticalLayout->Add(this->_playerNameField, 0, wxTOP | wxLEFT | wxRIGHT, 10);

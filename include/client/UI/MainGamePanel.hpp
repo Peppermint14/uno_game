@@ -15,6 +15,7 @@ public:
     MainGamePanel(wxWindow* parent);
 
     void buildPlayerState(Player_State* playerState, Player* me);
+    //void buildPlayerState();
     wxString colourPicker();
     // Notification alerts
     void show_colour_match_notification();
@@ -23,7 +24,8 @@ public:
 private:
 
     
-    void buildThisPlayer(Player_State* playerState);
+    //void buildThisPlayer(Player_State* playerState);
+    void buildThisPlayer(Player_State* playerState, Player* me);
     void buildCardPiles(Player_State* playerState);
     void buildPlayerList(Player_State* playerState);
     void buildPlayDirectionIndicator(Player_State* playerState);

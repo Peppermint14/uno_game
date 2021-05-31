@@ -25,7 +25,8 @@ GameWindow* player_controller::_gameWindow = nullptr;
 ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
 std::list<std::pair<Player_id, int>> player_controller::players_number_of_cards = {{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0}};
-Player* player_controller::_me = nullptr;
+Player_State* player_controller::_currentPlayerState = new Player_State() ;
+Player* player_controller::_me = new Player(_currentPlayerState);
 Player_id player_controller::current_player = Player_id::NONE;
 //Player_State* player_controller::_currentPlayerState = nullptr;
 ck_Cards::Color player_controller::color_to_be_played = ck_Cards::Color::NONE;
@@ -33,7 +34,6 @@ ck_Cards::Cards player_controller::top_card_on_discard = ck_Cards::Cards::BLUE_0
 
 
 //Player* player_controller::_me = nullptr;
-Player_State* player_controller::_currentPlayerState = new Player_State() ;
 net::TCP_Client* _current_Client = nullptr;
 //extern player_controller* curr_controller;
 
@@ -102,7 +102,8 @@ void player_controller::connectToServer() {
     // convert host from wxString to std::string
     std::string serveraddress = inputServerAddress.ToStdString();
 
-    player_controller::_me = new Player(Player_id::NONE, playerName, true);
+    player_controller::_me->set_player_name(playerName);
+    //player_controller::_me = new Player(Player_id::NONE, playerName, true);
     // //connect to network
     std::cout << "t0\n";
     try{
@@ -163,8 +164,7 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				//update is waiting (is the game allready ongoing or do the players have to wait)
 				Player_id current_id= response["current_player"];
-				_me->get_player_state()->set_is_waiting(current_id == Player_id::NONE);
-
+				player_controller::_currentPlayerState->set_is_waiting_for_start(current_id == Player_id::NONE);
 				//update whos turn it is
 				_currentPlayerState->set_current_player(current_id);
 				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
@@ -246,6 +246,18 @@ void player_controller::eval_response(const std::string& msg)
         default:
             std::cout << "Unexpected RESULT \n";
 	}
+	// make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
+   	if(!player_controller::_currentPlayerState->is_waiting_for_start()){ 
+		std::cout<<"heelllloooo i'm in here"<<std::endl;
+		updatePlayerState();
+    		_gameWindow->showPanel(_mainGamePanel);
+//		player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
+    		// command the main game panel to rebuild itself, based on the new game state
+  //  		player_controller::_mainGamePanel->buildPlayerState();//player_controller::_currentPlayerState, player_controller::_me);
+	}
+	else{
+		std::cout<<"game has not started yet"<<std::endl;
+	}
  	std::cout<<"arrived at end of function"<<std::endl;
 }
 
@@ -280,7 +292,7 @@ void player_controller::updatePlayerState(){//Player_State* newPlayerState) {
     player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
 
     // command the main game panel to rebuild itself, based on the new game state
-    player_controller::_mainGamePanel->buildPlayerState(player_controller::_currentPlayerState, player_controller::_me);
+   player_controller::_mainGamePanel->buildPlayerState(player_controller::_currentPlayerState, player_controller::_me);
     
 }
 

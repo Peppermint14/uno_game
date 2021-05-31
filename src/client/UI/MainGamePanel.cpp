@@ -46,7 +46,8 @@ wxString MainGamePanel::colourPicker(){
 }
 
 void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
-
+    //Player_State* playerState = player_controller::_currentPlayerState; 
+    //Player* me = player_controller::_me;
     // remove any existing UI
     this->DestroyChildren();
 
@@ -91,10 +92,10 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
     this->buildCardPiles(playerState);
 
     // show our own player
-    this->buildThisPlayer(playerState);
+    this->buildThisPlayer(playerState, me);
 
     // show turn indicator below card piles
-    this->buildPlayerList(playerState);
+    //this->buildPlayerList(playerState);
 
     // update layout
     this->Layout();
@@ -324,8 +325,8 @@ void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
 }
 
 
-void MainGamePanel::buildThisPlayer(Player_State* playerState) {
-
+void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
+    std::cout<<"inside buildThisPlayer"<<std::endl;
     // Setup two nested box sizers, in order to align our player's UI to the bottom center
     wxBoxSizer* outerLayout = new wxBoxSizer(wxHORIZONTAL);
     this->SetSizer(outerLayout);
@@ -334,8 +335,8 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState) {
     std::cout << "1\n";
     // Show the label with our player name
     wxStaticText* playerName = buildStaticText(
-            playerState->get_player_name(),
-            //me->get_player_name(),
+            //playerState->get_player_name(),
+            me->get_player_name(),
             wxDefaultPosition,
             wxSize(200, 18),
             wxALIGN_CENTER,

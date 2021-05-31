@@ -29,8 +29,8 @@ public:
 	void set_all_player_names(std::vector<std::string>);
 	void set_is_waiting(bool);
 	void set_uno(bool);
-	void set_match_colour(bool);
-	 
+	void set_match_colour(bool); 
+	void set_is_waiting_for_start(bool);
 
 
 	ck_Cards::Cards* get_top_discard();
