@@ -46,7 +46,7 @@ public:
     static void set_color(ck_Cards::Color);
     static ck_Cards::Color get_color();
 
-    static void set_top_card_discardp(ck_Cards::Cards);
+    //static void set_top_card_discardp(ck_Cards::Cards);
     static ck_Cards::Cards get_top_card_discardp();
 
     //static void set_error_message(std::string);

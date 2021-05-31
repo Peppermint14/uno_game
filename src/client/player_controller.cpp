@@ -143,6 +143,7 @@ void player_controller::eval_response(const std::string& msg)
     if(response.count("type") == 0){
 	Player_id id = response["id"];    
         player_controller::_me->set_player_id(id);
+	//send player name to server
 	join();
 	return;
     }
@@ -159,8 +160,8 @@ void player_controller::eval_response(const std::string& msg)
 		case Respond_Type::SEND_HAND:
 			{
 				std::list<ck_Cards::Cards> hand_cards = response["hand"];
-				ck_Cards::Hand hand = ck_Cards::Pile(hand_cards);
-			//	_currentPlayerState->set_hand(&hand);
+				ck_Cards::Hand* hand = new ck_Cards::Pile(hand_cards);
+				_currentPlayerState->set_hand(hand);
 				break;
 			}
 		case Respond_Type::GAME_UPDATE:
@@ -207,7 +208,7 @@ void player_controller::eval_response(const std::string& msg)
 				
 				//update, which card is on top of the discard Pile
 				ck_Cards::Cards top_card = response["top_card"];
-				player_controller::set_top_card_discardp(top_card);
+				_currentPlayerState->set_top_discard(top_card);
 				//curr_controller->set_top_card_discardp(top_card);
 				break;
 			}
@@ -478,9 +479,9 @@ ck_Cards::Color player_controller::get_color(){
 }
 
 
-void player_controller::set_top_card_discardp(ck_Cards::Cards top){
-	player_controller::top_card_on_discard = top;
-}
+//void player_controller::set_top_card_discardp(ck_Cards::Cards top){
+//	player_controller::top_card_on_discard = top;
+//}
 ck_Cards::Cards player_controller::get_top_card_discardp(){
 	return player_controller::top_card_on_discard;
 }

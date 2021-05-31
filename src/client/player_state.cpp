@@ -7,7 +7,7 @@ Player_State::Player_State(){
      this->top_discard = ck_Cards::Cards(0); // Would be nullptr if discard empty
      this->discard_empty = 0; //TODO: Check if necessary
 
-     std::list<ck_Cards::Cards> c = {ck_Cards::Cards::BLUE_0, ck_Cards::Cards::BLUE_1_A, ck_Cards::Cards::BLUE_2_A, ck_Cards::Cards::BLUE_3_A,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_2_A, ck_Cards::Cards::BLUE_3_A,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0,ck_Cards::Cards::BLUE_0};
+     std::list<ck_Cards::Cards> c = {ck_Cards::Cards::BLUE_0};
      this->hand = new ck_Cards::Hand(c);
      //this->number_of_cards = c.size();
      this->to_be_matched = ck_Cards::Color::NONE;
