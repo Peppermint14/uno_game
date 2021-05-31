@@ -20,7 +20,7 @@ public:
 	const Player_id& get_current_player() const;
 	const ck_Cards::Color& get_color_to_be_matched() const;
 	const bool& get_has_started() const;
-    bool check_if_player_exists(const Player_id& /*player_id*/) const
+    bool check_if_player_exists(const Player_id& /*player_id*/) const;
 	void set_has_started(bool /*has_started_*/);
 	bool have_all_won() const;
 	//return Player with player_id in vector players

@@ -10,15 +10,22 @@ Game_Controller::Game_Controller()
 void Game_Controller::eval_request(const Player_id& player_id, const std::string& msg)
 {
     nlohmann::json request = nlohmann::json::parse(msg);
-    Request_Type request_type = request["type"];
+    //const size_t type = request["type"];
+    //Request_Type request_type = Request_Type(type);
+    Request_Type request_type =  request["type"];
+
     switch (request_type)
     {
         case Request_Type::NEW_PLAYER:
 	    {
+		    //TODO : store the correct names 
             Player_id player_id = request["id"]; //retrieve player id
-            std::string player_name = "dummy"; //request["name"];
-            if(!game_state->check_if_player_exists(player_id))
-                add_new_player(player_id, "Hogersepp");
+	    //std::string player_name = (std::string)request["name"];
+	    //std::string player_name = std::to_string(request["name"]);
+	    //const std::string player_name = request["name"];
+	    std::string player_name = "horst";
+	    if(!game_state->check_if_player_exists(player_id))
+                add_new_player(player_id, player_name);
             break;
 	    }
         case Request_Type::START_GAME:
@@ -225,7 +232,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 void Game_Controller::add_new_player(const Player_id& _player_id, const std::string& player_name)
 {
         //create hand
-        std::list<ck_Cards::Cards> hand_list(7);
+        std::list<ck_Cards::Cards> hand_list;//(7);->otherwise list will end up beeing of size 14
         for (unsigned int i = 0; i < 7; ++i)
         {
             ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile

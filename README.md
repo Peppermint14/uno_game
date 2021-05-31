@@ -12,3 +12,7 @@
 ### Run test
 Run with ```./unit-tests/test_game_controller_tests```
 
+
+TODO:
+- store Playernames correctly (when they arrive with NewPlayer request
+- something is wrong with the number of cards, that get distributed (way to many blue 0)
