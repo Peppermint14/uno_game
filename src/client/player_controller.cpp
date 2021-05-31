@@ -173,7 +173,8 @@ void player_controller::eval_response(const std::string& msg)
 				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
 	
 				//update number of cards of all players
-				//std::vector<std::string> all_names(4);
+				_currentPlayerState->set_n_players(response["players"].size());
+				std::vector<std::string> all_names(4);
                                 for(auto it = response["players"].begin();it<response["players"].end();it++){
                                 	Player_id p_id = Player_id::NONE;
                                         std::string name = "empty";
@@ -191,13 +192,14 @@ void player_controller::eval_response(const std::string& msg)
                                               		p_id = player_info.back();
                                               	}
                                               	else{
-                                           		//should not happen -> errror
+                                           		//TODO: error message?? or just delete this option
+							//should not happen -> errror
                                             	}
                              		}
-                                        //all_names[(int)p_id]=name;
+                                        all_names[(int)p_id-1]=name;
                                         player_controller::_currentPlayerState->set_number_of_cards(p_id,n_cards);
                                 }
-                                //_currentPlayerState->set_all_player_names(all_names);		
+                                _currentPlayerState->set_all_player_names(all_names);		
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				player_controller::set_color(color);

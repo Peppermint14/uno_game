@@ -52,10 +52,12 @@ public:
 	bool get_uno() const;
 	bool get_match_colour() const;
 	std::vector<Player_id>* get_id_vec();
-
+	void set_n_players(int n);
+	int get_n_players();
 
 
 private:
+	int n_player_in_game = 0; 
 	ck_Cards::Cards top_discard; // top card of discard pile. Needs to be shown to player
 	bool discard_empty;
 	ck_Cards::Hand* hand;	

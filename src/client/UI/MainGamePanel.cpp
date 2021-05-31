@@ -67,11 +67,12 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
         GameController::showError("Game state error", "Could not find this player among players of server game.");
         return;
     }
-
-    double anglePerPlayer = MainGamePanel::twoPi / (double) numberOfPlayers;
-
+*/
+    /*
+    int n_players = playerState->get_n_players();
+    double anglePerPlayer = MainGamePanel::twoPi / (double) n_players;
     // show all other players
-    for(int i = 1; i < numberOfPlayers; i++) {
+    for(int i = 1; i < 4; i++) {
 
         // get player at i-th position after myself
         player* otherPlayer = players.at((myPosition + i) % numberOfPlayers);
@@ -85,17 +86,18 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
 */  
     
     //this->buildOtherPlayerLabels(playerState);
-    // show turn indicator below card piles
-    //this->buildTurnIndicator(playerState, me);
-
+    
     // show both card piles at the center
     this->buildCardPiles(playerState);
+
+    // show turn indicator below card piles
+    this->buildTurnIndicator(playerState, me);
 
     // show our own player
     this->buildThisPlayer(playerState, me);
 
     // show turn indicator below card piles
-    //this->buildPlayerList(playerState);
+    this->buildPlayerList(playerState);
 
     // update layout
     this->Layout();
@@ -152,34 +154,37 @@ void MainGamePanel::buildOtherPlayerHand(Player_State* playerState, Player* othe
 }
 
 void MainGamePanel::buildPlayerList(Player_State* playerState){
-    
-    wxPoint pos = MainGamePanel::tableCenter + MainGamePanel::playerListOffset;
+   if(!playerState->is_waiting_for_start()){ 
+    	wxPoint pos = MainGamePanel::tableCenter + MainGamePanel::playerListOffset;
         
-    std::string header = "Players: name (#cards)\n\n";
-    std::string player = "";
-    std::string nof_cards = "";
+    	std::string header = "Players: name (#cards)\n\n";
+    	std::string player = "";
+    	std::string nof_cards = "";
 
     
-    wxTextCtrl* text = new wxTextCtrl(this, wxID_ANY, header, pos, playerListSize, wxBORDER_NONE|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_NOHIDESEL|wxTE_READONLY);
-    text->SetBackgroundColour(BG);
+    	wxTextCtrl* text = new wxTextCtrl(this, wxID_ANY, header, pos, playerListSize, wxBORDER_NONE|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_NOHIDESEL|wxTE_READONLY);
+    	text->SetBackgroundColour(BG);
 
-    for(Player_id id : *(playerState->get_id_vec())){
-        player = playerState->get_name_of_playerid(id) + " (" + std::to_string(playerState->get_number_of_cards(id)) + ")\n";
-        if(id == playerState->get_current_player()){
-            text->SetDefaultStyle(wxTextAttr(Higlight));
-            text->AppendText(player);
-            text->SetDefaultStyle(wxTextAttr(*wxBLACK, BG));
-        }
-        else text->AppendText(player);        
-    }
-    text->SetSize(text->GetBestSize());
+    	for(Player_id id : *(playerState->get_id_vec())){
+		int n = playerState->get_number_of_cards(id);
+        	if(n!=0){
+			player = playerState->get_name_of_playerid(id) + " (" + std::to_string(n) + ")\n";
+        		if(id == playerState->get_current_player()){
+            			text->SetDefaultStyle(wxTextAttr(Higlight));
+            			text->AppendText(player);
+            			text->SetDefaultStyle(wxTextAttr(*wxBLACK, BG));
+        		}
+        		else text->AppendText(player);
+		}	
+    	}
+    	text->SetSize(text->GetBestSize());
     
     // Play-Direction Indicator:
     
-    wxPoint posInd = pos + playDirectionOffset;
-    double arrow_direction = -1 + 2*playerState->get_play_direction(); // maps bool to -1 or 1
-    ImagePanel* DirectionIndicator = new ImagePanel(this, "../assets/arrow.png", wxBITMAP_TYPE_ANY, posInd, playDirectionSize, arrow_direction*twoPi/4);
-    
+    	wxPoint posInd = pos + playDirectionOffset;
+    	double arrow_direction = -1 + 2*playerState->get_play_direction(); // maps bool to -1 or 1
+    	ImagePanel* DirectionIndicator = new ImagePanel(this, "../assets/arrow.png", wxBITMAP_TYPE_ANY, posInd, playDirectionSize, arrow_direction*twoPi/4);
+   }    
 }
 
 
@@ -303,11 +308,13 @@ void MainGamePanel::buildCardPiles(Player_State* playerState) {
 
 void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
 
-    /*
-    if(playerState->is_started() && playerState->get_current_player() != nullptr) {
+    
+    if(playerState->is_waiting_for_start() && playerState->get_current_player() != Player_id::NONE) {
 
-        std::string turnIndicatorText = "It's " + playerState->get_current_player()->get_player_name() + "'s turn!";
-        if(playerState->get_current_player() == me) {
+	//TODO display the name of the current player instead of the waiting string
+       // std::string turnIndicatorText = "It's " + playerState->get_current_player()->get_player_name() + "'s turn!";
+        std::string turnIndicatorText = "It's NOT your turn, wait!";
+        if(playerState->get_current_player() == me->get_player_id()) {
             turnIndicatorText = "It's your turn!";
         }
 
@@ -320,8 +327,9 @@ void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
                 wxALIGN_CENTER,
                 true
         );
+
     }
-    */
+    
 }
 
 

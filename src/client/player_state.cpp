@@ -248,4 +248,10 @@ std::vector<Player_id>* Player_State::get_id_vec(){
 std::string Player_State::get_name_of_playerid(Player_id id) const{
 	return all_Player_Names[uint32_t(id)-1];
 }
+void Player_State::set_n_players(int n){
+	n_player_in_game = n;	
+};
 
+int Player_State::get_n_players(){
+	return n_player_in_game;
+};
