@@ -123,11 +123,12 @@ void player_controller::connectToServer() {
     std::cout << "t1\n";
     // TODO: Dynamic player id?
     
-    
+    //getMainThreadEventHandler()->CallAfter([playerName]{player_controller::join(playerName);});
+
+
     updatePlayerState();
     _gameWindow->showPanel(_mainGamePanel);
 	
-    // join(playerName);
     // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
     // ClientNetworkManager::sendRequest(request);
 
@@ -142,6 +143,7 @@ void player_controller::eval_response(const std::string& msg)
     if(response.count("type") == 0){
 	Player_id id = response["id"];    
         player_controller::_me->set_player_id(id);
+	join();
 	return;
     }
     
@@ -158,7 +160,7 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				std::list<ck_Cards::Cards> hand_cards = response["hand"];
 				ck_Cards::Hand hand = ck_Cards::Pile(hand_cards);
-				//_currentPlayerState->set_hand(&hand);
+			//	_currentPlayerState->set_hand(&hand);
 				break;
 			}
 		case Respond_Type::GAME_UPDATE:
@@ -249,17 +251,12 @@ void player_controller::eval_response(const std::string& msg)
 	}
 	// make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
    	if(!player_controller::_currentPlayerState->is_waiting_for_start()){ 
-		std::cout<<"heelllloooo i'm in here"<<std::endl;
 		updatePlayerState();
     		_gameWindow->showPanel(_mainGamePanel);
 //		player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
     		// command the main game panel to rebuild itself, based on the new game state
   //  		player_controller::_mainGamePanel->buildPlayerState();//player_controller::_currentPlayerState, player_controller::_me);
 	}
-	else{
-		std::cout<<"game has not started yet"<<std::endl;
-	}
- 	std::cout<<"arrived at end of function"<<std::endl;
 }
 
 void player_controller::updatePlayerState(){//Player_State* newPlayerState) {
@@ -354,8 +351,9 @@ void player_controller::exit(){
 	net::TCP_Client::send(request.dump());
 }
 
-void player_controller::join(std::string name){
-	Player_id id = _me->get_player_id();
+void player_controller::join(){
+	Player_id id = player_controller::_me->get_player_id();
+	std::string name = player_controller::_me->get_player_name();
 	nlohmann::json request;
 	request["id"]= id;
 	request["name"] = name;

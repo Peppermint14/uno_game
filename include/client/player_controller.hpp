@@ -25,7 +25,7 @@ public:
     static void fold();
     static void PickColour();
     static void playCard(const ck_Cards::Cards* cardToPlay);
-    static void join(std::string);
+    static void join();
     static void exit();
 
 
