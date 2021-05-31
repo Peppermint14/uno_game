@@ -45,7 +45,7 @@ wxString MainGamePanel::colourPicker(){
     return res;
 }
 
-void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me) {
+void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     //Player_State* playerState = player_controller::_currentPlayerState; 
     //Player* me = player_controller::_me;
     // remove any existing UI
@@ -325,8 +325,7 @@ void MainGamePanel::buildTurnIndicator(Player_State *playerState, Player *me) {
 }
 
 
-void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
-    std::cout<<"inside buildThisPlayer"<<std::endl;
+void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
     // Setup two nested box sizers, in order to align our player's UI to the bottom center
     wxBoxSizer* outerLayout = new wxBoxSizer(wxHORIZONTAL);
     this->SetSizer(outerLayout);
@@ -361,7 +360,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         innerLayout->Add(startGameButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
 
     } else {
-        /*
+       
         // show our player's minus points
         /*wxStaticText *playerPoints = buildStaticText(
                 std::to_string(me->get_score()) + " minus points",
@@ -371,7 +370,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         );
         innerLayout->Add(playerPoints, 0, wxALIGN_CENTER | wxBOTTOM, 8);
         */
-
 
         // if our player folded, we display that as status
         if (playerState->has_player_won()) {
@@ -386,16 +384,17 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
         }
         // if we haven't folded yet, and it's our turn, display Fold button
         else if (!playerState->get_players_turn()) {
-            
-            wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
-            ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-                player_controller::exit();
-            });
-            innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
-
+       	         
+            //wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
+            //ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
+            //    player_controller::exit();
+            //});
+            //innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
+	    
         }
         else {
-            // if it's not our turn, display "waiting..."
+	    
+            /*// if it's not our turn, display "waiting..."
             wxStaticText *playerStatus = buildStaticText(
                     "waiting for your turn...",
                     wxDefaultPosition,
@@ -403,11 +402,11 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
                     wxALIGN_CENTER
             );
             innerLayout->Add(playerStatus, 0, wxALIGN_CENTER | wxBOTTOM, 8);
+		*/
         }
         // display our player's hand, if we have cards
         int numberOfCards = playerState->get_number_of_cards(playerState->get_this_player());
         if (numberOfCards > 0) {
-
             // create horizontal layout for the individual hand cards of our player
             wxBoxSizer *handLayout = new wxBoxSizer(wxHORIZONTAL);
             innerLayout->Add(handLayout, 0, wxALIGN_CENTER);
@@ -423,8 +422,9 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me) {
                 int scaledCardHeight = (int) ((double) scaledCardWidth * cardAspectRatio);
                 scaledCardSize = wxSize(scaledCardWidth, scaledCardHeight);
             }
-
+		
             // Show all cards
+
             ck_Cards::Hand *hand = playerState->get_hand();
             std::list<ck_Cards::Cards>  cards = hand->get_cards();
             for ( auto i : cards) {

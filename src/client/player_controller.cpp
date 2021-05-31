@@ -109,7 +109,8 @@ void player_controller::connectToServer() {
     try{
         //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
 	    net::TCP_Client::connect(serveraddress, port, [](const std::string _msg){
-            eval_response(_msg);
+            		getMainThreadEventHandler()->CallAfter([_msg]{eval_response(_msg);});
+			    //eval_response(_msg);
         }); //playercontroller eval_response
     } catch(const ckException& _e){
         auto logger = Logger::get("client_main");
@@ -157,7 +158,7 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				std::list<ck_Cards::Cards> hand_cards = response["hand"];
 				ck_Cards::Hand hand = ck_Cards::Pile(hand_cards);
-				_currentPlayerState->set_hand(&hand);
+				//_currentPlayerState->set_hand(&hand);
 				break;
 			}
 		case Respond_Type::GAME_UPDATE:
