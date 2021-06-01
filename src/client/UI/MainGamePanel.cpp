@@ -274,7 +274,14 @@ void MainGamePanel::buildCardPiles(Player_State* playerState) {
         // Show discard pile
         const ck_Cards::Cards* topCard = playerState->get_top_discard();
         if(topCard != nullptr) {
-            std::string cardImage = "../assets/uno_cards/" + std::to_string(uint32_t(*topCard)) + ".png";
+	    std::string cardImage;
+	    if(uint32_t(*topCard)<100){
+            	cardImage = "../assets/uno_cards/" + std::to_string(uint32_t(*topCard)) + ".png";
+	    }
+	    else{
+		ck_Cards::Color color = player_controller::get_color();
+		cardImage = "../assets/uno_cards/" + std::to_string(uint32_t(*topCard))+"_"+std::to_string(uint32_t(color))+ ".png";
+	    }
 
             wxPoint discardPilePosition = MainGamePanel::tableCenter + MainGamePanel::discardPileOffset;
 

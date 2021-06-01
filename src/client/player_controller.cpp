@@ -164,6 +164,19 @@ void player_controller::eval_response(const std::string& msg)
 				_currentPlayerState->set_hand(hand);
 				break;
 			}
+		case Respond_Type::SELECT_COLOR:
+			{
+
+				wxString color = player_controller::_mainGamePanel->colourPicker();
+				ck_Cards::Color chosen_color = wxStr_to_Color(color);
+				Player_id id = player_controller::_me->get_player_id();
+        			nlohmann::json request;
+        			request["id"]= id;
+        			request["type"] = Request_Type::SELECTED_COLOR;
+				request["color"] = chosen_color;
+        			net::TCP_Client::send(request.dump());
+				break;
+			}
 		case Respond_Type::GAME_UPDATE:
 			{
 				//update is waiting (is the game allready ongoing or do the players have to wait)
@@ -336,13 +349,21 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
 	net::TCP_Client::send(request.dump());
 	// TODO: remove
      	std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
-        test_state.set_top_discard(*cardToPlay);
-        std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
-        ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
-        test_state.set_hand(new_hand);
-        test_state.set_uno(!test_state.get_uno());
+        //test_state.set_top_discard(*cardToPlay);
+        //std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
+        //ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
+        //test_state.set_hand(new_hand);
+        //test_state.set_uno(!test_state.get_uno());
         //updatePlayerState(&test_state);
-
+	
+	//cards which allow you to chose a color
+	/*if((int)cardToPlay>= 100 && (int)cardToPlay>= 107){
+		nlohmann::json color_request;
+        	color_request["id"] = id;
+        	color_request["type"] = Request_Type::PLAY_REQUEST;
+        	color_request["card"] = *cardToPlay;
+        	net::TCP_Client::send(color_request.dump());
+	}*/	
 }
 
 void player_controller::exit(){
@@ -485,4 +506,23 @@ ck_Cards::Color player_controller::get_color(){
 ck_Cards::Cards player_controller::get_top_card_discardp(){
 	return player_controller::top_card_on_discard;
 }
+
+//Takes in a wxString and returns the corresponding color
+ck_Cards::Color player_controller::wxStr_to_Color(wxString color){
+	if(color == "Red"){
+		return ck_Cards::Color::RED;
+	}
+	else if(color == "Green"){
+		return ck_Cards::Color::GREEN;
+	}
+	else if(color == "Blue"){	
+		return ck_Cards::Color::BLUE;
+	}
+	else if(color == "Yellow"){	
+		return ck_Cards::Color::YELLOW;
+	}
+	else{
+		return ck_Cards::Color::NONE;
+	}	
+ }
 

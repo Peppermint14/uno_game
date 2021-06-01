@@ -52,7 +52,7 @@ public:
     //static void set_error_message(std::string);
     //static void error_read(); //-> error_message is not accurate anymore
     //std::string get_error_message();
-
+    static ck_Cards::Color wxStr_to_Color(wxString color);
 //private:
     static GameWindow* _gameWindow ;
     static ConnectionPanel* _connectionPanel;
