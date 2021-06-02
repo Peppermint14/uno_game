@@ -1,3 +1,4 @@
+
 #include "../../include/server/game_state.hpp"
 
 
@@ -6,7 +7,7 @@ Game_State::Game_State()
 {
     //create deck
     //draw_pile = deck at initialization
-    std::list<ck_Cards::Cards> draw_cards(108);
+    std::list<ck_Cards::Cards> draw_cards; //(108);
     //loop over enum class
     for(ck_Cards::Cards card = ck_Cards::Cards::BLUE_0; card != ck_Cards::Cards::WILD_DRAW4_D; ++card)
         draw_cards.push_back(card);
