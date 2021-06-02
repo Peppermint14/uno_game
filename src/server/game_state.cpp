@@ -26,7 +26,7 @@ Game_State::Game_State()
 
     discard_pile.push(top_card);
     color_to_be_matched = ck_Cards::Deck::get(discard_pile.back()).color; //maybe should be another default value before game was started
-    current_player = Player_id::PLAYER_ERROR;
+    current_player = Player_id::NONE;
     has_started = false;
 }
 

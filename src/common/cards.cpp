@@ -257,9 +257,11 @@ const ck_Cards::Cards ck_Cards::Pile::back()
 	return cards.back();
 }
 
+/*
 void ck_Cards::Pile::push_front(ck_Cards::Cards _card)  {
 	cards.push_front(_card);
 }
+*/
 
 void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
@@ -302,24 +304,6 @@ void ck_Cards::Pile::clear() noexcept{
     cards.clear();
 }
 
-/*
-void ck_Cards::Pile::from_json(const std::string& _json) {
-    if(!empty()) throw new ckException("Pile needs to be empty first. call clear()");
-    auto vals = nlohmann::json::parse(_json);
-    std::copy(vals["cards"].begin(), vals["cards"].end(), std::front_inserter(cards)); 
-}
-
-
-const std::string ck_Cards::Pile::to_json() const noexcept {
-    nlohmann::json json(cards);
-    return json.dump();
-}
-
-
-bool ck_Cards::Pile::valid(ck_Cards::Cards _card) const noexcept {
-    return !(std::find(cards.begin(), cards.end(), _card) == cards.end());
-}
-*/
 const std::list<ck_Cards::Cards> ck_Cards::Pile::get_cards() const
 {
     return cards;
