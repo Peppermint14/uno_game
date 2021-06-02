@@ -157,6 +157,7 @@ endif()
 #----------------------------------------------------------------
 
 # ------------------ TESTS ------------------
+
 #if(CK_BUILD_TESTS)
 	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
 	if (MSVC)
@@ -174,5 +175,4 @@ endif()
 
 	add_subdirectory(unit-tests)
 #endif()
-
 
