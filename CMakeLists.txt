@@ -158,31 +158,6 @@ endif()
 
 # ------------------ TESTS ------------------
 #if(CK_BUILD_TESTS)
-
-    # add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
-	# if (MSVC)
-    # 	target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
-	# else()
-	# 	target_link_libraries(test_client "${CLIENT_LIBS}")
-	# endif()
-
-#endif()
-
-set(SERVER_TEST "tests/servertest/test_game_controller.cpp")
-set(SERVER_FILES_TEST
-		"src/server/tcp_server.cpp"
-		"src/server/game_controller.cpp"
-		"src/server/game_state.cpp"
-		"src/server/player.cpp"
-		)
-
-add_executable(unit_tests_server ${SERVER_TEST} ${SERVER_FILES_TEST} ${COMMON_FILES})
-target_link_libraries(unit_tests_server "${SERVER_LIBS}")
-
-target_include_directories(unit_tests_server PRIVATE inc)
-target_link_libraries(unit_tests_server gtest gtest_main)
-
-#if(CK_BUILD_TESTS)
 	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
 	if (MSVC)
 		target_link_libraries(ck_lib_s "${SERVER_LIBS}" wsock32 ws2_32)
@@ -200,26 +175,4 @@ target_link_libraries(unit_tests_server gtest gtest_main)
 	add_subdirectory(unit-tests)
 #endif()
 
-# Include GoogleTest as an external source dependency
 
-include(FetchContent) # Import CMake's FetchContent module
-
-# Which GTest version, and where to obtain it from
-FetchContent_Declare(
-		googletest
-		GIT_REPOSITORY https://github.com/google/googletest.git
-		GIT_TAG release-1.10.0
-)
-
-FetchContent_MakeAvailable(googletest)
-
-
-# #if(CK_BUILD_TESTS)
-# 	add_library(ck_lib "${SERVER_FILES}" "${COMMON_FILES}")
-# 	if (MSVC)
-# 		target_link_libraries(ck_lib "${SERVER_LIBS}" wsock32 ws2_32)
-# 	else()
-# 		target_link_libraries(ck_lib "${SERVER_LIBS}")
-# 	endif()
-# 	add_subdirectory(unit-tests)
-# #endif()
