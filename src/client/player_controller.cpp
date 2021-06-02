@@ -217,12 +217,10 @@ void player_controller::eval_response(const std::string& msg)
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				player_controller::set_color(color);
-				//curr_controller->set_color(color);
 				
 				//update, which card is on top of the discard Pile
 				ck_Cards::Cards top_card = response["top_card"];
 				_currentPlayerState->set_top_discard(top_card);
-				//curr_controller->set_top_card_discardp(top_card);
 				break;
 			}
 		case Respond_Type::ERROR_:
@@ -237,7 +235,10 @@ void player_controller::eval_response(const std::string& msg)
 		
 		case Respond_Type::UNO:
 			{
-				player_controller::showStatus("UNO");
+				std::cout<<"now there should be an UNO notification"<<std::endl;
+				Player_id id = response["id"];
+				player_controller::_mainGamePanel->show_uno_notification(player_controller::_me, id);
+				//player_controller::showStatus("UNO");
 				break;
 			}
 		case Respond_Type::GAME_OVER:

@@ -19,7 +19,7 @@ public:
     wxString colourPicker();
     // Notification alerts
     void show_colour_match_notification();
-
+    void show_uno_notification(Player* me, Player_id id);
 
 private:
 
@@ -31,11 +31,8 @@ private:
     void buildPlayDirectionIndicator(Player_State* playerState);
     
 
-    void buildOtherPlayerHand(Player_State* playerState, Player* otherPlayer, double playerAngle);
-    void buildOtherPlayerLabels(Player_State* playerState/*, Player* otherPlayer, double playerAngle, int side*/);
-    void buildTurnIndicator(Player_State* playerState, Player* me);
+    wxStaticText* buildTurnIndicator(Player_State* playerState);
     // Notification alerts
-    void show_uno_notification(Player_State*);
     void show_colour_match_notification(Player_State*);
     void show_won_notification(Player_State*);
     void show_lost_notification(Player_State*);
