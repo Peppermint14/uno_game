@@ -257,11 +257,11 @@ const ck_Cards::Cards ck_Cards::Pile::back()
 	return cards.back();
 }
 
-/*
+
 void ck_Cards::Pile::push_front(ck_Cards::Cards _card)  {
 	cards.push_front(_card);
 }
-*/
+
 
 void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
