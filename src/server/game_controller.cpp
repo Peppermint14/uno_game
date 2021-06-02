@@ -19,8 +19,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
     {
         case Request_Type::NEW_PLAYER:
 	    {
-		    //TODO : store the correct names 
-            Player_id player_id = request["id"]; //retrieve player id
+		    //TODO : store the correct names
+		     Player_id player_id = request["id"]; //retrieve player id
 	    std::string player_name = request["name"];
 	    //std::string player_name = std::to_string(request["name"]);
 	    //const std::string player_name = request["name"];
@@ -216,7 +216,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 	    }
         case Request_Type::SELECTED_COLOR:
         {
-		Player_id player_id = request["id"];
+            Player_id player_id = request["id"];
             //check if player is allowed to select color
             if(game_state->get_current_player() == player_id)
             {
@@ -348,7 +348,7 @@ bool Game_Controller::valid_move(const ck_Cards::Cards& card)
     ck_Cards::Card card_object = ck_Cards::Deck::get(card);
     if(card_object.action == ck_Cards::Action::WILD || card_object.action == ck_Cards::Action::WILD_DRAW4)
         return true;
-    else if(card_object.color == game_state->get_color_to_be_matched()/*top_card_object.color*/)
+    else if(card_object.color == game_state->get_color_to_be_matched())
         return true;
     else if((card_object.value == top_card_object.value) && (card_object.action == top_card_object.action))
         return true;
