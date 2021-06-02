@@ -10,8 +10,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /DNDEBUG")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} `wx-config --cxxflags` -o out *.cpp `wx-config --libs`") # removed -fno-rtti
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG" )
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ") # removed -fno-rtti
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb -D_GLIBCXX_DEBUG") #-fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG )
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -march=native -DNDEBUG -flto -fomit-frame-pointer")
 	set(CMAKE_CXX_FLAGS_TURBOSPEED "-Ofast -funroll-loops -s -DNDEBUG -flto -fomit-frame-pointer -march=native")
 endif()
@@ -59,9 +59,11 @@ else()
 endif()
 
 # ------------------ wxWidgets ------------------
-find_package(wxWidgets COMPONENTS net core base)
-message(STATUS "wxWidget: " ${wxWidget_Version} " (internal)")
-if(NOT wxWidgets_FOUND)
+#find_package(wxWidgets COMPONENTS net core base REQUIRED)
+#include(${wxWidgets_USE_FILE})
+#message(STATUS "wxWidget: " ${wxWidget_Version} " (internal)")
+#if(NOT wxWidgets_FOUND)
+
 	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
 	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
 	set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
@@ -74,24 +76,8 @@ if(NOT wxWidgets_FOUND)
 	)
 	FetchContent_GetProperties(wxWidgets)
 	FetchContent_MakeAvailable(wxWidgets)
-endif()
+#endif()
 
-if(FALSE)
-set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
-set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
-set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
-
-message(STATUS "Fetching wxWidgets ...")
-FetchContent_Declare(
-	wxWidgets 
-	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
-	GIT_TAG			v3.1.4
-	GIT_SHALLOW		TRUE
-)
-
-FetchContent_GetProperties(wxWidgets)
-FetchContent_MakeAvailable(wxWidgets)
-endif()
 
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
@@ -133,10 +119,18 @@ FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
 # ------------------ ADD LIBRARIES HERE -----------------------
+if(FALSE)
 set(CLIENT_LIBS
 	"wxnet"
 	"wxcore"
 	"wxbase"
+	"nlohmann_json::nlohmann_json"
+	"sockpp-static"
+	"spdlog::spdlog"
+)
+endif()
+set(CLIENT_LIBS
+	"${wxWidgets_LIBRARIES}"
 	"nlohmann_json::nlohmann_json"
 	"sockpp-static"
 	"spdlog::spdlog"
