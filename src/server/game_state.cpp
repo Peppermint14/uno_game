@@ -1,5 +1,6 @@
 #include "../../include/server/game_state.hpp"
 
+
 //default constructor
 Game_State::Game_State()
 {
@@ -19,15 +20,27 @@ Game_State::Game_State()
 
     while(ck_Cards::Deck::get(top_card).action != ck_Cards::Action::NONE)
     {
-        draw_pile.push(top_card);
+        draw_pile.put_at_end(top_card);
         top_card = draw_pile.get_top_card();
     }
 
     discard_pile.push(top_card);
-    color_to_be_matched = ck_Cards::Deck::get(discard_pile.front()).color; //maybe should be another default value before game was started
+    color_to_be_matched = ck_Cards::Deck::get(discard_pile.back()).color; //maybe should be another default value before game was started
     current_player = Player_id::PLAYER_ERROR;
     has_started = false;
 }
+
+void Game_State::set_draw_pile(const ck_Cards::Draw_Pile& draw_pile_)
+{
+    draw_pile = draw_pile_;
+}
+
+void Game_State::set_discard_pile(const ck_Cards::Discard_Pile& discard_pile_)
+{
+    discard_pile = discard_pile_;
+}
+
+
 
 void Game_State::add_Players(Player* player)
 {
@@ -80,6 +93,16 @@ void Game_State::set_has_started(bool has_started_)
    has_started = has_started_;
 }
 
+bool Game_State::check_if_player_exists(const Player_id& player_id) const
+{
+    for(auto iter = players.begin(); iter != players.end(); ++iter)
+    {
+        if(iter->first == player_id)
+            return true;
+    }
+    return false;
+}
+
 Player* Game_State::get_player(const Player_id& player_id) const
 {
     for(auto iter = players.begin(); iter != players.end(); ++iter)
@@ -88,7 +111,7 @@ Player* Game_State::get_player(const Player_id& player_id) const
             return iter->second;
     }
     //TODO: write better error message
-    throw new ckException("Error: no player with such player_id");
+    throw ckException("Error: no player with such player_id");
     return 0;
 }
 
@@ -106,7 +129,7 @@ void Game_State::remove_player(const Player_id& player_id)
 
 bool Game_State::have_all_won() const
 {
-    size_t number_of_winners;
+    size_t number_of_winners = 0;
     for(const auto& elem : players )
     {
         number_of_winners += elem.second->get_has_won();

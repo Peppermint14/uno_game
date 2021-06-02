@@ -59,20 +59,25 @@ else()
 endif()
 
 # ------------------ wxWidgets ------------------
-set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
-set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
-set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
 
-message(STATUS "Fetching wxWidgets ...")
-FetchContent_Declare(
-	wxWidgets 
-	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
-	GIT_TAG			v3.1.4
-	GIT_SHALLOW		TRUE
-)
+find_package(wxWidgets COMPONENTS net core base)
+if(TRUE)
+if(NOT wxWidgets_FOUND)
+	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
+	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
+	set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
+	message(STATUS "Fetching wxWidgets ...")
+	FetchContent_Declare(
+		wxWidgets 
+		GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
+		GIT_TAG			v3.1.4
+		GIT_SHALLOW		TRUE
+	)
+	FetchContent_GetProperties(wxWidgets)
+	FetchContent_MakeAvailable(wxWidgets)
+endif()
+endif()
 
-FetchContent_GetProperties(wxWidgets)
-FetchContent_MakeAvailable(wxWidgets)
 
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
@@ -114,14 +119,23 @@ FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
 # ------------------ ADD LIBRARIES HERE -----------------------
-set(CLIENT_LIBS
-	"wxnet"
-	"wxcore"
-	"wxbase"
-	"nlohmann_json::nlohmann_json"
-	"sockpp-static"
-	"spdlog::spdlog"
-)
+if (wxWidgets_FOUND)
+	set(CLIENT_LIBS
+		"${wxWidgets_LIBRARIES}"
+		"nlohmann_json::nlohmann_json"
+		"sockpp-static"
+		"spdlog::spdlog"
+	)
+else()
+	set(CLIENT_LIBS
+		"wxnet"
+		"wxcore"
+		"wxbase"
+		"nlohmann_json::nlohmann_json"
+		"sockpp-static"
+		"spdlog::spdlog"
+	)
+endif()
 
 set(SERVER_LIBS
 	"nlohmann_json::nlohmann_json"
@@ -141,6 +155,7 @@ endif()
 #----------------------------------------------------------------
 
 # ------------------ TESTS ------------------
+<<<<<<< HEAD
 
 #if(CK_BUILD_TESTS)
 
@@ -166,13 +181,27 @@ target_link_libraries(unit_tests_server "${SERVER_LIBS}")
 
 target_include_directories(unit_tests_server PRIVATE inc)
 target_link_libraries(unit_tests_server gtest gtest_main)
+=======
+>>>>>>> server
 
 #if(CK_BUILD_TESTS)
+	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
+	if (MSVC)
+		target_link_libraries(ck_lib_s "${SERVER_LIBS}" wsock32 ws2_32)
+	else()
+		target_link_libraries(ck_lib_s "${SERVER_LIBS}")
+	endif()
 
-add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
-target_link_libraries(test_client "${CLIENT_LIBS}" wsock32 ws2_32)
+	add_library(ck_lib_c "${CLIENT_FILES}" "${COMMON_FILES}")
+	if (MSVC)
+		target_link_libraries(ck_lib_c "${CLIENT_LIBS}" wsock32 ws2_32)
+	else()
+		target_link_libraries(ck_lib_c "${CLIENT_LIBS}")
+	endif()
 
+	add_subdirectory(unit-tests)
 #endif()
+<<<<<<< HEAD
 
 # Include GoogleTest as an external source dependency
 
@@ -188,3 +217,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 
+=======
+>>>>>>> server

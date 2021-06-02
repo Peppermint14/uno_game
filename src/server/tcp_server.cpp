@@ -32,17 +32,7 @@ void net::TCP_Server::barrier() noexcept {
     auto logger = Logger::get("server_main");
     logger->info("Waiting for shutdown...");
 
-    auto f = std::async(std::launch::async, []{
-        while(true) {
-            std::string in;
-            std::cin >> in;
-            if(in == "q")
-                return in;
-        }
-        return std::string("q");
-    });
-
-    while(!f.valid() && !instance->server_shutdown){
+    while(!instance->server_shutdown){
         auto now = clock::now();
 
         while(!instance->cbQueue.empty()){
@@ -75,7 +65,6 @@ void net::TCP_Server::broadcast(const std::string& _msg){
 
 void net::TCP_Server::sendToPlayer(Player_id _player, const std::string _msg){ 
     const size_t id = static_cast<size_t>(_player) - 1;
-    if(!instance->connections[id].has_value())
-        throw new ckException(_msg);
-    instance->sendQueue[id]->push(_msg);
+    if(instance->connections[id].has_value())
+        instance->sendQueue[id]->push(_msg);
 }

@@ -177,7 +177,7 @@ std::string ck_Cards::Card::get_value_as_string() const
 
 const ck_Cards::Card& ck_Cards::Deck::get(ck_Cards::Cards _card) noexcept {
     assert(instance->cards.count(_card) == 1);
-    return *instance->cards.find(_card)->second;
+    return *instance->cards.at(_card);
 }
 
 const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByColor(ck_Cards::Color _color) noexcept {
@@ -199,19 +199,23 @@ ck_Cards::Pile::Pile() {};
 const ck_Cards::Cards ck_Cards::Pile::get_top_card()
 {
     if(empty()) throw new ckException("Error: Pile is empty");
-    ck_Cards::Cards top_card = cards.front();
-    cards.pop_front();
+    ck_Cards::Cards top_card = cards.back();
+    cards.pop_back();
     return top_card;
 }
 
-const ck_Cards::Cards ck_Cards::Pile::front()
+const ck_Cards::Cards ck_Cards::Pile::back()
 {
 	if(empty()) throw new ckException("Error: Pile is empty");
-	return cards.front();
+	return cards.back();
 }
 
 void ck_Cards::Pile::push(Cards _card) noexcept {
     cards.push_back(_card);
+}
+
+void ck_Cards::Pile::put_at_end(Cards _card) noexcept {
+    cards.push_front(_card);
 }
 
 
@@ -229,13 +233,13 @@ void ck_Cards::Pile::shuffle() noexcept {
     if(empty()) return;
     std::mt19937_64 gen;
     gen.seed(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-    std::vector tmp(cards.begin(), cards.end());
+    std::vector<ck_Cards::Cards> tmp(cards.begin(), cards.end());
     std::shuffle(tmp.begin(), tmp.end(), gen);
     cards.clear();
     std::copy(tmp.begin(), tmp.end(), std::front_inserter(cards));
 }
 
-bool ck_Cards::Pile::size() const noexcept{
+size_t ck_Cards::Pile::size() const noexcept{
     return cards.size();
 }
 

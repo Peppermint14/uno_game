@@ -25,7 +25,11 @@ Player_id Player::get_player_id() const
 
 bool Player::get_is_active() const
 {
+<<<<<<< HEAD
     return is_active;
+=======
+    return hand.size();
+>>>>>>> server
 }
 
 ck_Cards::Hand& Player::get_hand()

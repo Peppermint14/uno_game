@@ -54,11 +54,14 @@ enum class Request_Type : uint32_t {
 };
 
 enum class Respond_Type: uint32_t {
-    //SUCCESFUL_CONNECTION = 0,
-    SEND_HAND = 0,
-    GAME_UPDATE = 1,
-    ERROR_ = 2,
-    SELECT_COLOR = 3
+    SUCCESFUL_CONNECTION = 0,
+    SEND_HAND = 1,
+    GAME_UPDATE = 2,
+    ERROR_ = 3,
+    SELECT_COLOR = 4,
+    UNO = 5,
+    GAME_OVER = 6,
+    WINS = 7
 };
 
 class ckException : public std::exception {
