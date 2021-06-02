@@ -90,7 +90,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     if(player->number_of_cards()==1)
                     {
                         nlohmann::json popup;
-                        popup["type"] = "UNO";
+                        popup["type"] = Respond_Type::UNO;
+			popup["id"]= player_id;
                         net::TCP_Server::broadcast(popup.dump());
                     }
                     //check if player has won
@@ -104,14 +105,14 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                        message.str();
                         */
                         nlohmann::json popup;
-                        popup["type"] = "WINS";
+                        popup["type"] = Respond_Type::WINS;
                         popup["player_name"] = player->get_player_name();
                         net::TCP_Server::broadcast(popup.dump());
                        //finish game
                        if(game_state->have_all_won())
                        {
                            nlohmann::json popup;
-                           popup["type"] = "GAME_OVER";
+                           popup["type"] = Respond_Type::GAME_OVER;
                            net::TCP_Server::broadcast(popup.dump());
                            //reset_game
                            reset_game();
@@ -123,6 +124,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 }
                 else //error message
                 {
+
                     const ck_Cards::Card& card_object = ck_Cards::Deck::get(game_state->get_discard_pile().get_top_card());
                     nlohmann::json error_respond;
                     error_respond["type"] = Respond_Type::ERROR_;
@@ -241,7 +243,7 @@ void Game_Controller::add_new_player(const Player_id& _player_id, const std::str
         {
             ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile
             hand_list.push_back(card);
-        }
+        } 
 
         //construct a new player
         Player* player = new Player(_player_id, player_name);

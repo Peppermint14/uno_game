@@ -24,7 +24,8 @@ bool Player::get_has_won() const
 
 const size_t Player::number_of_cards() const
 {
-    return hand.size();}
+    return hand.size();
+}
 
 ck_Cards::Hand& Player::get_hand()
 {
