@@ -215,6 +215,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
         case Request_Type::SELECTED_COLOR:
         {
             Player_id player_id = request["id"];
+
             //check if player is allowed to select color
             if(game_state->get_current_player() == player_id)
             {
