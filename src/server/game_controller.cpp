@@ -19,12 +19,12 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
     {
         case Request_Type::NEW_PLAYER:
 	    {
-		    //TODO : store the correct names 
-            Player_id player_id = request["id"]; //retrieve player id
-	    //std::string player_name = (std::string)request["name"];
+		    //TODO : store the correct names
+		     Player_id player_id = request["id"]; //retrieve player id
+	    std::string player_name = request["name"];
 	    //std::string player_name = std::to_string(request["name"]);
 	    //const std::string player_name = request["name"];
-	    std::string player_name = "horst";
+	    //std::string player_name = "horst";
 	    if(!game_state->check_if_player_exists(player_id))
                 add_new_player(player_id, player_name);
             break;
