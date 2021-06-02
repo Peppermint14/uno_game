@@ -5,7 +5,8 @@
 
 #include <wx/wx.h>
 #include "UI/GameWindow.hpp"
-//#include "player_controller.hpp"
+#include "player_controller.hpp"
+
 
 
 // Main app class
@@ -13,6 +14,9 @@ class digital_UNO : public wxApp
 {
 public:
     virtual bool OnInit();
+    //virtual int OnExit();
+//private: 
+    
 };
 
 

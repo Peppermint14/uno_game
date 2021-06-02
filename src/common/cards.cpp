@@ -2,6 +2,7 @@
 
 #include "../../include/common/cards.hpp"
 
+
 ck_Cards::Deck* ck_Cards::Deck::instance = new ck_Cards::Deck([]{
     std::unordered_map<Cards, std::unique_ptr<Card>> out;
     //insert like this...
@@ -188,6 +189,52 @@ const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByC
     return out;
 }
 
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//HAND
+ck_Cards::Hand_vector::Hand_vector(std::vector<ck_Cards::Cards> cards_)
+{
+	cards = cards_;
+}
+ck_Cards::Hand_vector::Hand_vector(std::list<ck_Cards::Cards> card_list)
+{
+	cards = {std::begin(card_list), std::end(card_list)};
+}
+size_t ck_Cards::Hand_vector::get_size()
+{
+	return cards.size();
+}
+
+const ck_Cards::Cards* ck_Cards::Hand_vector::get_card_ptr(int i)
+{
+	ck_Cards::Cards *ptr = &cards[i];
+
+	return ptr;
+}
+
+ck_Cards::Cards ck_Cards::Hand_vector::play_card(int i)
+{
+	ck_Cards::Cards played_card = cards[i];
+        cards.erase(cards.begin()+i);	
+	return played_card;
+}
+
+void ck_Cards::Hand_vector::pick_up_card(ck_Cards::Cards cards_)
+{
+	cards.push_back(cards_);
+}
+
+std::vector<ck_Cards::Cards> ck_Cards::Hand_vector::get_cards() 
+{
+    return cards;
+}
+
+
+
+
+//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//PILE
+
 ck_Cards::Pile::Pile(std::list<ck_Cards::Cards> cards_)
 {
 	cards = cards_;
@@ -208,6 +255,10 @@ const ck_Cards::Cards ck_Cards::Pile::back()
 {
 	if(empty()) throw new ckException("Error: Pile is empty");
 	return cards.back();
+}
+
+void ck_Cards::Pile::push_front(ck_Cards::Cards _card)  {
+	cards.push_front(_card);
 }
 
 void ck_Cards::Pile::push(Cards _card) noexcept {

@@ -1,4 +1,3 @@
-
 #include "../../include/server/player.hpp"
 
 //constructor
@@ -18,19 +17,14 @@ void Player::set_has_won(bool has_won_)
     has_won = has_won_;
 }
 
-Player_id Player::get_player_id() const
+bool Player::get_has_won() const
 {
-    return player_id;
+    return has_won;
 }
 
-bool Player::get_is_active() const
+const size_t Player::number_of_cards() const
 {
-<<<<<<< HEAD
-    return is_active;
-=======
-    return hand.size();
->>>>>>> server
-}
+    return hand.size();}
 
 ck_Cards::Hand& Player::get_hand()
 {
@@ -41,5 +35,10 @@ ck_Cards::Hand& Player::get_hand()
 const std::string& Player::get_player_name() const
 {
     return player_name;
+}
+
+void Player::set_players_turn(bool players_turn_)
+{
+    players_turn = players_turn_;
 }
 

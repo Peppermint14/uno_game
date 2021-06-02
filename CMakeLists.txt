@@ -10,7 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 if (MSVC)
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /DNDEBUG")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive") # removed -fno-rtti
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG" )
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -march=native -DNDEBUG -flto -fomit-frame-pointer")
 	set(CMAKE_CXX_FLAGS_TURBOSPEED "-Ofast -funroll-loops -s -DNDEBUG -flto -fomit-frame-pointer -march=native")
@@ -21,17 +21,18 @@ include(FetchContent)
 # ------------------ ADD SOURCE FILES HERE ------------------
 set(CLIENT_FILES
 	"src/client/main.cpp"
-	"src/client/tcp_client.cpp"
-	#"src/client/player_state.cpp"
-	"src/client/player_controller.cpp"
 	"src/client/digital_UNO.cpp"
+	"src/client/tcp_client.cpp"
+	"src/client/player_state.cpp"
+	"src/client/player.cpp"
+	"src/client/player_controller.cpp"
 	#UI
 	"src/client/UI/ConnectionPanel.cpp"
 	"src/client/UI/GameWindow.cpp"
 	"src/client/UI/ImagePanel.cpp"
 	"src/client/UI/InputField.cpp"
 	"src/client/UI/MainGamePanel.cpp"
-	
+
 )
 
 set(SERVER_FILES
@@ -40,8 +41,7 @@ set(SERVER_FILES
 	"src/server/game_controller.cpp"
 	"src/server/game_state.cpp"
 	"src/server/player.cpp"
-
-)
+	)
 
 set(COMMON_FILES
 	"src/common/utils.cpp"
@@ -61,8 +61,9 @@ endif()
 # ------------------ wxWidgets ------------------
 
 find_package(wxWidgets COMPONENTS net core base)
-if(TRUE)
-if(NOT wxWidgets_FOUND)
+# include(${wxWidgets_USE_FILE})
+# if(TRUE)
+# if(NOT wxWidgets_FOUND)
 	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
 	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
 	set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
@@ -75,8 +76,8 @@ if(NOT wxWidgets_FOUND)
 	)
 	FetchContent_GetProperties(wxWidgets)
 	FetchContent_MakeAvailable(wxWidgets)
-endif()
-endif()
+# endif()
+# endif()
 
 
 # ------------------ JSON ------------------
@@ -119,15 +120,16 @@ FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
 # ------------------ ADD LIBRARIES HERE -----------------------
-if (wxWidgets_FOUND)
+# if (wxWidgets_FOUND)
+# 	set(CLIENT_LIBS
+# 		"${wxWidgets_LIBRARIES}"
+# 		"nlohmann_json::nlohmann_json"
+# 		"sockpp-static"
+# 		"spdlog::spdlog"
+# 	)
+# else()
 	set(CLIENT_LIBS
-		"${wxWidgets_LIBRARIES}"
-		"nlohmann_json::nlohmann_json"
-		"sockpp-static"
-		"spdlog::spdlog"
-	)
-else()
-	set(CLIENT_LIBS
+		# "${wxWidgets_LIBRARIES}"
 		"wxnet"
 		"wxcore"
 		"wxbase"
@@ -135,7 +137,7 @@ else()
 		"sockpp-static"
 		"spdlog::spdlog"
 	)
-endif()
+# endif()
 
 set(SERVER_LIBS
 	"nlohmann_json::nlohmann_json"
@@ -155,8 +157,6 @@ endif()
 #----------------------------------------------------------------
 
 # ------------------ TESTS ------------------
-<<<<<<< HEAD
-
 #if(CK_BUILD_TESTS)
 
     # add_executable(test_client "tests/clienttest/main.cpp" "${CLIENT_FILES}" "${COMMON_FILES}")
@@ -181,8 +181,6 @@ target_link_libraries(unit_tests_server "${SERVER_LIBS}")
 
 target_include_directories(unit_tests_server PRIVATE inc)
 target_link_libraries(unit_tests_server gtest gtest_main)
-=======
->>>>>>> server
 
 #if(CK_BUILD_TESTS)
 	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
@@ -201,7 +199,6 @@ target_link_libraries(unit_tests_server gtest gtest_main)
 
 	add_subdirectory(unit-tests)
 #endif()
-<<<<<<< HEAD
 
 # Include GoogleTest as an external source dependency
 
@@ -217,5 +214,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 
-=======
->>>>>>> server
+# #if(CK_BUILD_TESTS)
+# 	add_library(ck_lib "${SERVER_FILES}" "${COMMON_FILES}")
+# 	if (MSVC)
+# 		target_link_libraries(ck_lib "${SERVER_LIBS}" wsock32 ws2_32)
+# 	else()
+# 		target_link_libraries(ck_lib "${SERVER_LIBS}")
+# 	endif()
+# 	add_subdirectory(unit-tests)
+# #endif()

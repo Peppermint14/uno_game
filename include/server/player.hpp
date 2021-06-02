@@ -2,17 +2,12 @@
 #define PLAYER_HPP
 
 #include "../common/common.hpp" //retrieve Player_id of type enum class
-
-#include "../client/player_state.hpp"
-
 #include "../common/cards.hpp"
 #include <string>
-
 
 class Player
 {
 public:
-
 	Player(const Player_id& /*player_id_*/, const std::string& /*player_name_*/); //constructor
 	//void set_is_active(bool);
 	void set_hand(ck_Cards::Hand* /*hand_*/); //also set number of cards
@@ -21,6 +16,7 @@ public:
 	const size_t number_of_cards() const;
 	const Player_id& get_player_id() const;
 	const std::string& get_player_name() const;
+	const bool& get_is_active() const;
 	ck_Cards::Hand& get_hand();
 	void set_players_turn(bool /*players_turn_*/);
 
@@ -35,3 +31,4 @@ private:
 };
 
 #endif /* PLAYER_HPP */
+
