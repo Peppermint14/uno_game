@@ -25,22 +25,11 @@ wxString MainGamePanel::colourPicker(){
     choices.Add("Yellow");
     wxString msg("Choose the colour");
     wxString caption("Wildcard");
-
-    //int x,y,width,height,initialSelection;
-    //bool centre;
-
-    // wxSize size(400, 500);
-
-    // wxDialog dialog(NULL, -1, "test", wxDefaultPosition, size);
     
-    // dialog.Show();
-
     wxString  res = wxGetSingleChoice(msg, caption, choices, this, 25, 25, true, 400, 200, 1);
     
     while(res.IsEmpty())
         res = wxGetSingleChoice(msg, caption, choices);
-    // test.SetSelection(initialSelection);
-    // return test.ShowModal() == wxID_OK ? test.GetStringSelection() : wxString();
 
     return res;
 }
@@ -60,6 +49,13 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     this->buildThisPlayer(playerState, me);
 
     this->buildPlayerList(playerState);
+
+    // Make player aware if the previous player has played his penultimate card
+    if(playerState->get_uno()) this->show_uno_notification(playerState);
+
+    // Make player aware if a wild card is played and he has to match a chosen colour
+    if(playerState->get_to_be_matched() != ck_Cards::Color::NONE) this->show_colour_match_notification(playerState);
+
 
     // update layout
     this->Layout();
@@ -201,6 +197,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
     innerLayout->Add(playerName, 0, wxALIGN_CENTER);
     
     // if the game has not yet started we say so
+    std::cout << playerState->is_waiting_for_start() << "waiting?";
     if(playerState->is_waiting_for_start()) {
 
         wxStaticText* playerPoints = buildStaticText(
@@ -223,15 +220,13 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
             innerLayout->Add(playerStatus, 0, wxALIGN_CENTER | wxBOTTOM, 8);
         
         // if we haven't folded yet, and it's our turn, display Fold button
-        /*else if (!playerState->get_players_turn()) {
+        //else if (!playerState->get_players_turn()) {
        	         
-            //wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
-            //ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-            //    player_controller::exit();
-            //});
-            //innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8);
-	    
-           */ 
+        wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
+        ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
+        player_controller::exit();
+        });
+         innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8); 
 		
         
         // display our player's hand, if we have cards
@@ -274,17 +269,18 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
 
 //is called by everyone when the player with id  has UNO
 //TODO: this doesn't work like that -> should be a function one can call in the player_controller when receiving the UNO type from the server
-void MainGamePanel::show_uno_notification(Player* me, Player_id id){
+void MainGamePanel::show_uno_notification(Player_State* ps){
     wxPoint popupPosition = MainGamePanel::tableCenter + MainGamePanel::unoPopupOffset;
     ImagePanel* uno_notification = new ImagePanel(this, "../assets/uno_popup.png", wxBITMAP_TYPE_ANY, popupPosition, MainGamePanel::popupSize);
-    uno_notification->Show(false);
+    uno_notification->Show();
+    ps->set_uno(false);
     //to know wheter the Player having uno is me compare ids
-    if(id == me->get_player_id()){
-        uno_notification->Show();
-        //std::cout << "sleep start" << std::endl;
-        // wxImage disabled = uno_notification->_image->convertToDisabled();
+    // if(id == me->get_player_id()){
+    //     uno_notification->Show();
+    //     //std::cout << "sleep start" << std::endl;
+    //     // wxImage disabled = uno_notification->_image->convertToDisabled();
 
-    }
+    // }
 }
 
 void MainGamePanel::show_won_notification(Player_State* ps){

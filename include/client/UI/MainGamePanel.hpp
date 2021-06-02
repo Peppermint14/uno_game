@@ -19,7 +19,7 @@ public:
     wxString colourPicker();
     // Notification alerts
     void show_colour_match_notification();
-    void show_uno_notification(Player* me, Player_id id);
+    void show_uno_notification(Player_State*);
 
 private:
 

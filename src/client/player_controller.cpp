@@ -237,8 +237,10 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				std::cout<<"now there should be an UNO notification"<<std::endl;
 				Player_id id = response["id"];
-				player_controller::_mainGamePanel->show_uno_notification(player_controller::_me, id);
+                _currentPlayerState->set_uno(true);
+				// player_controller::_mainGamePanel->show_uno_notification();
 				//player_controller::showStatus("UNO");
+                return;
 				break;
 			}
 		case Respond_Type::GAME_OVER:
@@ -374,6 +376,7 @@ void player_controller::exit(){
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
 	net::TCP_Client::send(request.dump());
+    wxExit();
 }
 
 void player_controller::join(){
