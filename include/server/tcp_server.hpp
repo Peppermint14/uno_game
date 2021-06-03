@@ -167,7 +167,8 @@ namespace net {
 
 
 
-/*#ifndef TCP_SERVER_HPP
+/*
+#ifndef TCP_SERVER_HPP
 #define TCP_SERVER_HPP
 
 #include "../common/common.hpp"
@@ -201,8 +202,8 @@ namespace net {
         static void terminate() noexcept;
         static void barrier() noexcept;
         static void disconect(Player_id) noexcept;
-        static void broadcast(const std::string& /*_msg);
-        static void sendToPlayer(Player_id /*_player, const std::string /*_msg);
+        static void broadcast(const std::string& _msg);
+        static void sendToPlayer(Player_id _player, const std::string _msg);
 
         template <class Port, class Callback>
         static void init(Port _port, Callback _callback){
@@ -246,7 +247,7 @@ namespace net {
                                 auto logger = Logger::create(ss.str());
 
                                 //notify the connection of a new player
-                                /*
+
                                 nlohmann::json cmsg;
                                 cmsg["type"] = "new_player";
                                 cmsg["id"] = id + 1;

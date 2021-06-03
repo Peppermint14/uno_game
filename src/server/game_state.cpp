@@ -118,14 +118,21 @@ Player* Game_State::get_player(const Player_id& player_id) const
 
 void Game_State::remove_player(const Player_id& player_id)
 {
-    for(auto iter = players.begin(); iter != players.end(); ++iter)
-    {
-        if(iter->first == player_id)
-        {
-            delete iter->second;
-            players.erase(iter);
-        }
-    }
+    auto find_player = [this](Player_id player_id) {
+        for(auto iter = players.begin(); iter != players.end(); ++iter)
+            if(iter->first == player_id)
+            {
+                return iter;
+                //delete iter->second;
+                //players.erase(iter);
+                //delete iter->second;
+            }
+    };
+    auto iterator = find_player(player_id);
+    delete iterator->second;
+    players.erase(iterator);
+
+
 }
 
 bool Game_State::have_all_won() const

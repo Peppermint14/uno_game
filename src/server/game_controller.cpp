@@ -91,7 +91,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     {
                         nlohmann::json popup;
                         popup["type"] = Respond_Type::UNO;
-			popup["id"]= player_id;
+			            popup["id"]= player_id;
                         net::TCP_Server::broadcast(popup.dump());
                     }
                     //check if player has won
@@ -99,11 +99,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     {
                        player->set_has_won(true);
                        const std::string player_name = player->get_player_name();
-                       /*
-                       std::stringstream message;
-                       message << player_name << "wins !!";
-                       message.str();
-                        */
+
                         nlohmann::json popup;
                         popup["type"] = Respond_Type::WINS;
                         popup["player_name"] = player->get_player_name();
@@ -169,11 +165,13 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             Player_id player_id = request["id"];
             //check how many players are in the game
             unsigned int number_of_players = game_state->get_players().size();
+
             if(number_of_players == 1)
             {
+                //assert(false);
                 reset_game();
-
             }
+
             if(number_of_players == 2)
             {
                 Player* player = game_state->get_player(player_id);
