@@ -11,7 +11,7 @@ The UNO follows the official [UNO rules](https://service.mattel.com/instruction_
 - When there are only two players in the game, the Reverse card doesn't do anything
 - we don't count points 
  
-While playing the game you can allways see wheter it is your turn or not on the game window. If it's your turn, you can play a card by clicking on it. If you don't have a card which you can play you have to click on the draw pile to pick up a card. 
+While playing the game you can allways see wheter it is your turn or not on the game window. If it's your turn, you can play a card by clicking on it. If you don't have a card which you can play you have to click on the draw pile to pick up a card. Cards you get due to an opponent playing a draw card, are give to you by the server automatically, which means you don't have to do anything.
 On the right corner you can see a list of all players and how many cards they have at the moment. The player currently playing is highlighted.  
 
 
