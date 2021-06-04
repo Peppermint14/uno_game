@@ -3,6 +3,7 @@
 This is a C++ implementation of the game UNO. It was a project for the course Software Engineering in Spring 2021 at ETHz.
 The program is written to work for 2 to 4 players.
 
+
 The UNO follows the official [UNO rules](https://service.mattel.com/instruction_sheets/42001pr.pdf) except for the following changes, that simplify the implementation:
 - a Wild Draw 4 cards can allway be played (assuming it's your turn)
 - When you picked up a card because you could not play, your turn is over
@@ -40,7 +41,7 @@ note: Executing the make file will take very long
 .....
 # Da no e churzi zemefassig zude tests -> was testets etc oder was au immer 
 
-### Compiling and running them 
+### Compiling and running the tests 
 
 For the following steps we are assuming, you allready downloaded the whole project, using git clone, as it is described above and you created the build folder. 
 0. If you are not yet in the build folder, go into the build folder `cd build`
@@ -54,7 +55,10 @@ For the following steps we are assuming, you allready downloaded the whole proje
 The code consits of three different parts: Server, Client and Common. 
 All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server. 
 
+The following two files show the originally planed Software Requirements Specifications and Software Design Specifications. During the programming some changes were made ........
+
 [Software Requirements Specifications](./doc/srs_digitalUno.pdf)
+
 [Software Design Specifications](./doc/sds_digitalUno.pdf)
 
 
