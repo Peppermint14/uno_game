@@ -21,36 +21,30 @@ It uses [wxWidgets](https://www.wxwidgets.org/) for the GUI, [sockpp](https://gi
 Further some of the code and design is copied from the [Lama project](https://gitlab.ethz.ch/hraymond/cse-lama-example-project)
 
 
-## Download and Compilation
-Compiling the program will create two executables for running the program. One for running the server and one for running the client. 
-# Da no gnauer schriebe oder ev alles im nechste kapitel was s teste betrifft??
-Further it will create two?? executables in the folder unit-tests for testing the server (........??????????????????? for testing?????????????)
+## Make and Run
+> git clone \
+> mkdir build\
+> cd build\
+> cmake ..
 
-note: Executing the make file will take very long
+# Build Server
+> make ck_server\
+> ./ck_server
 
-0. Download the project either with ssh key `git@gitlab.ethz.ch:machart/cerealkillers.git` or with https `https://gitlab.ethz.ch/machart/cerealkillers.git`
-1. Create a build folder `mkdir build`
-2. navigate into the build folder `cd build`
-3. type `cmake ..`
-4. type `make`
-5. To start a game now first start the server `./ck_server`
-6. Then open the build folder in a new terminal window for each client. Start 2 to 4 clients by typing `./ck_client`. (for each client in a separate terminal window)
-7. Now you only have to type in a name and press connect to server, then the game can start.  
+# Build Client
+> make ck_client \
+> ./ck_client 
 
-## Server-tests 
-.....
-# Da no e churzi zemefassig zude tests -> was testets etc oder was au immer 
+# Build Tests
+> make tcp_server_client_connection_tests\
+> ./unit-tests/tcp_server_client_connection_tests
 
-### Compiling and running the tests 
+or
 
-For the following steps we are assuming, you allready downloaded the whole project, using git clone, as it is described above and you created the build folder. 
-0. If you are not yet in the build folder, go into the build folder `cd build`
-1. If you didn't run the cmake file yet, type in `cmake ..` (if allready done you can skip it) 
-2. type in `make test_game_controller_tests`
-3. Run the tests with `./unit-tests/test_game_controller_tests`
+> make test_game_controller_tests\
+> ./unit-tests/test_game_controller_tests
 
-
-##Code documentation
+## Code documentation
 
 The code consits of three different parts: Server, Client and Common. 
 All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server. 
