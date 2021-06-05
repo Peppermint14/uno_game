@@ -12,6 +12,7 @@ void net::TCP_Client::terminate() noexcept {
     auto log = Logger::get("client_main");
     log->info("[Client] Shutdown recieved.");
     instance->shutdown = true;
+    instance->connection.wait();
 }
 
 //use for debug and test purpose only

@@ -127,6 +127,7 @@ void Game_State::remove_player(const Player_id& player_id)
                 //players.erase(iter);
                 //delete iter->second;
             }
+        return players.end();
     };
     auto iterator = find_player(player_id);
     delete iterator->second;

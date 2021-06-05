@@ -283,8 +283,7 @@ void net::TCP_Server::broadcast(const std::string& _msg){
         sendToPlayer(static_cast<Player_id>(i), _msg);
 }
 
-void net::TCP_Server::sendToPlayer(Player_id _player, const std::string _msg){ 
-    std::cout<<"Send response:  "<<_msg<<std::endl;
+void net::TCP_Server::sendToPlayer(Player_id _player, const std::string _msg){    
     const size_t id = static_cast<size_t>(_player) - 1;
     if(instance->connections[id].has_value())
         instance->sendQueue[id]->push(_msg);

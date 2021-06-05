@@ -71,7 +71,6 @@ namespace net {
                             else
                                 logger->debug("Sent: {}", msg_);
                             q.pop();
-			    std::cout<<"sending??"<<std::endl;
                         }
                     }
 

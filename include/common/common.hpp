@@ -16,6 +16,7 @@
 #include <list>
 #include <chrono>
 #include <atomic>
+#include <thread>
 
 #include "../../build/_deps/json-src/include/nlohmann/json.hpp"
 

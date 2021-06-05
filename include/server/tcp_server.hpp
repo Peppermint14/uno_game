@@ -44,6 +44,7 @@ namespace net {
             if(instance->isInit) throw ckException("TCP_Server already initialised");
             instance->isInit = true;
             instance->cb = _callback;
+            instance->shutdown.resize(4);
             auto logger = Logger::create("server_main");
             logger->info("Welcome. Initializing server...");
             instance->listener = std::async(std::launch::async, [port = _port, callback = _callback] {
@@ -141,7 +142,7 @@ namespace net {
                                 }
 
                                 sock.shutdown();
-                                instance->connections[id].reset();
+                                //instance->connections[id].reset();
                             })};
                             
                             nlohmann::json msg;

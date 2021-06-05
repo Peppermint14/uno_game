@@ -40,11 +40,14 @@ TEST(TCP_Connection_Test, ResponseTest) {
 
     std::vector<size_t> result;
 
+    std::mutex mutex;
+
     try {
         net::TCP_Client::connect("localhost", 8080, [&](const std::string& _msg){
             if(_msg == "{\"id\":1}") return;
             //auto log = Logger::get("client_main");
             //log->debug("[cb] {}", _msg);
+            std::lock_guard<std::mutex> lock(mutex);
             result.push_back(std::stoull(_msg));
         });
     } catch(const std::exception& _e){
@@ -55,13 +58,20 @@ TEST(TCP_Connection_Test, ResponseTest) {
     for(size_t i = 0; i < vals.size(); ++i)
         net::TCP_Client::send(std::to_string(vals[i]));
 
-    while(result.size() < vals.size()){}
+    while(true){
+        std::this_thread::sleep_for(0.25s);
+        std::lock_guard<std::mutex> lock(mutex);
+        if(result.size() == vals.size()) break;
+    }
 
     for(size_t i = 0; i < vals.size(); ++i)
         ASSERT_EQ(vals[i] + 1, result[i]);
 
     net::TCP_Client::terminate();
+    std::this_thread::sleep_for(1s);
     net::TCP_Server::terminate();
+    std::this_thread::sleep_for(1s);
+    future.wait();
 }
 
 int main(int argc, char **argv) {
