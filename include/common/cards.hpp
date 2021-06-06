@@ -126,6 +126,8 @@ namespace ck_Cards {
 	NONE 	=   4 //for wild cards
     };
 
+    std::string get_color_as_string(const Color& color);
+
     enum class Value : uint32_t {
 	ZERO = 0,
 	ONE = 1,

@@ -129,7 +129,7 @@ ck_Cards::Cards& ck_Cards::operator++ (ck_Cards::Cards& it)
 
 }
 
-std::string ck_Cards::Card::get_color_as_string() const
+std::string ck_Cards::get_color_as_string(const ck_Cards::Color& color)
 {
     switch(color)
     {

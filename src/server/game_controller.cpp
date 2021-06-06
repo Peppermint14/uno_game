@@ -132,7 +132,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     }
                     if(card_object.value == ck_Cards::Value::NONE)
                     {
-                        error_msg << "ERROR: please play a " << card_object.get_color_as_string() << " card or a " << card_object.get_action_as_string() << " card";
+                        error_msg << "ERROR: please play a " << ck_Cards::get_color_as_string(game_state->get_color_to_be_matched()) << " card or a " << card_object.get_action_as_string() << " card";
                     }
                     error_respond["msg"] = error_msg.str();
                     net::TCP_Server::sendToPlayer(player_id, error_respond.dump());
