@@ -192,6 +192,7 @@ const std::vector<std::reference_wrapper<ck_Cards::Card>> ck_Cards::Deck::getByC
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //HAND
+/*
 ck_Cards::Hand_vector::Hand_vector(std::vector<ck_Cards::Cards> cards_)
 {
 	cards = cards_;
@@ -230,7 +231,7 @@ std::vector<ck_Cards::Cards> ck_Cards::Hand_vector::get_cards()
 }
 
 
-
+*/
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 //PILE

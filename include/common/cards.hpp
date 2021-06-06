@@ -123,7 +123,7 @@ namespace ck_Cards {
         RED     =   1,
         YELLOW  =   2,
         BLUE    =   3,
-	NONE 	=   4 //for wild cards
+	    NONE 	=   4 //for wild cards
     };
 
     std::string get_color_as_string(const Color& color);
@@ -174,31 +174,6 @@ namespace ck_Cards {
         [[nodiscard]] static const std::vector<std::reference_wrapper<Card>> getByColor(Color /*_color*/) noexcept;
     };
 
-    class Hand_vector {
-    protected:
-	    std::vector<Cards> cards;
-    public:
-        Hand_vector(std::vector<Cards> /*cards_*/); //constructor
-        Hand_vector(std::list<Cards>);
-	    size_t get_size();
-        //[[nodiscard]] const Cards get_top_card();
-        const Cards* get_card_ptr(int i);
-	    Cards play_card(int i);
-	    void pick_up_card(ck_Cards::Cards cards_);
-	//const Cards front();
-        //void pop();
-        //void push_back(Cards /*_card*/);
-        //void push(Cards /*_card*/) noexcept;
-        //void push(const std::vector<Cards> /*cards*/) noexcept;      
-        //void shuffle() noexcept;
-        //virtual void from_json(const std::string&);
-        //[[nodiscard]] virtual const std::string to_json() const noexcept;
-        //[[nodiscard]] bool size() const noexcept;
-        //[[nodiscard]] bool empty() const noexcept;
-        //void clear() noexcept;
-        //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
-        std::vector<Cards> get_cards();
-    };
 
     class Pile {
     protected:
@@ -208,7 +183,6 @@ namespace ck_Cards {
         const Cards back();
 	    const Cards front();
         void pop();
-        //void push_back(Cards /*_card*/);
         void push_front(Cards /*_card*/);
         void push(Cards /*_card*/) noexcept;
         void put_at_end(Cards /*_card*/) noexcept;
@@ -218,7 +192,6 @@ namespace ck_Cards {
         [[nodiscard]] size_t size() const noexcept;
         [[nodiscard]] bool empty() const noexcept;
         void clear() noexcept;
-        //[[nodiscard]] bool valid(Cards /*_card*/) const noexcept;
         Pile(std::list<Cards> /*cards_*/); //constructor
         Pile(); //default constructor
         const std::list<Cards> get_cards() const;

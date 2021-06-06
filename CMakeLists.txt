@@ -41,7 +41,10 @@ set(SERVER_FILES
 	"src/server/game_controller.cpp"
 	"src/server/game_state.cpp"
 	"src/server/player.cpp"
-	)
+)
+
+set( SERVER_FILES "${SERVER_FILES_LIB}" )
+list( APPEND SERVER_FILES "src/server/main.cpp" )
 
 set(COMMON_FILES
 	"src/common/utils.cpp"
