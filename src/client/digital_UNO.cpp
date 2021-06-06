@@ -35,8 +35,9 @@ bool digital_UNO::OnInit()
 
     return true;
 }
-/*
+
 int digital_UNO::OnExit(){
-    delete curr_controller;
+    player_controller::exit();
+    net::TCP_Client::terminate();
     return 0;
-}*/
+}

@@ -63,7 +63,7 @@ namespace net {
                     {
                         std::queue<std::string>& q = instance->toSend;
                         std::lock_guard<std::mutex> lock(instance->mutex);
-                        while (!q.empty()) {
+                        while (!q.empty() && !instance->shutdown) {
                             std::string msg_ = q.front();
                              msg_.push_back(static_cast<char>(3));
                             if(coptr->conn.write(msg_) == 1)
@@ -81,7 +81,7 @@ namespace net {
                             for (size_t i = 0; i < n; ++i)
                                 msg.push(buf[i]);
                         }
-                        if (!msg.empty()) {
+                        if (!msg.empty() && !instance->shutdown) {
                             //parse all containing messages in the buffer
                             while (!msg.empty()) {
                                 const char c = msg.front();
