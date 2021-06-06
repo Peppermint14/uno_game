@@ -19,6 +19,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
     {
         case Request_Type::NEW_PLAYER:
 	    {
+	        //eval_new_player_request(request);
 		    Player_id player_id = request["id"]; //retrieve player id
 	    std::string player_name = request["name"];
 	    if(!game_state->check_if_player_exists(player_id))
@@ -89,9 +90,11 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                         popup["type"] = Respond_Type::UNO;
 			            popup["id"]= player_id;
                         net::TCP_Server::broadcast(popup.dump());
+                        //evaluate effect of card
+                        effect_of_card(player_id, card);
                     }
                     //check if player has won
-                    if(player->get_hand().empty())
+                    else if(player->get_hand().empty())
                     {
                        player->set_has_won(true);
                        const std::string player_name = player->get_player_name();
@@ -107,13 +110,19 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            nlohmann::json popup;
                            popup["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
                            net::TCP_Server::broadcast(popup.dump());
-                    //        //reset_game
-                    //        reset_game();
+                           //reset_game
+                            reset_game();
+                       }
+                       else
+                       {
+                           //evaluate effect of card
+                           effect_of_card(player_id, card);
                        }
                     }
+                    else
+                        //evaluate effect of card
+                        effect_of_card(player_id, card);
 
-                    //evaluate effect of card
-                    effect_of_card(player_id, card);
                 }
                 else //error message
                 {
@@ -188,7 +197,14 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 Player_id next_player_id = game_state->get_current_player(); //single player in game
                 Player* next_player = game_state->get_player(next_player_id);
                 next_player->set_has_won(true);
-                
+
+                const std::string player_name = player->get_player_name();
+
+                nlohmann::json popup;
+                popup["type"] = Respond_Type::WINS;
+                popup["player_name"] = player->get_player_name();
+                popup["id"] = player->get_player_id();
+                net::TCP_Server::broadcast(popup.dump());
 
                 // reset_game();
             }
@@ -206,8 +222,10 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 const std::list<ck_Cards::Cards> hand = player->get_hand().get_cards();
                 game_state->get_draw_pile().push(hand);
 
-                //remove player from players vector also deletes player
+                //remove player from players vector and delete player
                 game_state->remove_player(player_id);
+                //disconnect connection
+                //net::TCP_Server::disconnect(player_id);
             }
             break;
 	    }
@@ -230,13 +248,24 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 }
 
 
+/////////////////////eval_new_player_request///////////////////////////////////
+/*
+void Game_Controller::eval_new_player_request(nlohmann::json& request) {
+    Player_id player_id = request["id"]; //retrieve player id
+    std::string player_name = request["name"];
+    if (!game_state->check_if_player_exists(player_id))
+        add_new_player(player_id, player_name);
+}
+ */
+
+
 /////////////////////add_new_player//////////////////////////////////////////////////
 
 void Game_Controller::add_new_player(const Player_id& _player_id, const std::string& player_name)
 {
         //create hand
         std::list<ck_Cards::Cards> hand_list;//(7);->otherwise list will end up beeing of size 14
-        for (unsigned int i = 0; i < 7; ++i)
+        for (unsigned int i = 0; i < 3; ++i)
         {
             ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile
             hand_list.push_back(card);
@@ -418,6 +447,7 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
     if(card_object.action == ck_Cards::Action::SKIP)
     {
         //set next player
+        if(game_state->get_players(player_id)->get_has_won() == false)
         Player_id next_player_id = get_next_player(player_id);
         switch_player(next_player_id);
 
@@ -457,7 +487,7 @@ Player_id Game_Controller::get_next_player(const Player_id& player_id)
         if(is_last(it))
         {
             it = players.begin();
-            auto next_player = it;
+            //auto next_player = it;
             if(!(it->second->get_has_won()))
                 return it->first;
         }
