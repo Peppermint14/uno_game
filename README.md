@@ -26,7 +26,7 @@ Further some of the code and design is copied from the [Lama project](https://gi
 > git clone \
 > mkdir build\
 > cd build\
-> cmake ..
+> cmake -DCMAKE_BUILD_TYPE=Release ..
 
 ### Build Server
 > make ck_server\
