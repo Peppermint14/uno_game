@@ -119,9 +119,10 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            effect_of_card(player_id, card);
                        }
                     }
-                    else
+                    else {
                         //evaluate effect of card
                         effect_of_card(player_id, card);
+                    }
 
                 }
                 else //error message
@@ -447,7 +448,6 @@ void Game_Controller::effect_of_card(const Player_id& player_id, ck_Cards::Cards
     if(card_object.action == ck_Cards::Action::SKIP)
     {
         //set next player
-        if(game_state->get_players(player_id)->get_has_won() == false)
         Player_id next_player_id = get_next_player(player_id);
         switch_player(next_player_id);
 
