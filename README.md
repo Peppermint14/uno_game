@@ -62,8 +62,8 @@ The server is responsible for exchanging all the information between the clients
 
 ### Client
 * __[digital UNO](./include/client/digital_UNO.hpp)__
-* __[Player_controller](./include/client/player_controller.hpp)__ : handles all the responses from the server.
-* __[player_state](./include/client/player_state.hpp)__ : stores all the information about the current state of the game 
+* __[Player_controller](./include/client/player_controller.hpp)__ : Handles all the responses from the server and holds functions for sending requests to the server. 
+* __[player_state](./include/client/player_state.hpp)__ : Stores all the information about the current state of the game 
 * __[player](./include/client/player.hpp)__ : stores player name and id
 * __[tcp_client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
 
@@ -71,15 +71,14 @@ The server is responsible for exchanging all the information between the clients
 The files in here are used for the grafical interface of the Client
 * __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__ : Panel to type in Name, Port and Address when connecting to the game 
 * __[GameWindow](./include/client/UI/GameWindow.hpp)__
-* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
-* __[InputField](./include/client/UI/InputField.hpp)__
-* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
+* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__ 
+* __[InputField](./include/client/UI/InputField.hpp)__  
+* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__ : Panel used for graphical interface during the game.  
 
 ### Common
-Holds all the enums for the needed types
-
+Holds all the enums for the used types
 * __[cards](./include/common/cards.hpp)__ :holds the card enum and different enums for the card color, type etc. and a type for the card Piles/Hand
-* __[common](./include/common/common.hpp)__
+* __[common](./include/common/common.hpp)__ : holds enums for request and response types, Player_id etc.  
 * __[logger](./include/common/logger.hpp)__
 * __[utils](./include/common/logger.hpp)__
 
@@ -89,29 +88,3 @@ Holds all the enums for the needed types
 ## Software Specifications 
 
 Before starting to code the [Software Requirements Specifications](./doc/srs_digitalUno.pdf) and the [Software Design Specifications](./doc/sds_digitalUno.pdf) were determined. During the programming process some adaptions in the code were made. 
-
-
-
-
-##____________________________________________________________
-## Server-tests Compilation:
-
-
-0. Clone the server branch with ```git clone -b server https://gitlab.ethz.ch/machart/cerealkillers.git```
-1. Create a `build` folder
-2. `cd` into `build`
-3. cmake .. 
-4. make test_game_controller_tests
-
-### Run test
-Run with ```./unit-tests/test_game_controller_tests```
-
-
-#TODO:
-TESTS:
-Uncomment the right lines in the CMakelists, 
-<!-- TODO:
-- store Playernames correctly (when they arrive with NewPlayer request
-- something is wrong with the number of cards, that get distributed (way to many blue 0) -->
-
-
