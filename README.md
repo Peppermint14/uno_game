@@ -68,7 +68,7 @@ The server is responsible for exchanging all the information between the clients
 * __[tcp_client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
 
 ##### UI
-The files in here are used for the grafical interface of the Client
+The files in here are used for the graphical interface of the Client
 * __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__ : Panel to type in Name, Port and Address when connecting to the game 
 * __[GameWindow](./include/client/UI/GameWindow.hpp)__
 * __[ImagePanel](./include/client/UI/ImagePanel.hpp)__ 
