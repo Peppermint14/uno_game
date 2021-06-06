@@ -58,14 +58,14 @@ The server is responsible for exchanging all the information between the clients
 * __[GameController](./include/server/game_controlller.hpp)__
 * __[GameState](./include/server/game_state.hpp)__
 * __[Player](./include/server/player.hpp)__
-* __[TCP Server](./include/server/tcp_server.hpp)__
+* __[TCP Server](./include/server/tcp_server.hpp)__ :builds a connections to the tcp_clients and sends and receives json messages
 
 ### Client
 * __[digital UNO](./include/client/digital_UNO.hpp)__
 * __[Player_controller](./include/client/player_controller.hpp)__ : Handles all the responses from the server and holds functions for sending requests to the server. 
 * __[player_state](./include/client/player_state.hpp)__ : Stores all the information about the current state of the game 
 * __[player](./include/client/player.hpp)__ : stores player name and id
-* __[tcp_client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
+* __[Tcp Client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
 
 ##### UI
 The files in here are used for the graphical interface of the Client
