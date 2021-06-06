@@ -67,13 +67,13 @@ The server is responsibel for exchanging all the information between the clients
 * __[player](./include/client/player.hpp)__ : stores player name and id
 * __[tcp_client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
 
-    ##### UI
-    The files in here are used for the grafical interface of the Client
-    * __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__ : Panel to type in Name, Port and Address when connecting to the game 
-    * __[GameWindow](./include/client/UI/GameWindow.hpp)__
-    * __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
-    * __[InputField](./include/client/UI/InputField.hpp)__
-    * __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
+##### UI
+The files in here are used for the grafical interface of the Client
+* __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__ : Panel to type in Name, Port and Address when connecting to the game 
+* __[GameWindow](./include/client/UI/GameWindow.hpp)__
+* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
+* __[InputField](./include/client/UI/InputField.hpp)__
+* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
 
 ### Common
 Holds all the enums for the needed types
