@@ -20,22 +20,23 @@ On the right corner you can see a list of all players and how many cards they ha
 It uses [wxWidgets](https://www.wxwidgets.org/) for the GUI, [sockpp](https://github.com/fpagliughi/sockpp) for the network interface, [the nlohmann json library](https://github.com/nlohmann/json) for object serialization, [spdlog](https://github.com/gabime/spdlog) and [Google test](https://github.com/google/googletest) for testing the server.
 Further some of the code and design is copied from the [Lama project](https://gitlab.ethz.ch/hraymond/cse-lama-example-project)
 
+## Downloading, Compiling and running Code
 
-## Make and Run
+### Make and Run
 > git clone \
 > mkdir build\
 > cd build\
 > cmake ..
 
-# Build Server
+### Build Server
 > make ck_server\
 > ./ck_server
 
-# Build Client
+### Build Client
 > make ck_client \
 > ./ck_client 
 
-# Build Tests
+### Build Tests
 > make tcp_server_client_connection_tests\
 > ./unit-tests/tcp_server_client_connection_tests
 
@@ -44,19 +45,33 @@ or
 > make test_game_controller_tests\
 > ./unit-tests/test_game_controller_tests
 
+
 ## Code documentation
 
 The code consits of three different parts: Server, Client and Common. 
-All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server. 
+All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server.
+The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files 
 
-The following two files show the originally planed Software Requirements Specifications and Software Design Specifications. During the programming some changes were made ........
-
-[Software Requirements Specifications](./doc/srs_digitalUno.pdf)
-
-[Software Design Specifications](./doc/sds_digitalUno.pdf)
+### Server
+The server is responsibel for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
 
 
+### Client
 
+
+### Common
+Holds all the enums for the needed types
+*[cards](./include/common/cards.hpp)
+*[common](./include/common/common.hpp)
+*[logger](./include/common/logger.hpp)
+*[utils](./include/common/logger.hpp)
+
+
+
+
+## Software Specifications 
+
+Before starting to code the [Software Requirements Specifications](./doc/srs_digitalUno.pdf) and the [Software Design Specifications](./doc/sds_digitalUno.pdf) were determined. During the programming process some adaptions in the code were made. 
 
 
 
