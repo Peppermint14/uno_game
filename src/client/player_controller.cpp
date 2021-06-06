@@ -235,7 +235,7 @@ void player_controller::eval_response(const std::string& msg)
                 _currentPlayerState->set_uno(true);
                 return;
 			}
-		case Respond_Type::GAME_OVER:
+		case Respond_Type::START_NEW_GAME:
 			{
 				player_controller::showStatus("Game over");
 				_currentPlayerState->set_game_over(true);
