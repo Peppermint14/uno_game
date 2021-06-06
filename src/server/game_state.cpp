@@ -133,7 +133,6 @@ void Game_State::remove_player(const Player_id& player_id)
     delete iterator->second;
     players.erase(iterator);
 
-
 }
 
 bool Game_State::have_all_won() const

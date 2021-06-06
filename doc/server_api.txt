@@ -158,7 +158,7 @@ popup UNO
 
 popup Game_Finished
 {
-    "type": GAME_OVER
+    "type": START_NEW_GAME
 
 }
 
@@ -174,4 +174,4 @@ selected color
     "type": "SELECTED_COLOR"
     "color": ck_Cards::Color
 }
->>>>>>> server
+

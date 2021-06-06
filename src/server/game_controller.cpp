@@ -109,7 +109,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                        if(game_state->have_all_won())
                        {
                            nlohmann::json popup;
-                           popup["type"] = Respond_Type::GAME_OVER;
+                           popup["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
                            net::TCP_Server::broadcast(popup.dump());
                            //reset_game
                            reset_game();
@@ -169,6 +169,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             // net::TCP_Server::disconect(player_id);
             if(number_of_players == 1)
             {
+                //terminate and clean up
                 //assert(false);
                 // reset_game();
             }
@@ -308,6 +309,10 @@ void Game_Controller::reset_game()
             hand_list.push_back(card);
         }
         player.second->get_hand().push(hand_list);
+
+        //reset has_won, players_turn
+        player.second->set_has_won(false);
+        player.second->set_players_turn(false);
 
         game_state->add_Players(player.second);
     }
