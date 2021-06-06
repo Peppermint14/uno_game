@@ -23,30 +23,34 @@ Further some of the code and design is copied from the [Lama project](https://gi
 ## Downloading, Compiling and running Code
 
 ### Make and Run
-> git clone \
-> mkdir build\
-> cd build\
-> cmake -DCMAKE_BUILD_TYPE=Release ..
-
+```bash
+git clone https://gitlab.ethz.ch/machart/cerealkillers.git
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+```
 ### Build Server
-> make ck_server\
-> ./ck_server
-
+```bash
+make ck_server\
+./ck_server
+```
 ### Build Client
-> make ck_client \
-> ./ck_client 
+```bash
+make ck_client \
+./ck_client 
+```
 
 ### Build Tests
 Important: Tests need to be run in release mode. Googletest adds -Werror to the compile flags and will not compile without -fsanitize= which leads to plenty of error messages.
-
-> make tcp_server_client_connection_tests\
-> ./unit-tests/tcp_server_client_connection_tests
-
+```bash
+make tcp_server_client_connection_tests\
+./unit-tests/tcp_server_client_connection_tests
+```
 or
-
-> make test_game_controller_tests\
-> ./unit-tests/test_game_controller_tests
-
+```bash
+make test_game_controller_tests\
+./unit-tests/test_game_controller_tests
+```
 
 ## Code documentation
 
@@ -89,8 +93,15 @@ Holds all the enums for the used types
 * __[Common Tests](./unit-tests/commontest)__
 * __[Server Tests](./unit-tests/servertest)__
 
+## Software Specifications
 
+Before starting to code the [Software Requirements Specifications](./doc/srs_digitalUno.pdf) and the [Software Design Specifications](./doc/sds_digitalUno.pdf) were determined. During the programming process some adaptions in the code were made.
 
-## Software Specifications 
+## Shortcomings
 
-Before starting to code the [Software Requirements Specifications](./doc/srs_digitalUno.pdf) and the [Software Design Specifications](./doc/sds_digitalUno.pdf) were determined. During the programming process some adaptions in the code were made. 
+There are 2 things that currently don't work:
+
+1. The exit button doesn't work correctly. Avoid using it or closing the client window!
+2. When a game is over there is no way to start a second round.
+
+These two shortcomings are linked as starting a second round has to take into account the players who have left, which isn't done correctly due to point 1.
