@@ -56,7 +56,8 @@ make test_game_controller_tests
 
 The code consits of three different parts: Server, Client and Common. 
 All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server.
-The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files. In the src folders one can also find the "main.cpp" files. 
+The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files. In the src folders one can also find the "main.cpp" files.
+ 
 Next to the include and the src folder, there is an asset folder which holds all the card pictures and a unit-test folder which holds all the server and common tests. 
 
 ### Server
