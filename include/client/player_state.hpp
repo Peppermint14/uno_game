@@ -32,6 +32,7 @@ public:
 	void set_is_waiting_for_start(bool);
 	void set_game_over(bool);
 	void set_n_players(int n);
+	void set_id_vec(std::vector<Player_id>& /*player_ids_*/);
 
 	// getters
 	ck_Cards::Cards* get_top_discard();

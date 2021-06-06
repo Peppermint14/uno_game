@@ -31,6 +31,14 @@ Game_State::Game_State()
     has_started = false;
 }
 
+Game_State::~Game_State()
+{
+    for(auto& player : players)
+    {
+        delete player.second;
+    }
+}
+
 void Game_State::set_draw_pile(const ck_Cards::Draw_Pile& draw_pile_)
 {
     draw_pile = draw_pile_;
@@ -123,16 +131,12 @@ void Game_State::remove_player(const Player_id& player_id)
             if(iter->first == player_id)
             {
                 return iter;
-                //delete iter->second;
-                //players.erase(iter);
-                //delete iter->second;
             }
         return players.end();
     };
     auto iterator = find_player(player_id);
     delete iterator->second;
     players.erase(iterator);
-
 }
 
 bool Game_State::have_all_won() const

@@ -13,6 +13,7 @@ class Game_State
 {
 public:
 	Game_State(); //constructor
+	~Game_State(); //destructor
 	void set_current_player(const Player_id& /*id*/);
 	void set_color_to_be_matched(const ck_Cards::Color& /*color*/);
 	void add_Players(Player* /*player_*/);

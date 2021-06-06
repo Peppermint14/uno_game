@@ -114,9 +114,9 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            
                            // Sleeps 1 sec to finish up send and receieve queues.
                            sleep(1);
+                           delete game_state;
                            net::TCP_Server::terminate();
 
-                        
                            // Resetting the game doesn't quite work
                            //reset_game();
                        }
@@ -183,10 +183,10 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
             if(number_of_players == 1)
             {
                 //terminate and clean up
-                //assert(false);
-                // reset_game();
+                sleep(1);
+                delete game_state;
+                net::TCP_Server::terminate();
             }
-
             if(number_of_players == 2)
             {
                 Player* player = game_state->get_player(player_id);
@@ -201,6 +201,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 
                 //remove player from players vector and delete it
                 game_state->remove_player(player_id);
+                //cap connection
+                net::TCP_Server::disconect(player_id);
                 //set has won
                 Player_id next_player_id = game_state->get_current_player(); //single player in game
                 Player* next_player = game_state->get_player(next_player_id);
@@ -208,13 +210,22 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 
                 const std::string player_name = player->get_player_name();
 
+                broadcast_game_state();
+
+                /*
                 nlohmann::json popup;
                 popup["type"] = Respond_Type::WINS;
                 popup["player_name"] = player->get_player_name();
                 popup["id"] = player->get_player_id();
                 net::TCP_Server::broadcast(popup.dump());
+                 */
 
-                // reset_game();
+
+                //terminate and clean up
+                sleep(1);
+                delete game_state;
+                net::TCP_Server::terminate();
+
             }
             else
             {
@@ -232,6 +243,9 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 
                 //remove player from players vector and delete player
                 game_state->remove_player(player_id);
+                net::TCP_Server::disconect(player_id);
+
+                broadcast_game_state();
                 //disconnect connection
                 //net::TCP_Server::disconnect(player_id);
             }
@@ -254,17 +268,6 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
         }
     }
 }
-
-
-/////////////////////eval_new_player_request///////////////////////////////////
-/*
-void Game_Controller::eval_new_player_request(nlohmann::json& request) {
-    Player_id player_id = request["id"]; //retrieve player id
-    std::string player_name = request["name"];
-    if (!game_state->check_if_player_exists(player_id))
-        add_new_player(player_id, player_name);
-}
- */
 
 
 /////////////////////add_new_player//////////////////////////////////////////////////

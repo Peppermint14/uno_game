@@ -113,6 +113,11 @@ void Player_State::set_hand(ck_Cards::Hand* hand_)
      set_number_of_cards(this_player, nof_cards);
  }
 
+ void Player_State::set_id_vec(std::vector<Player_id>& player_ids_)
+ {
+     player_ids = player_ids_ ;
+ }
+
 void Player_State::set_number_of_cards(Player_id p_id, size_t number_of_cards_)
 {
      number_of_cards[uint32_t(p_id)-1] = number_of_cards_;

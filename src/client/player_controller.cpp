@@ -160,7 +160,8 @@ void player_controller::eval_response(const std::string& msg)
 	
 				//update number of cards of all players
 				_currentPlayerState->set_n_players(response["players"].size());
-				std::vector<std::string> all_names(4);
+				std::vector<std::string> all_names(4); //(4);
+				std::vector<Player_id> player_id;
                                 for(auto it = response["players"].begin();it<response["players"].end();it++){
                                 	Player_id p_id = Player_id::NONE;
                                         std::string name = "empty";
@@ -181,10 +182,14 @@ void player_controller::eval_response(const std::string& msg)
                                            		// should not happen
                                             	}
                              		}
+                                        //all_names.push_back(name);
                                         all_names[(int)p_id-1]=name;
+                                        player_id.push_back(p_id);
                                         player_controller::_currentPlayerState->set_number_of_cards(p_id,n_cards);
+
                                 }
-                                _currentPlayerState->set_all_player_names(all_names);		
+                                _currentPlayerState->set_all_player_names(all_names);
+                                _currentPlayerState->set_id_vec(player_id);
 				//update, which color has to be played
 				ck_Cards::Color color = response["color_to_be_matched"];
 				player_controller::set_color(color);
