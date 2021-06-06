@@ -1,10 +1,6 @@
-// Copied from Lama example Project
-
 #include "../../include/client/digital_UNO.hpp"
 #include "../../include/client/player_controller.hpp"
 #include "../../include/client/UI/GameWindow.hpp"
-
-//player_controller* curr_controller;
 
 // Application entry point
 bool digital_UNO::OnInit()
@@ -24,14 +20,7 @@ bool digital_UNO::OnInit()
     gameWindow->Show(true);
 
     // Initialize player controller
-
-   // controller = new player_controller();
-    //controller->init(gameWindow);
-    //player_controller* _player_controller;
-    //_player_controller->init(gameWindow);
     player_controller::init(gameWindow);
-    //_player_controller = new player_controller(); 
-    //_player_controller->init(gameWindow);
 
     return true;
 }
