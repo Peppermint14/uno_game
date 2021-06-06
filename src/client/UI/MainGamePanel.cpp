@@ -54,19 +54,22 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     // Make player aware if a wild card is played and he has to match a chosen colour
     if(playerState->get_to_be_matched() != ck_Cards::Color::NONE) this->show_colour_match_notification(playerState);
 
-
-    // Make player aware if someone has won
-    // if(playerState->has_player_won()){
-    //     if(playerState->get_winner() == playerState->get_this_player())
-    //         this->show_won_notification(playerState);
-    //     else 
-    //         this->show_lost_notification(playerState);
-
-    //     playerState->set_player_won(false);
-    // }
-
     // update layout
     this->Layout();
+
+    // Make player aware if someone has won
+    if(playerState->has_player_won()){
+        if(playerState->get_winner() == playerState->get_this_player())
+            this->show_won_notification(playerState);
+        else 
+            this->show_lost_notification(playerState);
+
+        playerState->set_player_won(false);
+    }
+
+    if(playerState->get_game_over()){
+        this->show_game_over_notification();
+    }
 }
 
 //shows List of all players (playername(number of cards))
@@ -305,6 +308,11 @@ void MainGamePanel::show_won_notification(Player_State* ps){
 void MainGamePanel::show_lost_notification(Player_State* ps){
     wxString message("Unlucky...\n");
     message += ps->get_name_of_playerid(ps->get_winner()) + " has won the game.";
+    wxMessageBox(message, "Lost", wxICON_NONE);
+}
+
+void MainGamePanel::show_game_over_notification(){
+    wxString message("The game is over. Everybody either won or lost.\nIf you wish you can restart the game.");
     wxMessageBox(message, "Lost", wxICON_NONE);
 }
 

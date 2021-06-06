@@ -37,6 +37,9 @@ private:
     void show_won_notification(Player_State*);
     void show_lost_notification(Player_State*);
 
+    
+    void show_game_over_notification();
+
     wxStaticText* buildStaticText(std::string content, wxPoint position, wxSize size, long textAlignment, bool bold = false);
 
     wxSize getBoundsOfRotatedSquare(double edgeLength, double rotationAngle);

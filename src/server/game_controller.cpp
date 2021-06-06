@@ -111,8 +111,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                            nlohmann::json popup;
                            popup["type"] = Respond_Type::GAME_OVER;
                            net::TCP_Server::broadcast(popup.dump());
-                           //reset_game
-                           reset_game();
+                    //        //reset_game
+                    //        reset_game();
                        }
                     }
 
