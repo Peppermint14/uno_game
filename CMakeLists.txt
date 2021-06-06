@@ -43,7 +43,7 @@ set(SERVER_FILES_LIB
 	"src/server/player.cpp"
 )
 
-set( SERVER_FILES "${CLIENT_FILES_LIB}" )
+set( SERVER_FILES "${SERVER_FILES_LIB}" )
 list( APPEND SERVER_FILES "src/server/main.cpp" )
 
 set(COMMON_FILES
