@@ -61,10 +61,10 @@ The server is responsibel for exchanging all the information between the clients
 
 ### Common
 Holds all the enums for the needed types
-*[cards](./include/common/cards.hpp)
-*[common](./include/common/common.hpp)
-*[logger](./include/common/logger.hpp)
-*[utils](./include/common/logger.hpp)
+*__[cards](./include/common/cards.hpp)__
+*__[common](./include/common/common.hpp)__
+*__[logger](./include/common/logger.hpp)__
+*__[utils](./include/common/logger.hpp)__
 
 
 
