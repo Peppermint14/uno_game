@@ -37,6 +37,8 @@ Further some of the code and design is copied from the [Lama project](https://gi
 > ./ck_client 
 
 ### Build Tests
+Important: Tests need to be run in release mode. Googletest adds -Werror to the compile flags and will not compile without -fsanitize= which leads to plenty of error messages.
+
 > make tcp_server_client_connection_tests\
 > ./unit-tests/tcp_server_client_connection_tests
 
