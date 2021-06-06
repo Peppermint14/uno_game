@@ -132,6 +132,18 @@ Player_State::~Player_State(){
      hand = nullptr;
 }
 
+/////////////////////////////////// Setters /////////////////////////////////////////////
+
+void Player_State::set_game_over(bool b){
+     game_over = b;
+}
+void Player_State::set_n_players(int n){
+	n_player_in_game = n;	
+}
+void Player_State::set_player_won(bool b){
+     player_won = b;
+}
+
 void Player_State::set_top_discard(ck_Cards::Cards new_top){
      top_discard = new_top;
      discard_empty = 0;
@@ -158,21 +170,9 @@ void Player_State::set_current_player(Player_id id){
 void Player_State::set_winner(Player_id id){
      winner = id;
 }
-
-// void Player_State::update_hand(const std::vector<ck_Cards::Cards cards)
-// {
-//     hand->push(cards);
-//     size_t number_of_cards = hand->cards.size();
-//     set_number_of_cards(number_of_cards);
-// }
-//
-
 void Player_State::set_all_player_names(std::vector<std::string> name_vec){
      all_Player_Names = name_vec;
 }
-// void Player_State::set_is_waiting(bool waiting){
-//      player_waiting = waiting;
-// }
 void Player_State::set_uno(bool u){
      uno = u;
 }
@@ -181,6 +181,48 @@ void Player_State::set_match_colour(bool b){
 }
 void Player_State::change_play_direction(){
      play_direction = !play_direction;
+}
+void Player_State::set_this_player(Player_id id) {
+     this_player = id;
+}
+void Player_State::set_is_waiting_for_start(bool waiting){
+	waiting_for_start = waiting;
+}
+
+/////////////////////////////////// Getters /////////////////////////////////////////////
+
+bool Player_State::get_game_over() const{
+     return game_over;
+}
+int Player_State::get_n_players() const{
+	return n_player_in_game;
+}
+
+bool Player_State::has_player_quit() const {
+     return player_quit;
+}
+bool Player_State::get_uno() const {
+     return uno;
+}
+bool Player_State::get_match_colour() const {
+     return match_colour;
+}
+std::string Player_State::get_player_name() const { 
+     return all_Player_Names[uint32_t(current_Player)-1]; // Since our player ids start with 1 (0 <=> error)
+}
+std::vector<Player_id>* Player_State::get_id_vec(){
+     return &player_ids;
+}
+
+std::string Player_State::get_name_of_playerid(Player_id id) const{
+	return all_Player_Names[uint32_t(id)-1];
+}
+
+Player_id Player_State::get_winner() const {
+     return winner;
+}
+bool Player_State::has_player_won() const {
+     return player_won;
 }
 bool Player_State::get_play_direction() const{
      return play_direction;
@@ -215,62 +257,6 @@ Player_id Player_State::get_current_player() const {
 Player_id Player_State::get_this_player() const {
      return this_player;
 }
-void Player_State::set_this_player(Player_id id) {
-     this_player = id;
-}
-
-Player_id Player_State::get_winner() const {
-     return winner;
-}
-bool Player_State::has_player_won() const {
-     return player_won;
-}
 bool Player_State::is_waiting_for_start() const {
      return waiting_for_start;
 }
-void Player_State::set_is_waiting_for_start(bool waiting){
-	waiting_for_start = waiting;
-}
-
-bool Player_State::has_player_quit() const {
-     return player_quit;
-}
-bool Player_State::get_uno() const {
-     return uno;
-}
-bool Player_State::get_match_colour() const {
-     return match_colour;
-}
-std::string Player_State::get_player_name() const { 
-     return all_Player_Names[uint32_t(current_Player)-1]; // Since our player ids start with 1 (0 <=> error)
-}
-std::vector<Player_id>* Player_State::get_id_vec(){
-     return &player_ids;
-}
-
-std::string Player_State::get_name_of_playerid(Player_id id) const{
-	return all_Player_Names[uint32_t(id)-1];
-}
-void Player_State::set_n_players(int n){
-	n_player_in_game = n;	
-}
-void Player_State::set_player_won(bool b){
-     player_won = b;
-}
-
-int Player_State::get_n_players() const{
-	return n_player_in_game;
-};
-
-bool Player_State::get_game_over() const{
-     return game_over;
-}
-void Player_State::set_game_over(bool b){
-     game_over = b;
-}
-
-/////////////////////////////////// Setters /////////////////////////////////////////////
-
-
-
-/////////////////////////////////// Getters /////////////////////////////////////////////

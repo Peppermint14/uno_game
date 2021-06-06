@@ -15,6 +15,7 @@ public:
 	Player_State(Player_id id,std::string player_name, size_t nof_players);// = testing state
 	~Player_State();
 
+	//Setters
 	void set_top_discard(ck_Cards::Cards); // Set's the top discard card (Has to)
 	void set_to_be_matched(ck_Cards::Color);
 	void set_this_player(Player_id);
@@ -27,14 +28,13 @@ public:
 	void update_hand(); //also update number of cards
 	void change_play_direction(); // for reverse
 	void set_all_player_names(std::vector<std::string>);
-	// void set_is_waiting(bool);
 	void set_uno(bool);
 	void set_match_colour(bool); 
 	void set_is_waiting_for_start(bool);
 	void set_game_over(bool);
 	void set_n_players(int n);
 
-
+	// getters
 	ck_Cards::Cards* get_top_discard();
 	ck_Cards::Color get_to_be_matched() const;
 	ck_Cards::Hand* get_hand() const;

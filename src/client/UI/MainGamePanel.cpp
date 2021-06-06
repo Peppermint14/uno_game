@@ -1,4 +1,4 @@
-// Copied from Lama example Project
+// Copied from Lama example Project and heavily changed/adapted to our needs
 #include <iostream>
 #include "../../../include/client/UI/MainGamePanel.hpp"
 #include "../../../include/client/UI/ImagePanel.hpp"
@@ -68,7 +68,7 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     }
 
     if(playerState->get_game_over()){
-        this->show_game_over_notification();
+        this->show_game_over_notification(playerState);
         playerState->set_game_over(0);
     }
 }
@@ -242,7 +242,7 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
        	         
         wxButton *ExitButton = new wxButton(this, wxID_ANY, "EXIT/FOLD", wxDefaultPosition, wxSize(80, 32));
         ExitButton->Bind(wxEVT_BUTTON, [](wxCommandEvent& event) {
-        player_controller::exit();
+            wxExit();
         });
          innerLayout->Add(ExitButton, 0, wxALIGN_CENTER | wxBOTTOM, 8); 
 		
@@ -292,13 +292,6 @@ void MainGamePanel::show_uno_notification(Player_State* ps){
     ImagePanel* uno_notification = new ImagePanel(this, "../assets/uno_popup.png", wxBITMAP_TYPE_ANY, popupPosition, MainGamePanel::popupSize);
     uno_notification->Show();
     ps->set_uno(false);
-    //to know wheter the Player having uno is me compare ids
-    // if(id == me->get_player_id()){
-    //     uno_notification->Show();
-    //     //std::cout << "sleep start" << std::endl;
-    //     // wxImage disabled = uno_notification->_image->convertToDisabled();
-
-    // }
 }
 
 void MainGamePanel::show_won_notification(Player_State* ps){
@@ -312,16 +305,28 @@ void MainGamePanel::show_lost_notification(Player_State* ps){
     wxMessageBox(message, "Lost", wxICON_NONE);
 }
 
-void MainGamePanel::show_game_over_notification(){
+void MainGamePanel::show_game_over_notification(Player_State* ps){
+    
+    wxString message("The game is over. Everybody either won or lost.\nThe client will now close...");
+    wxMessageDialog game_over(this, message, "Lost", wxOK|wxCANCEL|wxCENTRE);
+    if(game_over.ShowModal())
+        wxExit();
+
+    
+    
+    /*
     wxString message("The game is over. Everybody either won or lost.\nIf you wish you can restart the game, if not the game will exit. Do you want to restart");
     wxMessageDialog game_over(this, message, "Lost", wxYES_NO|wxCANCEL|wxCENTRE);
     
+    
     if(game_over.ShowModal() == wxID_YES){ // YES
-        player_controller::startGame();
+        if(ps->get_winner() == ps->get_this_player())
+            player_controller::startGame();
     }
     else{
         player_controller::exit();        
     }
+    */
 }
 
 void MainGamePanel::show_colour_match_notification(Player_State* ps){

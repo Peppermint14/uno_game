@@ -1,4 +1,4 @@
-// Copied from Lama example Project
+// Copied from Lama example Project and slightly adapted.
 
 #ifndef DIGITALUNO_CLIENT_MAINGAMEPANEL_HPP
 #define DIGITALUNO_CLIENT_MAINGAMEPANEL_HPP
@@ -38,7 +38,7 @@ private:
     void show_lost_notification(Player_State*);
 
     
-    void show_game_over_notification();
+    void show_game_over_notification(Player_State*);
 
     wxStaticText* buildStaticText(std::string content, wxPoint position, wxSize size, long textAlignment, bool bold = false);
 

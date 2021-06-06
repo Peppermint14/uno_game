@@ -143,11 +143,11 @@ void player_controller::eval_response(const std::string& msg)
 				wxString color = player_controller::_mainGamePanel->colourPicker();
 				ck_Cards::Color chosen_color = wxStr_to_Color(color);
 				Player_id id = player_controller::_me->get_player_id();
-        			nlohmann::json request;
-        			request["id"]= id;
-        			request["type"] = Request_Type::SELECTED_COLOR;
+        		nlohmann::json request;
+        		request["id"]= id;
+        		request["type"] = Request_Type::SELECTED_COLOR;
 				request["color"] = chosen_color;
-        			net::TCP_Client::send(request.dump());
+        		net::TCP_Client::send(request.dump());
 				break;
 			}
 		case Respond_Type::GAME_UPDATE:
@@ -214,13 +214,13 @@ void player_controller::eval_response(const std::string& msg)
 				std::cout<<"now there should be an UNO notification"<<std::endl;
 				Player_id id = response["id"];
                 _currentPlayerState->set_uno(true);
-                return;
+                return; // Prevents GUI from updating, otherwise notification are sent out twice since we sill receieve another game_update anyway
 			}
 		case Respond_Type::START_NEW_GAME:
 			{
 				player_controller::showStatus("Game over");
 				_currentPlayerState->set_game_over(true);
-				return;
+				return; // Prevents GUI from updating, otherwise notification are sent out twice since we sill receieve another game_update anyway
 			}
 		
 		case Respond_Type::WINS:
@@ -286,6 +286,7 @@ void player_controller::exit(){
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
 	net::TCP_Client::send(request.dump());
+	sleep(2);
 }
 
 void player_controller::join(){

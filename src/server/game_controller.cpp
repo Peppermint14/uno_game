@@ -107,11 +107,19 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                        //finish game
                        if(game_state->have_all_won())
                        {
+
                            nlohmann::json popup;
                            popup["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
                            net::TCP_Server::broadcast(popup.dump());
-                           //reset_game
-                            reset_game();
+                           broadcast_game_state();
+                           
+                           // Sleeps 1 sec to finish up send and receieve queues.
+                           sleep(1);
+                           net::TCP_Server::terminate();
+
+                        
+                           // Resetting the game doesn't quite work
+                           //reset_game();
                        }
                        else
                        {
@@ -266,7 +274,7 @@ void Game_Controller::add_new_player(const Player_id& _player_id, const std::str
 {
         //create hand
         std::list<ck_Cards::Cards> hand_list;//(7);->otherwise list will end up beeing of size 14
-        for (unsigned int i = 0; i < 3; ++i)
+        for (unsigned int i = 0; i < 7; ++i)
         {
             ck_Cards::Cards card = game_state->get_draw_pile().get_top_card(); //get cards from draw_pile
             hand_list.push_back(card);
@@ -316,7 +324,7 @@ void Game_Controller::send_hand(const Player_id& player_id)
 }
 
 ////////////////////////////////reset_game//////////////////////////////////////////////////
-
+// Doesn't work correctly at the current time.
 void Game_Controller::reset_game()
 {
     //get list of players
