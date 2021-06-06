@@ -19,8 +19,7 @@ endif()
 include(FetchContent)
 
 # ------------------ ADD SOURCE FILES HERE ------------------
-set(CLIENT_FILES
-	"src/client/main.cpp"
+set(CLIENT_FILES_LIB
 	"src/client/digital_UNO.cpp"
 	"src/client/tcp_client.cpp"
 	"src/client/player_state.cpp"
@@ -32,16 +31,20 @@ set(CLIENT_FILES
 	"src/client/UI/ImagePanel.cpp"
 	"src/client/UI/InputField.cpp"
 	"src/client/UI/MainGamePanel.cpp"
-
 )
 
-set(SERVER_FILES
-	"src/server/main.cpp"
+set( CLIENT_FILES "${CLIENT_FILES_LIB}" )
+list( APPEND CLIENT_FILES "src/client/main.cpp" )
+
+set(SERVER_FILES_LIB	
 	"src/server/tcp_server.cpp"	
 	"src/server/game_controller.cpp"
 	"src/server/game_state.cpp"
 	"src/server/player.cpp"
-	)
+)
+
+set( SERVER_FILES "${CLIENT_FILES_LIB}" )
+list( APPEND SERVER_FILES "src/server/main.cpp" )
 
 set(COMMON_FILES
 	"src/common/utils.cpp"
@@ -60,25 +63,17 @@ endif()
 
 # ------------------ wxWidgets ------------------
 
-find_package(wxWidgets COMPONENTS net core base)
-# include(${wxWidgets_USE_FILE})
-# if(TRUE)
-# if(NOT wxWidgets_FOUND)
-	set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
-	set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
-	set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
-	message(STATUS "Fetching wxWidgets ...")
-	FetchContent_Declare(
-		wxWidgets 
-		GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
-		GIT_TAG			v3.1.4
-		GIT_SHALLOW		TRUE
-	)
-	FetchContent_GetProperties(wxWidgets)
-	FetchContent_MakeAvailable(wxWidgets)
-# endif()
-# endif()
-
+set(wxBUILD_SHARED OFF CACHE BOOL "Build wx libraries as shared libs")
+set(wxBUILD_PRECOMP OFF CACHE BOOL "Use precompiled headers")
+set(wxBUILD_MONOLITHIC OFF CACHE BOOL "Build a single library")
+message(STATUS "Fetching wxWidgets ...")
+FetchContent_Declare(
+	wxWidgets 
+	GIT_REPOSITORY	https://github.com/wxWidgets/wxWidgets.git
+	GIT_TAG			v3.1.4
+	GIT_SHALLOW		TRUE
+)
+FetchContent_MakeAvailable(wxWidgets)
 
 # ------------------ JSON ------------------
 message(STATUS "Fetching json ...")
@@ -104,8 +99,6 @@ FetchContent_Declare(
 	GIT_TAG			v0.7
 	GIT_SHALLOW		TRUE
 )
-
-FetchContent_GetProperties(sockpp)
 FetchContent_MakeAvailable(sockpp)
 
 # ------------------ SPDLOG ------------------
@@ -116,28 +109,17 @@ FetchContent_Declare(
 	GIT_TAG			v1.8.2
 	GIT_SHALLOW		TRUE
 )
-FetchContent_GetProperties(spdlog)
 FetchContent_MakeAvailable(spdlog)
 
 # ------------------ ADD LIBRARIES HERE -----------------------
-# if (wxWidgets_FOUND)
-# 	set(CLIENT_LIBS
-# 		"${wxWidgets_LIBRARIES}"
-# 		"nlohmann_json::nlohmann_json"
-# 		"sockpp-static"
-# 		"spdlog::spdlog"
-# 	)
-# else()
-	set(CLIENT_LIBS
-		# "${wxWidgets_LIBRARIES}"
-		"wxnet"
-		"wxcore"
-		"wxbase"
-		"nlohmann_json::nlohmann_json"
-		"sockpp-static"
-		"spdlog::spdlog"
-	)
-# endif()
+set(CLIENT_LIBS
+	"wxnet"
+	"wxcore"
+	"wxbase"
+	"nlohmann_json::nlohmann_json"
+	"sockpp-static"
+	"spdlog::spdlog"
+)
 
 set(SERVER_LIBS
 	"nlohmann_json::nlohmann_json"
@@ -153,20 +135,19 @@ else()
 	target_link_libraries(ck_client "${CLIENT_LIBS}") 
 	target_link_libraries(ck_server "${SERVER_LIBS}")
 endif()
-
 #----------------------------------------------------------------
 
 # ------------------ TESTS ------------------
 
 #if(CK_BUILD_TESTS)
-	add_library(ck_lib_s "${SERVER_FILES}" "${COMMON_FILES}")
+	add_library(ck_lib_s "${SERVER_FILES_LIB}" "${COMMON_FILES}")
 	if (MSVC)
 		target_link_libraries(ck_lib_s "${SERVER_LIBS}" wsock32 ws2_32)
 	else()
 		target_link_libraries(ck_lib_s "${SERVER_LIBS}")
 	endif()
 
-	add_library(ck_lib_c "${CLIENT_FILES}" "${COMMON_FILES}")
+	add_library(ck_lib_c "${CLIENT_FILES_LIB}" "${COMMON_FILES}")
 	if (MSVC)
 		target_link_libraries(ck_lib_c "${CLIENT_LIBS}" wsock32 ws2_32)
 	else()
