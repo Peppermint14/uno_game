@@ -208,17 +208,21 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 Player* next_player = game_state->get_player(next_player_id);
                 next_player->set_has_won(true);
 
-                const std::string player_name = player->get_player_name();
 
                 broadcast_game_state();
 
-                /*
                 nlohmann::json popup;
                 popup["type"] = Respond_Type::WINS;
-                popup["player_name"] = player->get_player_name();
-                popup["id"] = player->get_player_id();
+                popup["player_name"] = next_player->get_player_name();
+                popup["id"] = next_player->get_player_id();
                 net::TCP_Server::broadcast(popup.dump());
-                 */
+
+                broadcast_game_state();
+
+                nlohmann::json popup;
+                popup["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
+                net::TCP_Server::broadcast(popup.dump());
+                broadcast_game_state();
 
 
                 //terminate and clean up
