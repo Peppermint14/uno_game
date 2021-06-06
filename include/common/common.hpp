@@ -62,7 +62,7 @@ enum class Respond_Type: uint32_t {
     ERROR_ = 3,
     SELECT_COLOR = 4,
     UNO = 5,
-    GAME_OVER = 6,
+    START_NEW_GAME = 6,
     WINS = 7
 };
 

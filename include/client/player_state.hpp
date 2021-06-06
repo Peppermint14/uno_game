@@ -31,12 +31,13 @@ public:
 	void set_uno(bool);
 	void set_match_colour(bool); 
 	void set_is_waiting_for_start(bool);
+	void set_game_over(bool);
+	void set_n_players(int n);
 
 
 	ck_Cards::Cards* get_top_discard();
 	ck_Cards::Color get_to_be_matched() const;
 	ck_Cards::Hand* get_hand() const;
-	//int get_nof_cards() const;
 	bool get_players_turn() const;
 	Player_id get_this_player() const;
 	Player_id get_current_player() const;
@@ -45,6 +46,7 @@ public:
 	bool is_waiting() const;
 	bool has_player_quit() const;
 	bool get_play_direction() const;
+	bool get_game_over() const;
 	std::string get_player_name() const;
 	std::string get_name_of_playerid(Player_id) const;
 	bool is_waiting_for_start() const;
@@ -52,8 +54,7 @@ public:
 	bool get_uno() const;
 	bool get_match_colour() const;
 	std::vector<Player_id>* get_id_vec();
-	void set_n_players(int n);
-	int get_n_players();
+	int get_n_players() const;
 
 
 private:
@@ -69,7 +70,7 @@ private:
 	Player_id current_Player; // ID of player whose turn it is.
 	Player_id winner; // ID of player that won.
 	bool player_won; // has a player won
-	// bool player_waiting; 
+	bool game_over; // Game is over everybody won except 1 player.
 	bool waiting_for_start; //true if player is waiting for the game to start, false if the game is already ongoing
 	bool player_quit; // Exited the game without winning
 	bool uno;	// True <=> A player has UNO.

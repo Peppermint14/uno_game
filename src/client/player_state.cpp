@@ -253,15 +253,21 @@ std::string Player_State::get_name_of_playerid(Player_id id) const{
 }
 void Player_State::set_n_players(int n){
 	n_player_in_game = n;	
-};
+}
 void Player_State::set_player_won(bool b){
      player_won = b;
 }
 
-int Player_State::get_n_players(){
+int Player_State::get_n_players() const{
 	return n_player_in_game;
 };
 
+bool Player_State::get_game_over() const{
+     return game_over;
+}
+void Player_State::set_game_over(bool b){
+     game_over = b;
+}
 
 /////////////////////////////////// Setters /////////////////////////////////////////////
 

@@ -235,10 +235,10 @@ void player_controller::eval_response(const std::string& msg)
                 _currentPlayerState->set_uno(true);
                 return;
 			}
-		case Respond_Type::GAME_OVER:
+		case Respond_Type::START_NEW_GAME:
 			{
 				player_controller::showStatus("Game over");
-				//create pop up game over
+				_currentPlayerState->set_game_over(true);
 				break;
 			}
 		
@@ -258,7 +258,7 @@ void player_controller::eval_response(const std::string& msg)
 				// }
 							
 				//create pop up id wins
-				break;
+				return;
 			}
         default:
             std::cout << "Unexpected RESULT \n";
@@ -266,7 +266,7 @@ void player_controller::eval_response(const std::string& msg)
 	// make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
    	if(!player_controller::_currentPlayerState->is_waiting_for_start()){ 
 		updatePlayerState();
-    		_gameWindow->showPanel(_mainGamePanel);
+    	_gameWindow->showPanel(_mainGamePanel);
 //		player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
     		// command the main game panel to rebuild itself, based on the new game state
   //  		player_controller::_mainGamePanel->buildPlayerState();//player_controller::_currentPlayerState, player_controller::_me);
@@ -275,31 +275,6 @@ void player_controller::eval_response(const std::string& msg)
 
 void player_controller::updatePlayerState(){//Player_State* newPlayerState) {
 
-    /*
-    // the existing game state is now old
-    Player_State* oldPlayerState = player_controller::_currentPlayerState;
-
-    // save the new game state as our current game state
-    player_controller::_currentPlayerState = newPlayerState;
-
-    //TODO: Remove line
-    std::cout << "Player_names: cap: " << _currentPlayerState->get_id_vec()->capacity() << ", Size: " << _currentPlayerState->get_id_vec()->capacity() << ", is empty = " << _currentPlayerState->get_id_vec()->empty() <<  std::endl;
-*/ /*
-    if(oldPlayerState != nullptr) {
-
-        // check if a new round started, and display message accordingly
-        if(oldPlayerState->get_round_number() > 0 && oldPlayerState->get_round_number() < newPlayerState->get_round_number()) {
-            player_controller::showNewRoundMessage(oldPlayerState, newPlayerState);
-        }
-
-        // delete the old game state, we don't need it anymore
-        delete oldPlayerState;
-    }
-
-    if(player_controller::_currentPlayerState->is_finished()) {
-        player_controller::showGameOverMessage();
-    }
-*/
     // make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
     player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
 
