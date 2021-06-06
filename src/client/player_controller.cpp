@@ -314,20 +314,6 @@ void player_controller::showStatus(const std::string& message) {
 }
 
 
-void player_controller::showNewRoundMessage(Player_State* oldPlayerState, Player_State* newPlayerState) {
-
-
-}
-
-
-void player_controller::showGameOverMessage() {
-    
-    /*
-    
-    */
-}
-
-
 void player_controller::set_number_cards_player(std::list<std::pair<Player_id, int>> player_list){
 	player_controller::players_number_of_cards  = player_list;
 }

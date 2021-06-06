@@ -22,7 +22,7 @@ public:
 private:
 
 	Player_id player_id = Player_id::NONE; //unique player id
-	std::string player_name = "hasnotrecievednameyet";
+	std::string player_name = "noname";
 	Player_State* player_state;
 	bool is_active = 0; //if player has exited set is_active to false
 	bool _has_won = 0;

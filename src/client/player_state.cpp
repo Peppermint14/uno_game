@@ -4,14 +4,14 @@
 //default constructor
 Player_State::Player_State(){
      this->top_discard = ck_Cards::Cards(0); // Would be nullptr if discard empty
-     this->discard_empty = 0; //TODO: Check if necessary
+     this->discard_empty = 0; 
 
      std::list<ck_Cards::Cards> c = {ck_Cards::Cards::BLUE_0};
      this->hand = new ck_Cards::Hand(c);
      this->to_be_matched = ck_Cards::Color::NONE;
      this->players_turn = 0;
      this->play_direction = 1;
-     this->current_Player = Player_id::NONE;// Player_id::PLAYER_1;
+     this->current_Player = Player_id::NONE;
      this->this_player = Player_id::NONE;
      this->winner = Player_id::NONE;
      this->player_won = 0;
@@ -19,7 +19,18 @@ Player_State::Player_State(){
      this->waiting_for_start = 1;
      this->uno = 0;
      this->match_colour = 0;
+     this->game_over = false;
+     this->all_Player_Names.reserve(4);
+     this->all_Player_Names.push_back("test_name 1");
+     this->all_Player_Names.push_back("test_name 2");
+     this->all_Player_Names.push_back("test_name 3");
+     this->all_Player_Names.push_back("test_name 4");
 
+     this->player_ids.reserve(4);
+     this->player_ids.push_back(Player_id::PLAYER_1);
+     this->player_ids.push_back(Player_id::PLAYER_2);
+     this->player_ids.push_back(Player_id::PLAYER_3);
+     this->player_ids.push_back(Player_id::PLAYER_4);
      this->number_of_cards.reserve(4);
      this->number_of_cards.push_back(0);
      this->number_of_cards.push_back(0);
@@ -27,7 +38,7 @@ Player_State::Player_State(){
      this->number_of_cards.push_back(0);
 }
 
-// TODO: THIS IS CURRENTLY A TESTING CONSTRUCTOR, ONLY USE IT WHEN YOU NEED TO TEST SPECIFIC CASES.
+// THIS IS CURRENTLY A TESTING CONSTRUCTOR, ONLY USE IT WHEN YOU NEED TO TEST SPECIFIC CASES.
 Player_State::Player_State(bool test)
 {
      this->top_discard = ck_Cards::Cards::RED_5_A; // Would be nullptr if discard empty
@@ -55,7 +66,7 @@ Player_State::Player_State(bool test)
 
 
      this->all_Player_Names.reserve(4);
-     // TODO: Initialize with player list received from server
+     // Initialize with player list received from server
      this->all_Player_Names.push_back("test_name 1");
      this->all_Player_Names.push_back("test_name 2");
      this->all_Player_Names.push_back("test_name 3");

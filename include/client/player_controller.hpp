@@ -41,8 +41,6 @@ public:
     static wxEvtHandler* getMainThreadEventHandler();
     static void showError(const std::string& title, const std::string& message);
     static void showStatus(const std::string& message);
-    static void showNewRoundMessage(Player_State* oldPlayerState, Player_State* newPlayerState);
-    static void showGameOverMessage();
 
     static void set_number_cards_player(std::list<std::pair<Player_id, int>>);
     //in: Id of the player, of which you want to know the number of cards
