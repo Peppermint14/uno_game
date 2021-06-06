@@ -5,8 +5,7 @@
 #include "../../include/client/digital_UNO.hpp"
 
 
-Player_State test_state = Player_State(1);
-Player_State initial_state = Player_State();
+// Player_State test_state = Player_State(1);
 
 // initialize static members
 GameWindow* player_controller::_gameWindow = nullptr;
@@ -108,7 +107,6 @@ void player_controller::connectToServer() {
 
 void player_controller::eval_response(const std::string& msg)
 {
-    // std::cout << "Incoming response \n";
 	nlohmann::json response = nlohmann::json::parse(msg);
 	
     //id without type
@@ -211,7 +209,6 @@ void player_controller::eval_response(const std::string& msg)
 		
 		case Respond_Type::UNO:
 			{
-				std::cout<<"now there should be an UNO notification"<<std::endl;
 				Player_id id = response["id"];
                 _currentPlayerState->set_uno(true);
                 return; // Prevents GUI from updating, otherwise notification are sent out twice since we sill receieve another game_update anyway
