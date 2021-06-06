@@ -67,12 +67,12 @@ The server is responsibel for exchanging all the information between the clients
 * __[player](./include/client/player.hpp)__
 * __[tcp_client](./include/client/tcp_client.hpp)__
 
-#### UI
-* __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__
-* __[GameWindow](./include/client/UI/GameWindow.hpp)__
-* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
-* __[InputField](./include/client/UI/InputField.hpp)__
-* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
+    #### UI
+    * __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__
+    * __[GameWindow](./include/client/UI/GameWindow.hpp)__
+    * __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
+    * __[InputField](./include/client/UI/InputField.hpp)__
+    * __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
 
 ### Common
 Holds all the enums for the needed types
