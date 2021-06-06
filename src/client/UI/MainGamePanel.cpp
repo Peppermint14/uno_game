@@ -39,9 +39,7 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     // remove any existing UI
     this->DestroyChildren();
  
-    
-    //this->buildOtherPlayerLabels(playerState);
-    
+
     // show both card piles at the center
     this->buildCardPiles(playerState);
     
@@ -56,6 +54,16 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
     // Make player aware if a wild card is played and he has to match a chosen colour
     if(playerState->get_to_be_matched() != ck_Cards::Color::NONE) this->show_colour_match_notification(playerState);
 
+
+    // Make player aware if someone has won
+    // if(playerState->has_player_won()){
+    //     if(playerState->get_winner() == playerState->get_this_player())
+    //         this->show_won_notification(playerState);
+    //     else 
+    //         this->show_lost_notification(playerState);
+
+    //     playerState->set_player_won(false);
+    // }
 
     // update layout
     this->Layout();
@@ -74,6 +82,12 @@ void MainGamePanel::buildPlayerList(Player_State* playerState){
     
     	wxTextCtrl* text = new wxTextCtrl(this, wxID_ANY, header, pos, playerListSize, wxBORDER_NONE|wxTE_MULTILINE|wxTE_NO_VSCROLL|wxTE_NOHIDESEL|wxTE_READONLY);
     	text->SetBackgroundColour(BG);
+        wxFont font = *wxSWISS_FONT;
+        font.SetSymbolicSize(wxFONTSIZE_LARGE);
+        
+        text->SetFont(font);
+        
+   
 
     	for(Player_id id : *(playerState->get_id_vec())){
 		int n = playerState->get_number_of_cards(id);
@@ -285,7 +299,7 @@ void MainGamePanel::show_uno_notification(Player_State* ps){
 
 void MainGamePanel::show_won_notification(Player_State* ps){
     wxString message("Congratulations!\n");
-    message += ps->get_player_name() + "You have successfully beaten all your opponents.";
+    message += ps->get_player_name() + " You have successfully beaten all your opponents.";
     wxMessageBox(message, "Winner", wxICON_NONE);
 }
 void MainGamePanel::show_lost_notification(Player_State* ps){

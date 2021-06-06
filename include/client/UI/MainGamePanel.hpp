@@ -56,7 +56,7 @@ private:
     
 
     wxColour BG = wxColour(200,210,100); // Same colour as normal background
-    wxColour Higlight = wxColour(150,75,30); // Colour of highlited player
+    wxColour Higlight = wxColour(204,0,34); // Colour of highlighted player
 
 
     double const otherPlayerHandSize = 160.0;
@@ -68,9 +68,9 @@ private:
     wxPoint const turnIndicatorOffset = wxPoint(-100, 98);
 
 
-    wxPoint const playerListOffset = wxPoint(200, -300);
+    wxPoint const playerListOffset = wxPoint(130, -260);
     wxPoint const playDirectionOffset = wxPoint(-65, 20);
-    wxPoint const unoPopupOffset = wxPoint(-110, -240);
+    wxPoint const unoPopupOffset = wxPoint(-185, -250);
 
     double const twoPi = 6.28318530718;
 

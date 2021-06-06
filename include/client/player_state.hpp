@@ -15,9 +15,9 @@ public:
 	Player_State(Player_id id,std::string player_name, size_t nof_players);// = testing state
 	~Player_State();
 
-	void set_top_discard(ck_Cards::Cards);
+	void set_top_discard(ck_Cards::Cards); // Set's the top discard card (Has to)
 	void set_to_be_matched(ck_Cards::Color);
-	void set_players_id(Player_id);
+	void set_this_player(Player_id);
 	void set_current_player(Player_id);
 	void set_players_turn(bool); 
 	void set_player_won(bool);
@@ -27,7 +27,7 @@ public:
 	void update_hand(); //also update number of cards
 	void change_play_direction(); // for reverse
 	void set_all_player_names(std::vector<std::string>);
-	void set_is_waiting(bool);
+	// void set_is_waiting(bool);
 	void set_uno(bool);
 	void set_match_colour(bool); 
 	void set_is_waiting_for_start(bool);
@@ -58,23 +58,21 @@ public:
 
 private:
 	int n_player_in_game = 0; 
-	ck_Cards::Cards top_discard; // top card of discard pile. Needs to be shown to player
-	bool discard_empty;
-	ck_Cards::Hand* hand;	
-	ck_Cards::Color to_be_matched;
+	ck_Cards::Cards top_discard; // Top card of discard pile. Playable cards can be derived from this card.
+	bool discard_empty; 
+	ck_Cards::Hand* hand;	// Cards held by the player. Will be displayed by GUI.
+	ck_Cards::Color to_be_matched; // Colour which has to be matched by the player. (After a wild card)
 	bool match_colour; // True if okayer has to play a specific colour
-	// TODO: Change to number_of_cards(PLayerID)
 	bool players_turn;
 	bool play_direction;
 	Player_id this_player; // ID of player associated with this PlayerState.
 	Player_id current_Player; // ID of player whose turn it is.
 	Player_id winner; // ID of player that won.
-	bool player_won; // has a player wone
-	//true if player is waiting for the game to start, 0 if the game is already ongoing
-	bool player_waiting;
-	bool waiting_for_start;
+	bool player_won; // has a player won
+	// bool player_waiting; 
+	bool waiting_for_start; //true if player is waiting for the game to start, false if the game is already ongoing
 	bool player_quit; // Exited the game without winning
-	bool uno;
+	bool uno;	// True <=> A player has UNO.
 	std::vector<Player_id> player_ids;
 	std::vector<std::string> all_Player_Names;
 	std::vector<size_t> number_of_cards;

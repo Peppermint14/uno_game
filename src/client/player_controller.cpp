@@ -62,7 +62,6 @@ void player_controller::init(GameWindow* gameWindow) {
 void player_controller::PickColour(){
 
     wxString colour = _mainGamePanel->colourPicker();
-    //TODO: send_request that 'colour' was picked
 }
 
 void player_controller::connectToServer() {
@@ -103,9 +102,8 @@ void player_controller::connectToServer() {
     std::string serveraddress = inputServerAddress.ToStdString();
 
     player_controller::_me->set_player_name(playerName);
-    //player_controller::_me = new Player(Player_id::NONE, playerName, true);
+	
     // //connect to network
-    std::cout << "t0\n";
     try{
         //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
 	    net::TCP_Client::connect(serveraddress, port, [](const std::string _msg){
@@ -116,33 +114,23 @@ void player_controller::connectToServer() {
         auto logger = Logger::get("client_main");
         logger->error(_e.what());
         return;
-    }
-    //ClientNetworkManager::init(host, port);
-    //net::TCP_Client::connect(serveraddress , serverport,[&](const std::string& _msg){controller->eval_response(_msg);});
-    // //send request to join game
-    std::cout << "t1\n";
-    // TODO: Dynamic player id?
-    
-    //getMainThreadEventHandler()->CallAfter([playerName]{player_controller::join(playerName);});
-
+    }    
 
     updatePlayerState();
+    showStatus("Connected: " + serveraddress);
     _gameWindow->showPanel(_mainGamePanel);
-	
-    // join_game_request request = join_game_request(player_controller::_me->get_id(), player_controller::_me->get_player_name());
-    // ClientNetworkManager::sendRequest(request);
-
 }
 
 void player_controller::eval_response(const std::string& msg)
 {
-    std::cout << "Incoming response \n";
+    // std::cout << "Incoming response \n";
 	nlohmann::json response = nlohmann::json::parse(msg);
 	
     //id without type
     if(response.count("type") == 0){
 	Player_id id = response["id"];    
         player_controller::_me->set_player_id(id);
+		_currentPlayerState->set_this_player(id);
 	//send player name to server
 	join();
 	return;
@@ -183,6 +171,9 @@ void player_controller::eval_response(const std::string& msg)
 				Player_id current_id= response["current_player"];
 				player_controller::_currentPlayerState->set_is_waiting_for_start(current_id == Player_id::NONE);
 				//update whos turn it is
+
+                
+
 				_currentPlayerState->set_current_player(current_id);
 				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
 	
@@ -219,8 +210,12 @@ void player_controller::eval_response(const std::string& msg)
 				player_controller::set_color(color);
 				
 				//update, which card is on top of the discard Pile
-				ck_Cards::Cards top_card = response["top_card"];
-				_currentPlayerState->set_top_discard(top_card);
+				ck_Cards::Cards new_top_card = response["top_card"];
+				ck_Cards::Cards old_top_card = *(_currentPlayerState->get_top_discard());
+				_currentPlayerState->set_top_discard(new_top_card);
+
+				if((uint32_t)new_top_card >= 84 && (uint32_t)new_top_card <= 91 && old_top_card != new_top_card) // Reverse card has been played and is new
+					_currentPlayerState->change_play_direction(); // Adjusting arrow to indicate play direction
 				break;
 			}
 		case Respond_Type::ERROR_:
@@ -238,10 +233,7 @@ void player_controller::eval_response(const std::string& msg)
 				std::cout<<"now there should be an UNO notification"<<std::endl;
 				Player_id id = response["id"];
                 _currentPlayerState->set_uno(true);
-				// player_controller::_mainGamePanel->show_uno_notification();
-				//player_controller::showStatus("UNO");
                 return;
-				break;
 			}
 		case Respond_Type::GAME_OVER:
 			{
@@ -252,15 +244,18 @@ void player_controller::eval_response(const std::string& msg)
 		
 		case Respond_Type::WINS:
 			{
-				Player_id winner_id = response["Player_id"];
-			        if(winner_id == _me->get_player_id()){	
-					player_controller::showStatus("Wueeeeehhhhhh!!!!!!!!!!!!!! You won !!!!! :D");
-				}
-				else{
-					std::string player_name = _me->get_player_state()->get_name_of_playerid(winner_id);
-					std::string message = "Loser!!! you lost the game :(" + player_name +" won the game";
-					player_controller::showStatus("message");
-				}
+				
+				Player_id winner_id = response["id"];
+				_currentPlayerState->set_player_won(true);
+				_currentPlayerState->set_winner(winner_id);
+			    //     if(winner_id == _me->get_player_id()){	
+				// 	player_controller::showStatus("Wueeeeehhhhhh!!!!!!!!!!!!!! You won !!!!! :D");
+				// }
+				// else{
+				// 	std::string player_name = _me->get_player_state()->get_name_of_playerid(winner_id);
+				// 	std::string message = "Loser!!! you lost the game :(" + player_name +" won the game";
+				// 	player_controller::showStatus("message");
+				// }
 							
 				//create pop up id wins
 				break;
@@ -329,17 +324,6 @@ void player_controller::drawCard() {
 	request["id"]= id;
 	request["type"] = Request_Type::DRAW_REQUEST;
 	net::TCP_Client::send(request.dump());
-
-    // Send request
-    //TCP_client::requestDrawCard();
-
-    // Update Cards
-    //MainGamePanel::redrawCards();
-
-
-
-    // draw_card_request request = draw_card_request(player_controller::_currentPlayerState->get_id(), player_controller::_me->get_id());
-    // ClientNetworkManager::sendRequest(request);
 }
 
 
@@ -350,23 +334,6 @@ void player_controller::playCard(const ck_Cards::Cards* cardToPlay) {
 	request["type"] = Request_Type::PLAY_REQUEST;
 	request["card"] = *cardToPlay;
 	net::TCP_Client::send(request.dump());
-	// TODO: remove
-     	std::cout << "PLAYING CARD: " << uint32_t(*cardToPlay) <<  std::endl;
-        //test_state.set_top_discard(*cardToPlay);
-        //std::list<ck_Cards::Cards> c = {ck_Cards::Cards::RED_0, ck_Cards::Cards::YELLOW_5_A, ck_Cards::Cards::RED_3_A, ck_Cards::Cards::GREEN_4_A};
-        //ck_Cards::Hand* new_hand = new ck_Cards::Hand(c);
-        //test_state.set_hand(new_hand);
-        //test_state.set_uno(!test_state.get_uno());
-        //updatePlayerState(&test_state);
-	
-	//cards which allow you to chose a color
-	/*if((int)cardToPlay>= 100 && (int)cardToPlay>= 107){
-		nlohmann::json color_request;
-        	color_request["id"] = id;
-        	color_request["type"] = Request_Type::PLAY_REQUEST;
-        	color_request["card"] = *cardToPlay;
-        	net::TCP_Client::send(color_request.dump());
-	}*/	
 }
 
 void player_controller::exit(){
@@ -376,7 +343,10 @@ void player_controller::exit(){
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
 	net::TCP_Client::send(request.dump());
-    wxExit();
+    // std::cout << "shutting down\n";
+    // net::TCP_Client::terminate();
+    // std::cout << "exiting...\n";
+    // wxExit();
 }
 
 void player_controller::join(){

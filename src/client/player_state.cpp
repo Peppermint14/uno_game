@@ -170,9 +170,9 @@ void Player_State::set_winner(Player_id id){
 void Player_State::set_all_player_names(std::vector<std::string> name_vec){
      all_Player_Names = name_vec;
 }
-void Player_State::set_is_waiting(bool waiting){
-     player_waiting = waiting;
-}
+// void Player_State::set_is_waiting(bool waiting){
+//      player_waiting = waiting;
+// }
 void Player_State::set_uno(bool u){
      uno = u;
 }
@@ -215,6 +215,9 @@ Player_id Player_State::get_current_player() const {
 Player_id Player_State::get_this_player() const {
      return this_player;
 }
+void Player_State::set_this_player(Player_id id) {
+     this_player = id;
+}
 
 Player_id Player_State::get_winner() const {
      return winner;
@@ -251,7 +254,17 @@ std::string Player_State::get_name_of_playerid(Player_id id) const{
 void Player_State::set_n_players(int n){
 	n_player_in_game = n;	
 };
+void Player_State::set_player_won(bool b){
+     player_won = b;
+}
 
 int Player_State::get_n_players(){
 	return n_player_in_game;
 };
+
+
+/////////////////////////////////// Setters /////////////////////////////////////////////
+
+
+
+/////////////////////////////////// Getters /////////////////////////////////////////////
