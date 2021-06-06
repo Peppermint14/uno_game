@@ -55,9 +55,24 @@ The folders include and src both hold three folders, one for each of the parts. 
 ### Server
 The server is responsibel for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
 
+* __[GameController](./include/server/game_controlller.hpp)__
+* __[GameState](./include/server/game_state.hpp)__
+* __[Player](./include/server/player.hpp)__
+* __[TCP Server](./include/server/tcp_server.hpp)__
 
 ### Client
+* __[digital UNO](./include/client/digital_UNO.hpp)__
+* __[Player_controller](./include/client/player_controller.hpp)__
+* __[player_state](./include/client/player_state.hpp)__
+* __[player](./include/client/player.hpp)__
+* __[tcp_client](./include/client/tcp_client.hpp)__
 
+#### UI
+* __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__
+* __[GameWindow](./include/client/UI/GameWindow.hpp)__
+* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
+* __[InputField](./include/client/UI/InputField.hpp)__
+* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
 
 ### Common
 Holds all the enums for the needed types
