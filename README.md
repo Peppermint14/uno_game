@@ -53,7 +53,7 @@ All server files are only used by the server side. The client files are only use
 The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files 
 
 ### Server
-The server is responsibel for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
+The server is responsible for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
 
 * __[GameController](./include/server/game_controlller.hpp)__
 * __[GameState](./include/server/game_state.hpp)__
