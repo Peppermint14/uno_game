@@ -55,14 +55,30 @@ The folders include and src both hold three folders, one for each of the parts. 
 ### Server
 The server is responsibel for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
 
+* __[GameController](./include/server/game_controlller.hpp)__
+* __[GameState](./include/server/game_state.hpp)__
+* __[Player](./include/server/player.hpp)__
+* __[TCP Server](./include/server/tcp_server.hpp)__
 
 ### Client
+* __[digital UNO](./include/client/digital_UNO.hpp)__
+* __[Player_controller](./include/client/player_controller.hpp)__ : handles all the responses from the server.
+* __[player_state](./include/client/player_state.hpp)__ : stores all the information about the current state of the game 
+* __[player](./include/client/player.hpp)__ : stores player name and id
+* __[tcp_client](./include/client/tcp_client.hpp)__ : builds a connection to the tcp_server and sends and receives json messages
 
+##### UI
+The files in here are used for the grafical interface of the Client
+* __[Connection Panel](./include/client/UI/ConnectionPanel.hpp)__ : Panel to type in Name, Port and Address when connecting to the game 
+* __[GameWindow](./include/client/UI/GameWindow.hpp)__
+* __[ImagePanel](./include/client/UI/ImagePanel.hpp)__
+* __[InputField](./include/client/UI/InputField.hpp)__
+* __[MainGamePanel](./include/client/UI/MainGamePanel.hpp)__
 
 ### Common
 Holds all the enums for the needed types
 
-* __[cards](./include/common/cards.hpp)__
+* __[cards](./include/common/cards.hpp)__ :holds the card enum and different enums for the card color, type etc. and a type for the card Piles/Hand
 * __[common](./include/common/common.hpp)__
 * __[logger](./include/common/logger.hpp)__
 * __[utils](./include/common/logger.hpp)__
