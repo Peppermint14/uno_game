@@ -201,7 +201,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
     this->SetSizer(outerLayout);
     wxBoxSizer* innerLayout = new wxBoxSizer(wxVERTICAL);
     outerLayout->Add(innerLayout, 1, wxALIGN_BOTTOM);
-    std::cout << "1\n";
     
     // Show the label with our player name
     wxStaticText* playerName = buildStaticText(
@@ -215,7 +214,6 @@ void MainGamePanel::buildThisPlayer(Player_State* playerState, Player* me){
     innerLayout->Add(playerName, 0, wxALIGN_CENTER);
     
     // if the game has not yet started we say so
-    std::cout << playerState->is_waiting_for_start() << "waiting?";
     if(playerState->is_waiting_for_start()) {
 
         wxStaticText* playerPoints = buildStaticText(

@@ -31,24 +31,24 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 ```
 ### Build Server
 ```bash
-make ck_server\
+make ck_server
 ./ck_server
 ```
 ### Build Client
 ```bash
-make ck_client \
+make ck_client
 ./ck_client 
 ```
 
 ### Build Tests
 Important: Tests need to be run in release mode. Googletest adds -Werror to the compile flags and will not compile without -fsanitize= which leads to plenty of error messages.
 ```bash
-make tcp_server_client_connection_tests\
+make tcp_server_client_connection_tests
 ./unit-tests/tcp_server_client_connection_tests
 ```
 or
 ```bash
-make test_game_controller_tests\
+make test_game_controller_tests
 ./unit-tests/test_game_controller_tests
 ```
 
