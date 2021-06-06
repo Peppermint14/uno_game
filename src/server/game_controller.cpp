@@ -19,12 +19,8 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
     {
         case Request_Type::NEW_PLAYER:
 	    {
-		    //TODO : store the correct names
-		     Player_id player_id = request["id"]; //retrieve player id
+		    Player_id player_id = request["id"]; //retrieve player id
 	    std::string player_name = request["name"];
-	    //std::string player_name = std::to_string(request["name"]);
-	    //const std::string player_name = request["name"];
-	    //std::string player_name = "horst";
 	    if(!game_state->check_if_player_exists(player_id))
                 add_new_player(player_id, player_name);
             break;
@@ -186,12 +182,13 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                 const std::list<ck_Cards::Cards> hand = player->get_hand().get_cards();
                 game_state->get_draw_pile().push(hand);
 
-                //remove player from players vector
+                //remove player from players vector and delete it
                 game_state->remove_player(player_id);
                 //set has won
                 Player_id next_player_id = game_state->get_current_player(); //single player in game
                 Player* next_player = game_state->get_player(next_player_id);
                 next_player->set_has_won(true);
+                
 
                 // reset_game();
             }
