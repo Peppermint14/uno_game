@@ -28,7 +28,7 @@ wxString MainGamePanel::colourPicker(){
     
     wxString  res = wxGetSingleChoice(msg, caption, choices, this, 25, 25, true, 400, 200, 1);
     
-    while(res.IsEmpty())
+    while(res.IsEmpty()) // Forces the player to maek a choice
         res = wxGetSingleChoice(msg, caption, choices);
 
     return res;

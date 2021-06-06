@@ -12,7 +12,6 @@ class Player_State
 public:
 	Player_State();// = default; // default constructor
 	Player_State(bool test);// = testing state
-	Player_State(Player_id id,std::string player_name, size_t nof_players);// = testing state
 	~Player_State();
 
 	//Setters
@@ -60,23 +59,23 @@ public:
 private:
 	int n_player_in_game = 0; 
 	ck_Cards::Cards top_discard; // Top card of discard pile. Playable cards can be derived from this card.
-	bool discard_empty; 
+	bool discard_empty;  // 1 <=> discard pile empty. Used at the beginning to display an empty pile
 	ck_Cards::Hand* hand;	// Cards held by the player. Will be displayed by GUI.
 	ck_Cards::Color to_be_matched; // Colour which has to be matched by the player. (After a wild card)
-	bool match_colour; // True if okayer has to play a specific colour
-	bool players_turn;
-	bool play_direction;
+	bool match_colour; // True if okayer has to play a specific colour.
+	bool players_turn; // 1 <=> the current player it this player.
+	bool play_direction; // Direction of GUI Arrow. 1 <=> Downwards arrow, 0 <=> upwards arrow.
 	Player_id this_player; // ID of player associated with this PlayerState.
 	Player_id current_Player; // ID of player whose turn it is.
 	Player_id winner; // ID of player that won.
 	bool player_won; // has a player won
 	bool game_over; // Game is over everybody won except 1 player.
 	bool waiting_for_start; //true if player is waiting for the game to start, false if the game is already ongoing
-	bool player_quit; // Exited the game without winning
+	bool player_quit; // Exited the game without winning.
 	bool uno;	// True <=> A player has UNO.
-	std::vector<Player_id> player_ids;
-	std::vector<std::string> all_Player_Names;
-	std::vector<size_t> number_of_cards;
+	std::vector<Player_id> player_ids; // Holds Player IDs.
+	std::vector<std::string> all_Player_Names; // Holds Player Names.
+	std::vector<size_t> number_of_cards; // Holds number of cards corresponding to player IDs.
 };
 
 #endif /* PLAYER_STATE_HPP */
