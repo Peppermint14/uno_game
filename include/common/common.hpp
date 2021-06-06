@@ -31,7 +31,6 @@ template<class T>
 };
 
 enum class Player_id : uint32_t {
-    //PLAYER_ERROR    =   0,
     NONE	    =	0,     
     PLAYER_1        =   1,
     PLAYER_2        =   2,
