@@ -127,7 +127,7 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
                     std::stringstream error_msg;
                     if(card_object.action == ck_Cards::Action::NONE)
                     {
-                        error_msg << "ERROR: please play a " << card_object.get_color_as_string() << " card or a card with the same number.";
+                        error_msg << "ERROR: please play a " << ck_Cards::get_color_as_string(game_state->get_color_to_be_matched()) << " card or a card with the same number.";
                     }
                     if(card_object.value == ck_Cards::Value::NONE)
                     {
@@ -310,8 +310,8 @@ void Game_Controller::reset_game()
 
         game_state->add_Players(player.second);
     }
-
-    broadcast_game_state();
+    
+    //broadcast_game_state();
 }
 
 ////////////////////////////////////draw_card///////////////////////////////////////////////
