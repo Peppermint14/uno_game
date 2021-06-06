@@ -25,16 +25,16 @@ const std::vector<std::pair<ck_Cards::Cards, bool> > played_cards = {
   {ck_Cards::Cards::BLUE_6_A,0},
   {ck_Cards::Cards::BLUE_5_B,1},
   {ck_Cards::Cards::GREEN_2_B,0},
-	{ck_Cards::Cards::GREEN_5_A,1},
-	{ck_Cards::Cards::RED_4_B,1},
-	{ck_Cards::Cards::WILD_A,1},
-	{ck_Cards::Cards::RED_DRAW2_B,1},
-	{ck_Cards::Cards::BLUE_DRAW2_A,0},
-	{ck_Cards::Cards::RED_REVERSE_B,1},
-	{ck_Cards::Cards::BLUE_REVERSE_A,0},
-	{ck_Cards::Cards::RED_SKIP_A,1},
-	{ck_Cards::Cards::BLUE_SKIP_A,0} };
-
+  {ck_Cards::Cards::GREEN_5_A,1},
+  {ck_Cards::Cards::RED_4_B,1},
+  {ck_Cards::Cards::WILD_A,1},
+  {ck_Cards::Cards::RED_DRAW2_B,1},
+  {ck_Cards::Cards::BLUE_DRAW2_A,0},
+  {ck_Cards::Cards::RED_REVERSE_B,1},
+  {ck_Cards::Cards::BLUE_REVERSE_A,0},
+  {ck_Cards::Cards::RED_SKIP_A,1},
+  {ck_Cards::Cards::BLUE_SKIP_A,0}
+};
 
 // Testing the function valid_move() with all colors, all actions, 
 // and with or without the same value (5) as the top card of the discard pile.
@@ -83,28 +83,11 @@ protected:
         game_controller.get_game_state()->set_discard_pile(discard_pile);
         game_controller.get_game_state()->set_draw_pile(draw_pile);
         game_controller.get_game_state()->set_color_to_be_matched(Color::BLUE);
-
-        // setting up the draw pile with 24 cards
-        /*
-        std::list<ck_Cards::Cards> draw_pile_list = {
-                ck_Cards::Cards::GREEN_8_A,ck_Cards::Cards::BLUE_8_A, ck_Cards::Cards::RED_8_A, ck_Cards::Cards::YELLOW_8_A,
-                ck_Cards::Cards::GREEN_8_B,ck_Cards::Cards::BLUE_8_B, ck_Cards::Cards::RED_8_B, ck_Cards::Cards::YELLOW_8_B,
-                ck_Cards::Cards::GREEN_9_A,ck_Cards::Cards::BLUE_9_A, ck_Cards::Cards::RED_9_A, ck_Cards::Cards::YELLOW_9_A,
-                ck_Cards::Cards::GREEN_9_B,ck_Cards::Cards::BLUE_9_B, ck_Cards::Cards::RED_9_B, ck_Cards::Cards::YELLOW_9_B,
-                ck_Cards::Cards::GREEN_7_A,ck_Cards::Cards::BLUE_7_A, ck_Cards::Cards::RED_7_A, ck_Cards::Cards::YELLOW_7_A,
-                ck_Cards::Cards::GREEN_7_B,ck_Cards::Cards::BLUE_7_B, ck_Cards::Cards::RED_7_B, ck_Cards::Cards::YELLOW_7_B,
-        };
-         */
-
-        //draw_pile.push(draw_pile_list);
-        //game_controller.get_game_state()->set_draw_pile(draw_pile);
     }
 
     // Any object and subroutine declared here can be accessed in the following tests
     Game_Controller game_controller;
-
 };
-
 
 // testing function get_player_id()
 TEST_F(Game_State_Test, PlayerId)
@@ -112,7 +95,6 @@ TEST_F(Game_State_Test, PlayerId)
     Player_id player2_Id = game_controller.get_game_state()->get_player(Player_id::PLAYER_3)->get_player_id();
     Player_id expected_player2_Id = Player_id::PLAYER_3;
     EXPECT_EQ(expected_player2_Id, player2_Id);
-
 }
 
 // testing function get_current_player()
@@ -121,7 +103,6 @@ TEST_F(Game_State_Test, CurrentPlayer)
     Player_id current_player = game_controller.get_game_state()->get_current_player();
     Player_id expected_current_player = Player_id::PLAYER_1;
     EXPECT_EQ(expected_current_player, current_player);
-
 }
 
 // testing iteration to the next player
@@ -168,8 +149,7 @@ TEST_F(Game_State_Test, Reverse)
     EXPECT_EQ(expected_next_player, next_player);
 }
 
-
-// TODO check reshuffling of draw_pile TODO
+// check reshuffling of draw_pile
 TEST_F(Game_State_Test, Reshuffle_DrawPile)
 {
     size_t expected_size_draw_pile = game_controller.get_game_state()->get_discard_pile().size() -2;
@@ -177,7 +157,6 @@ TEST_F(Game_State_Test, Reshuffle_DrawPile)
     size_t actual_size_draw_pile = game_controller.get_game_state()->get_draw_pile().size();
     EXPECT_EQ(expected_size_draw_pile, actual_size_draw_pile);
 }
-
 
 // testing if the played card transmitted with msg_json to the function eval_request()
 // is arrived on top of the discard pile
@@ -216,7 +195,6 @@ TEST_F(Game_State_Test, Draw2)
     EXPECT_EQ(expected_nbCards, nbCards);
 }
 
-
 //check if color_to_be_matched in the game state is correctly updated
 TEST_F(Game_State_Test, UpdateColor)
 {
@@ -234,7 +212,6 @@ TEST_F(Game_State_Test, UpdateColor)
     EXPECT_EQ(expected_color, color);
 }
 
-
 //check reshuffling of draw_pile
 // testing implementation of function number_of_cards()
 TEST_F(Game_State_Test, NumberOfCards)
@@ -244,7 +221,6 @@ TEST_F(Game_State_Test, NumberOfCards)
     EXPECT_EQ(expected_nbCards, nbCards);
 }
 
-
 // testing if function clear() empties the players hand
 TEST_F(Game_State_Test, ClearHand)
 {
@@ -253,40 +229,6 @@ TEST_F(Game_State_Test, ClearHand)
     const size_t expected_nbCards = 0;
     EXPECT_EQ(expected_nbCards, nbCards);
 }
-
-/*
-// check implementation of function reset_game() correctly reset hand of the players TODO DOES NOT WORK
-TEST_F(Game_State_Test, ResetGame_functionCall)
-{
-  game_controller.reset_game();
-  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_2)->number_of_cards();
-  const size_t expected_nbCards = 7;
-  //const size_t expected_nbCards = 3;  // also DOES NOT WORK
-  //const size_t expected_nbCards = 0;  // also DOES NOT WORK
-  EXPECT_EQ(expected_nbCards, nbCards);
-}
- */
-/*
-// reset_game() inside implementation with manually adding the 7 cards to player_1
-TEST_F(Game_State_Test, ResetGame_implementation)
-{
-  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().clear();
-  std::list<ck_Cards::Cards> hand_list(7);
-  for (unsigned int i = 0; i < 7; ++i)
-    {
-      ck_Cards::Cards card = game_controller.get_game_state()->get_draw_pile().get_top_card(); //get cards from draw_pile
-      hand_list.push_back(card);
-    }
-  game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->get_hand().push(hand_list);
-
-  const size_t nbCards = game_controller.get_game_state()->get_player(Player_id::PLAYER_1)->number_of_cards();
-  const size_t expected_nbCards = 7;
-  // const size_t expected_nbCards = 3;  // also DOES NOT WORK
-  //const size_t expected_nbCards = 0;   // also DOES NOT WORK
-
-  EXPECT_EQ(expected_nbCards, nbCards);
-}
-*/
 
 int main(int argc, char **argv)
 {
