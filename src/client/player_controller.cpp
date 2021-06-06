@@ -239,7 +239,7 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				player_controller::showStatus("Game over");
 				_currentPlayerState->set_game_over(true);
-				break;
+				return;
 			}
 		
 		case Respond_Type::WINS:
@@ -248,16 +248,6 @@ void player_controller::eval_response(const std::string& msg)
 				Player_id winner_id = response["id"];
 				_currentPlayerState->set_player_won(true);
 				_currentPlayerState->set_winner(winner_id);
-			    //     if(winner_id == _me->get_player_id()){	
-				// 	player_controller::showStatus("Wueeeeehhhhhh!!!!!!!!!!!!!! You won !!!!! :D");
-				// }
-				// else{
-				// 	std::string player_name = _me->get_player_state()->get_name_of_playerid(winner_id);
-				// 	std::string message = "Loser!!! you lost the game :(" + player_name +" won the game";
-				// 	player_controller::showStatus("message");
-				// }
-							
-				//create pop up id wins
 				return;
 			}
         default:
