@@ -69,6 +69,7 @@ void MainGamePanel::buildPlayerState(Player_State* playerState, Player* me){
 
     if(playerState->get_game_over()){
         this->show_game_over_notification();
+        playerState->set_game_over(0);
     }
 }
 
@@ -302,7 +303,7 @@ void MainGamePanel::show_uno_notification(Player_State* ps){
 
 void MainGamePanel::show_won_notification(Player_State* ps){
     wxString message("Congratulations!\n");
-    message += ps->get_player_name() + " You have successfully beaten all your opponents.";
+    message += ps->get_player_name() + ", you have successfully beaten all your opponents.";
     wxMessageBox(message, "Winner", wxICON_NONE);
 }
 void MainGamePanel::show_lost_notification(Player_State* ps){
@@ -312,8 +313,15 @@ void MainGamePanel::show_lost_notification(Player_State* ps){
 }
 
 void MainGamePanel::show_game_over_notification(){
-    wxString message("The game is over. Everybody either won or lost.\nIf you wish you can restart the game.");
-    wxMessageBox(message, "Lost", wxICON_NONE);
+    wxString message("The game is over. Everybody either won or lost.\nIf you wish you can restart the game, if not the game will exit. Do you want to restart");
+    wxMessageDialog game_over(this, message, "Lost", wxYES_NO|wxCANCEL|wxCENTRE);
+    
+    if(game_over.ShowModal() == wxID_YES){ // YES
+        player_controller::startGame();
+    }
+    else{
+        player_controller::exit();        
+    }
 }
 
 void MainGamePanel::show_colour_match_notification(Player_State* ps){
