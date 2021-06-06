@@ -219,9 +219,9 @@ void Game_Controller::eval_request(const Player_id& player_id, const std::string
 
                 broadcast_game_state();
 
-                nlohmann::json popup;
-                popup["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
-                net::TCP_Server::broadcast(popup.dump());
+                nlohmann::json popup2;
+                popup2["type"] = Respond_Type::START_NEW_GAME; //maybe start new game
+                net::TCP_Server::broadcast(popup2.dump());
                 broadcast_game_state();
 
 
