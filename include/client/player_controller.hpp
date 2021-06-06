@@ -22,7 +22,9 @@ public:
     static void eval_response(const std::string& msg);
     //updates the graphical interface
     static void updatePlayerState();
+    //sends startGame-request to server 
     static void startGame();
+    //sends drawCard to server
     static void drawCard();
     static void fold();
     static void PickColour();
