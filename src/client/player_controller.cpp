@@ -1,41 +1,28 @@
-// Copied from Lama example Project
-
 #include "../../include/client/player_controller.hpp"
 #include "../../include/client/UI/MainGamePanel.hpp"
 #include "../../include/common/cards.hpp"
 #include "../../include/common/common.hpp"
 #include "../../include/client/digital_UNO.hpp"
-// #include "../common/network/requests/join_game_request.h"
-// #include "../common/network/requests/start_game_request.h"
-// #include "../common/network/requests/draw_card_request.h"
-// #include "../common/network/requests/fold_request.h"
-// #include "../common/network/requests/play_card_request.h"
-// #include "network/ClientNetworkManager.h"
 
-
-//address: 127.0.0.1
 
 Player_State test_state = Player_State(1);
 Player_State initial_state = Player_State();
-// net::TCP_Client* client = new net::TCP_Client();
-
 
 // initialize static members
 GameWindow* player_controller::_gameWindow = nullptr;
 ConnectionPanel* player_controller::_connectionPanel = nullptr;
 MainGamePanel* player_controller::_mainGamePanel = nullptr;
-std::list<std::pair<Player_id, int>> player_controller::players_number_of_cards = {{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0}};
+
 Player_State* player_controller::_currentPlayerState = new Player_State() ;
 Player* player_controller::_me = new Player(_currentPlayerState);
-Player_id player_controller::current_player = Player_id::NONE;
-//Player_State* player_controller::_currentPlayerState = nullptr;
+
+std::list<std::pair<Player_id, int>> player_controller::players_number_of_cards = {{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0},{Player_id::NONE,0}};
 ck_Cards::Color player_controller::color_to_be_played = ck_Cards::Color::NONE;
 ck_Cards::Cards player_controller::top_card_on_discard = ck_Cards::Cards::BLUE_0;
+Player_id player_controller::current_player = Player_id::NONE;
 
-
-//Player* player_controller::_me = nullptr;
 net::TCP_Client* _current_Client = nullptr;
-//extern player_controller* curr_controller;
+
 
 void player_controller::init(GameWindow* gameWindow) {
 
@@ -103,12 +90,10 @@ void player_controller::connectToServer() {
 
     player_controller::_me->set_player_name(playerName);
 	
-    // //connect to network
+    // connect to network
     try{
-        //net::TCP_Client::connect(serveraddress, port,[&](const std::string& _msg){eval_response(_msg);});
 	    net::TCP_Client::connect(serveraddress, port, [](const std::string _msg){
             		getMainThreadEventHandler()->CallAfter([_msg]{eval_response(_msg);});
-			    //eval_response(_msg);
         }); //playercontroller eval_response
     } catch(const ckException& _e){
         auto logger = Logger::get("client_main");
@@ -169,11 +154,9 @@ void player_controller::eval_response(const std::string& msg)
 			{
 				//update is waiting (is the game allready ongoing or do the players have to wait)
 				Player_id current_id= response["current_player"];
+				//in the time, the game hasn't started yet, the server sents Player_id::NONE as current player ID
 				player_controller::_currentPlayerState->set_is_waiting_for_start(current_id == Player_id::NONE);
 				//update whos turn it is
-
-                
-
 				_currentPlayerState->set_current_player(current_id);
 				_currentPlayerState->set_players_turn(current_id == _me->get_player_id()); // Could coalesce into set_current_player function.
 	
@@ -197,8 +180,7 @@ void player_controller::eval_response(const std::string& msg)
                                               		p_id = player_info.back();
                                               	}
                                               	else{
-                                           		//TODO: error message?? or just delete this option
-							//should not happen -> errror
+                                           		// should not happen
                                             	}
                              		}
                                         all_names[(int)p_id-1]=name;
@@ -223,7 +205,6 @@ void player_controller::eval_response(const std::string& msg)
 
 				std::string message = response["msg"];
 				player_controller::showError("error", message);
-				//set_error_message(message);
 
 				break;
 			}
@@ -257,13 +238,10 @@ void player_controller::eval_response(const std::string& msg)
    	if(!player_controller::_currentPlayerState->is_waiting_for_start()){ 
 		updatePlayerState();
     	_gameWindow->showPanel(_mainGamePanel);
-//		player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
-    		// command the main game panel to rebuild itself, based on the new game state
-  //  		player_controller::_mainGamePanel->buildPlayerState();//player_controller::_currentPlayerState, player_controller::_me);
 	}
 }
 
-void player_controller::updatePlayerState(){//Player_State* newPlayerState) {
+void player_controller::updatePlayerState(){
 
     // make sure we are showing the main game panel in the window (if we are already showing it, nothing will happen)
     player_controller::_gameWindow->showPanel(player_controller::_mainGamePanel);
@@ -308,10 +286,6 @@ void player_controller::exit(){
 	request["id"]= id;
 	request["type"] = Request_Type::EXIT_REQUEST;
 	net::TCP_Client::send(request.dump());
-    // std::cout << "shutting down\n";
-    // net::TCP_Client::terminate();
-    // std::cout << "exiting...\n";
-    // wxExit();
 }
 
 void player_controller::join(){
@@ -340,79 +314,15 @@ void player_controller::showStatus(const std::string& message) {
 
 
 void player_controller::showNewRoundMessage(Player_State* oldPlayerState, Player_State* newPlayerState) {
-    /*
-    std::string title = "Round Completed";
-    std::string message = "The players gained the following minus points:\n";
-    std::string buttonLabel = "Start next round";
 
-    // add the point differences of all players to the messages
-    for(int i = 0; i < oldPlayerState->get_players().size(); i++) {
 
-        player* oldPlayerState = oldPlayerState->get_players().at(i);
-        player* newPlayerState = newPlayerState->get_players().at(i);
-
-        int scoreDelta = newPlayerState->get_score() - oldPlayerState->get_score();
-        std::string scoreText = std::to_string(scoreDelta);
-        if(scoreDelta > 0) {
-            scoreText = "+" + scoreText;
-        }
-
-        std::string playerName = newPlayerState->get_player_name();
-        if(newPlayerState->get_id() == player_controller::_me->get_id()) {
-            playerName = "You";
-        }
-        message += "\n" + playerName + ":     " + scoreText;
-    }
-
-    wxMessageDialog dialogBox = wxMessageDialog(nullptr, message, title, wxICON_NONE);
-    dialogBox.SetOKLabel(wxMessageDialog::ButtonLabel(buttonLabel));
-    dialogBox.ShowModal();
-    */
 }
 
 
 void player_controller::showGameOverMessage() {
     
     /*
-    std::string title = "Game Over!";
-    std::string message = "Final score:\n";
-    std::string buttonLabel = "Close Game";
-
-    // sort players by score
-    std::vector<player*> players = player_controller::_currentPlayerState->get_players();
-    std::sort(players.begin(), players.end(), [](const player* a, const player* b) -> bool {
-        return a->get_score() < b->get_score();
-    });
-
-    // list all players
-    for(int i = 0; i < players.size(); i++) {
-
-        player* playerState = players.at(i);
-        std::string scoreText = std::to_string(playerState->get_score());
-
-        // first entry is the winner
-        std::string winnerText = "";
-        if(i == 0) {
-            winnerText = "     Winner!";
-        }
-
-        std::string playerName = playerState->get_player_name();
-        if(playerState->get_id() == player_controller::_me->get_id()) {
-            playerName = "You";
-
-            if(i == 0) {
-                winnerText = "     You won!!!";
-            }
-        }
-        message += "\n" + playerName + ":     " + scoreText + winnerText;
-    }
-
-    wxMessageDialog dialogBox = wxMessageDialog(nullptr, message, title, wxICON_NONE);
-    dialogBox.SetOKLabel(wxMessageDialog::ButtonLabel(buttonLabel));
-    int buttonClicked = dialogBox.ShowModal();
-    if(buttonClicked == wxID_OK) {
-        player_controller::_gameWindow->Close();
-    }
+    
     */
 }
 
@@ -423,14 +333,7 @@ void player_controller::set_number_cards_player(std::list<std::pair<Player_id, i
 std::list<std::pair<Player_id, int>> player_controller::get_number_cards_player(){
 	return player_controller::players_number_of_cards;
 }
-/*
- void player_controller::set_current_player(Player_id id){
- 	current_player = id;
- }
- Player_id player_controller::get_current_player(){
- 	return current_player;
- }
-*/
+
 void player_controller::set_color(ck_Cards::Color color){
 	player_controller::color_to_be_played = color;
 }
@@ -439,9 +342,6 @@ ck_Cards::Color player_controller::get_color(){
 }
 
 
-//void player_controller::set_top_card_discardp(ck_Cards::Cards top){
-//	player_controller::top_card_on_discard = top;
-//}
 ck_Cards::Cards player_controller::get_top_card_discardp(){
 	return player_controller::top_card_on_discard;
 }
