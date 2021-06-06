@@ -50,7 +50,8 @@ or
 
 The code consits of three different parts: Server, Client and Common. 
 All server files are only used by the server side. The client files are only used by the client and the common files are used by both the client and the server.
-The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files 
+The folders include and src both hold three folders, one for each of the parts. The include folder holds all the header files and the src all the corrsponding cpp files.
+Next to the include and the src folder, there is an asset folder which holds all the card pictures and a unit-test folder which holds all the server and common tests. 
 
 ### Server
 The server is responsible for exchanging all the information between the clients. It updates the hand of all the players and evaluates wheter the players requested moves are valid
@@ -82,6 +83,9 @@ Holds all the enums for the used types
 * __[logger](./include/common/logger.hpp)__
 * __[utils](./include/common/logger.hpp)__
 
+### Unit-Tests
+* __[Common Tests](./unit-tests/commontest)__
+* __[Server Tests](./unit-tests/servertest)__
 
 
 
