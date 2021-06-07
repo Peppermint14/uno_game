@@ -100,9 +100,4 @@ Before starting to code the [Software Requirements Specifications](./doc/srs_dig
 
 ## Shortcomings
 
-There are 2 things that currently don't work:
-
-1. The exit button doesn't work correctly. Avoid using it or closing the client window!
-2. When a game is over there is no way to start a second round.
-
-These two shortcomings are linked as starting a second round has to take into account the players who have left, which isn't done correctly due to point 1.
+When a game is over, there is no implementation allowing to start a second round.
