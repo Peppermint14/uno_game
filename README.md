@@ -1,6 +1,8 @@
+***DISCLAIMER:*** *THIS IS A COPY FROM THE INTERNAL ETHZ GITLAB REPOSITORY*
+
 # Digital UNO
 
-This is a C++ implementation of the game UNO. It was a project for the course Software Engineering in Spring 2021 at ETHz.
+This is a C++ implementation of the game UNO. It was a project for the course Software Engineering in Spring 2021 at ETHZ.
 The program is written to work for 2 to 4 players.
 
 
