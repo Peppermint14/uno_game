@@ -1,4 +1,15 @@
-***DISCLAIMER:*** *THIS WAS A GROUP PROJECT AT ETHZ. TO PREVENT LEAKING OF PERSONAL INFORMATION I DELETED ALL REFERENCES TO OTHER PEOPLE INCLUDING COMMIT HISTORY*
+***DISCLAIMER:***
+
+*THIS WAS A GROUP PROJECT AT ETHZ. TO PREVENT LEAKING OF PERSONAL INFORMATION I DELETED ALL REFERENCES TO OTHER PEOPLE INCLUDING COMMIT HISTORY*
+
+**Personal Contributions:**
+
+* Both [Software Requirements Specifications](./doc/srs_digitalUno.pdf) and the [Software Design Specifications](./doc/sds_digitalUno.pdf) were done in meeting with the whole group
+* My main task was the client side of the game (including UI) which required me to get familiar with [wxWidgets](https://www.wxwidgets.org/), a C++ GUI library.
+* Due to the nature of the game setup I worked closely with the person responsible for the Server side, among other things this included correctly sending data from the client to the server (and vice versa) via TCP communication provided by [sockpp](https://github.com/fpagliughi/sockpp).
+* Although I didn't write the tests myself, I did help with determining which cases we should test for.
+
+
 
 # Digital UNO
 
